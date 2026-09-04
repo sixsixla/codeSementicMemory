@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from typing import Any, Iterable
 
 from ..storage.repository import MemoryRepository
+from ..quality.models import QualityDecision
+from ..quality.service import QualityService
 from .models import CardStatus, ConsolidationAction, ConsolidationItem, ConsolidationResult
 from .store import CardStore, _json, _unique_strings
 
@@ -108,10 +110,12 @@ class ConsolidationService:
         repository: MemoryRepository,
         *,
         store: CardStore | None = None,
+        quality_service: QualityService | None = None,
         policy_version: str = POLICY_VERSION,
     ) -> None:
         self.repository = repository
         self.store = store or CardStore(repository.db)
+        self.quality_service = quality_service or QualityService(repository)
         self.policy_version = policy_version
 
     def consolidate(
@@ -131,6 +135,11 @@ class ConsolidationService:
         items: list[ConsolidationItem] = []
         counts = {key: 0 for key in ("created", "merged", "new_versions", "uncertain", "skipped", "rejected")}
         for candidate in candidates:
+            quality = self.quality_service.review_candidate(candidate)
+            if quality.decision == QualityDecision.QUARANTINE.value:
+                items.append(self._record_quarantined(candidate, quality))
+                counts["rejected"] += 1
+                continue
             item = self._consolidate_one(candidate)
             items.append(item)
             if item.action == ConsolidationAction.CREATE:
@@ -155,6 +164,51 @@ class ConsolidationService:
             skipped=counts["skipped"],
             rejected=counts["rejected"],
             items=tuple(items),
+        )
+
+    def _record_quarantined(
+        self, candidate: dict[str, Any], quality: Any
+    ) -> ConsolidationItem:
+        """Persist a deterministic reject decision without touching cards."""
+
+        decision_key = self.store.decision_key(candidate, self.policy_version)
+        candidate_id = str(candidate["candidate_id"])
+        with self.repository.db.transaction() as conn:
+            previous = self.store.existing_decision(conn, decision_key)
+            if previous is not None:
+                return ConsolidationItem(
+                    candidate_id=candidate_id,
+                    action=ConsolidationAction.SKIP.value,
+                    card_id=str(previous["card_id"]) if previous["card_id"] else None,
+                    card_version_id=str(previous["card_version_id"])
+                    if previous["card_version_id"]
+                    else None,
+                    status=None,
+                    score=float(previous["score"]) if previous["score"] is not None else None,
+                    reason="quarantine decision was already recorded",
+                )
+            reason = "quality quarantine: " + "; ".join(list(quality.reasons)[:5])
+            self.store.record_decision(
+                conn,
+                decision_key=decision_key,
+                project_id=str(candidate["project_id"]),
+                task_id=str(candidate["task_id"]),
+                candidate_id=candidate_id,
+                action=ConsolidationAction.REJECT.value,
+                card_id=None,
+                card_version_id=None,
+                score=float(quality.quality_score),
+                reason=reason,
+                metadata={"quality": quality.as_dict()},
+            )
+        return ConsolidationItem(
+            candidate_id=candidate_id,
+            action=ConsolidationAction.REJECT.value,
+            card_id=None,
+            card_version_id=None,
+            status=None,
+            score=float(quality.quality_score),
+            reason=reason,
         )
 
     def _consolidate_one(self, candidate: dict[str, Any]) -> ConsolidationItem:

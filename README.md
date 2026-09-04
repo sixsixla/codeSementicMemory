@@ -3,12 +3,13 @@
 CodeSementicMemory is a local, SQLite-first long-term memory core specialized for coding agents and vibe-coding workflows. The repository name keeps the original `codeSementicMemory` spelling; the Python package and CLI are named `codememory`.
 
 The canonical store remains below the LLM layer, while the repository now also
-contains an offline-first Phase 2A/3 extraction and consolidation slice. It
-captures trustworthy coding evidence through a stable event contract, persists
-it idempotently, extracts auditable candidate memories, and exposes their
-evidence graph locally.
+contains an offline-first Phase 2A/3 extraction and consolidation slice plus a
+Phase 4A continuous quality gate. It captures trustworthy coding evidence
+through a stable event contract, persists it idempotently, extracts auditable
+candidate memories, validates their evidence deterministically, and exposes
+their evidence graph locally.
 
-## Current status (Phase 0–1 + Phase 2A + Phase 3)
+## Current status (Phase 0–1 + Phase 2A + Phase 3 + Phase 4A)
 
 Implemented:
 
@@ -28,6 +29,11 @@ Implemented:
 - Versioned memory cards with deterministic merge/new-version decisions, evidence and binding links, lifecycle audit, and rebuildable card FTS.
 - A coding-focused offline extractor that suppresses empty/admin noise and distinguishes modified-file evidence from context hints.
 - Bounded replay of the complete locally indexed visible Codex history export, with source-time ordering, host-block filtering, and partial provenance.
+- A deterministic, versioned quality gate for events and extracted candidates, with accepted/review/quarantine decisions and auditable reasons.
+- Logical project scopes and explicit aliases, including a reviewed Project_J mapping across raw Codex project ids.
+- Idempotent dry-run/write quality replay with bounded transactions, input hashes, and stale-run recovery after interrupted processes.
+- Conservative default retrieval: quarantine-backed cards and candidates are hidden from cards/search/3D graph, with an explicit debug opt-in.
+- Quality reports and API/CLI surfaces for project scope, candidate review, replay, and operational diagnosis.
 
 The local replay database is an external runtime artifact, not a checked-in
 fixture. The 2026-09-04 delivery replayed 2,573 indexed visible threads into
@@ -35,6 +41,17 @@ fixture. The 2026-09-04 delivery replayed 2,573 indexed visible threads into
 follow-up replay covered one additional task, for 1,083 successful runs in
 total. The database contains 2,304 candidates / 1,798 proposed cards.
 Remaining imported tasks can be resumed with `extract-all` in bounded batches.
+
+The Phase 4A quality replay is a real local baseline, not a synthetic fixture.
+On 2026-09-04 it evaluated 54,684 canonical events and 2,304 candidates while
+preserving the raw event and card evidence. The v2 gate marked 8 cross-project
+event references and 5 candidate references as `scope_mismatch` for review;
+16 effective raw project ids currently map to 14 logical scopes.
+The Project_J logical-scope replay then covered 54,089 events and 2,292
+candidates with zero in-scope mismatches; its replay hash is recorded in the
+Phase 4A delivery note for deterministic follow-up checks.
+The detailed rules, reports, and verification boundary are recorded in
+[`src/codememory/docs/phase4a-quality-gate.md`](src/codememory/docs/phase4a-quality-gate.md).
 
 Not in this round:
 
@@ -56,9 +73,10 @@ flowchart LR
     D --> F[Timeline and FTS search]
     E --> G[Phase 2A extraction worker]
     G --> H[(Candidate memories + evidence links)]
-    H --> I[Phase 3 deterministic consolidator]
-    I --> J[(Versioned cards + lifecycle audit)]
-    J --> K[Local 3D graph inspector]
+    H --> I[Phase 4A quality gate]
+    I --> J[Phase 3 deterministic consolidator]
+    J --> K[(Versioned cards + lifecycle audit)]
+    K --> L[Local 3D graph inspector]
 ```
 
 HTTP, CLI replay, and future adapters all enter through the same `IngestService`. Ingestion never waits for an LLM, embedding model, or downstream worker.
@@ -123,17 +141,23 @@ If `--db` is omitted, the path is resolved from `CODEMEMORY_DB`, then `CODEMEMOR
 | `POST` | `/v1/outbox/{job_id}/complete` | Acknowledge a leased job |
 | `POST` | `/v1/outbox/{job_id}/fail` | Retry or dead-letter a leased job |
 | `GET` | `/v1/tasks` | List tasks for the graph inspector |
-| `GET` | `/v1/tasks/{task_id}/memories` | List candidate memories and bindings |
+| `GET` | `/v1/tasks/{task_id}/memories` | List candidate memories and bindings (quarantine hidden by default; `include_quarantine` is an audit opt-in) |
 | `GET` | `/v1/tasks/{task_id}/extraction-runs` | Inspect extraction attempts and hashes |
 | `GET` | `/v1/memories/{candidate_id}` | Inspect one candidate and bounded source excerpts |
 | `POST` | `/v1/tasks/{task_id}/extract` | Run the offline mock extractor (explicit worker call) |
-| `GET` | `/v1/memories/search?q=...` | Search candidate-memory FTS |
+| `GET` | `/v1/memories/search?q=...` | Search candidate-memory FTS (quarantine hidden by default; `include_quarantine` is an audit opt-in) |
 | `POST` | `/v1/tasks/{task_id}/consolidate` | Merge task candidates into versioned cards |
-| `GET` | `/v1/cards` | List versioned cards with status/task/kind filters |
-| `GET` | `/v1/cards/search?q=...` | Search current card statements, aliases, and bindings |
+| `GET` | `/v1/tasks/{task_id}/quality` | Inspect task-level event/candidate quality coverage |
+| `GET` | `/v1/quality/report` | Inspect global or logical-project quality statistics and replay audit |
+| `POST` | `/v1/quality/replay` | Dry-run or write the deterministic quality projection |
+| `GET` | `/v1/quality/projects` | List logical projects and effective raw-project aliases |
+| `POST` | `/v1/quality/projects/aliases` | Register a reviewed raw-project alias |
+| `GET` | `/v1/quality/candidates/{candidate_id}` | Inspect candidate quality reasons, dimensions, and evidence |
+| `GET` | `/v1/cards` | List versioned cards with status/task/kind filters (`include_quarantine` is an explicit debug opt-in) |
+| `GET` | `/v1/cards/search?q=...` | Search current card statements, aliases, and bindings (`include_quarantine` is an explicit debug opt-in) |
 | `GET` | `/v1/cards/{card_id}` | Inspect versions, evidence, links, decisions, and lifecycle |
 | `POST` | `/v1/cards/{card_id}/transition` | Apply an audited lifecycle transition |
-| `GET` | `/v1/graph` | Return bounded nodes/edges for the 3D UI |
+| `GET` | `/v1/graph` | Return bounded nodes/edges for the 3D UI (`include_quarantine` is an explicit debug opt-in) |
 
 An accepted event returns HTTP `201`; an exact duplicate returns `200` and the original outbox id; a reused identity with changed content returns `409`.
 
@@ -190,6 +214,7 @@ Parent links are allowed to arrive out of order. They are indexed but intentiona
 - `codememory export` emits canonical JSON/JSONL envelopes for migration and an additional human-readable backup path.
 - Downstream jobs support claim leases, expired-lease recovery, exponential retry, completion, and dead-letter status.
 - Raw coding events are append-only through the public repository API. Search is a projection and can be rebuilt later.
+- `rebuild-memory --yes` clears only extraction, card, logical-scope, and quality projections; canonical projects/tasks/sessions/events/artifacts and the outbox remain intact.
 - The current built-in redactor removes common API key, token, authorization, password, and `sk-...` patterns from payloads and artifact metadata before storage. The implementation record for this round is in [`src/codememory/docs/phase2a-delivery.md`](src/codememory/docs/phase2a-delivery.md).
 
 ## Development and verification
@@ -200,7 +225,7 @@ py -m pytest -q
 
 The fixture `fixtures/route-success.jsonl` models a successful request-to-code route: user intent, searches, source reads, edits, validation, VCS revision, final answer, and session completion. Replaying it twice must produce 12 accepted events followed by 12 duplicates without adding rows or outbox jobs. The other streams in [`fixtures/index.json`](fixtures/index.json) cover partial input, failed validation, refactoring, feedback correction, and the smallest complete session; each has a checked-in expected result under `fixtures/expected/`.
 
-## Phase 2A/3 boundary and next slices
+## Phase 2A/3/4A boundary and next slices
 
 Phase 2A consumes a task window (directly or through `event.ingested` jobs) and adds the coding-specific candidate pipeline:
 
@@ -209,11 +234,14 @@ Phase 2A consumes a task window (directly or through `event.ingested` jobs) and 
 3. Deterministic candidate persistence/linking with provenance and confidence.
 4. A bounded local Codex history seed and graph inspection surface.
 5. Versioned card consolidation, evidence/binding relations, and guarded lifecycle transitions.
+6. Continuous event/candidate quality evaluation, logical project aliases, replay audit, and quarantine-aware retrieval.
 
-The next planned slice is Phase 4: resolve paths and symbols against a selected
-Git/P4 snapshot and automatically mark bindings verified, missing, renamed, or
-stale. Embeddings/vector projections, MCP, and a native Codex adapter remain
-separate replaceable layers; none is required by the SQLite core.
+The next planned slice is Phase 4B: resolve paths and symbols against a selected
+Git/P4 snapshot (AST/LSP or CodebaseMemory) and automatically mark bindings
+verified, missing, renamed, or stale. Embeddings/vector projections, MCP, and a
+native Codex adapter remain separate replaceable layers; none is required by the
+SQLite core or by the quality gate.
 
-The complete implementation record, data-layer invariants, replay command, and
-verification boundary are in [`src/codememory/docs/phase3-delivery.md`](src/codememory/docs/phase3-delivery.md).
+The complete implementation records are in
+[`src/codememory/docs/phase3-delivery.md`](src/codememory/docs/phase3-delivery.md)
+and [`src/codememory/docs/phase4a-quality-gate.md`](src/codememory/docs/phase4a-quality-gate.md).

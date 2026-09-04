@@ -11,14 +11,19 @@ class ProjectionMaintenance:
     """Reset derived extraction/card projections without touching source facts.
 
     Canonical projects, tasks, sessions, events, artifacts, and the durable
-    outbox are intentionally outside this operation.  Candidate and card
-    tables are rebuildable projections, so clearing them is useful after an
-    extractor/sanitizer policy upgrade.  The caller must opt in explicitly;
-    the CLI exposes this as ``rebuild-memory --yes``.
+    outbox are intentionally outside this operation. Candidate, card, and
+    quality tables are rebuildable projections, so clearing them is useful
+    after an extractor/sanitizer/quality-policy upgrade. The caller must opt
+    in explicitly; the CLI exposes this as ``rebuild-memory --yes``.
     """
 
     _TABLES = (
         # Children first to satisfy the database's foreign-key contract.
+        "candidate_quality_reviews",
+        "event_quality_evaluations",
+        "project_aliases",
+        "quality_runs",
+        "logical_projects",
         "memory_card_fts",
         "memory_card_links",
         "memory_card_bindings",

@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import hashlib
 import sqlite3
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any
 
 from pydantic import ValidationError
 
 from ..storage.repository import MemoryRepository
+from ..quality.service import QualityService
 from .context import ContextAssembler
 from .models import EXTRACTION_SCHEMA_VERSION, ExtractionBatch
 from .providers import ExtractionProvider, MockLLMProvider
@@ -29,6 +30,8 @@ class ExtractionResult:
     candidate_count: int
     event_count: int
     error: str | None = None
+    quality_decisions: dict[str, int] = field(default_factory=dict)
+    quality_error: str | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -44,11 +47,15 @@ class ExtractionService:
         assembler: ContextAssembler | None = None,
         store: ExtractionStore | None = None,
         provider: ExtractionProvider | None = None,
+        quality_service: QualityService | None = None,
         extractor_version: str = "phase2a-v1",
         schema_version: str = EXTRACTION_SCHEMA_VERSION,
     ) -> None:
         self.repository = repository
-        self.assembler = assembler or ContextAssembler(repository)
+        self.quality_service = quality_service or QualityService(repository)
+        self.assembler = assembler or ContextAssembler(
+            repository, quality_service=self.quality_service
+        )
         self.store = store or ExtractionStore(repository.db)
         self.provider = provider or MockLLMProvider()
         self.extractor_version = extractor_version
@@ -101,6 +108,17 @@ class ExtractionService:
                 prompt_version=prompt_version,
             )
             stored = self.store.record_success(run, run_context, batch)
+            quality_decisions: dict[str, int] = {}
+            quality_error: str | None = None
+            try:
+                candidates = self.store.list_candidates(
+                    run_id=stored.run_id, limit=100_000, include_quarantine=True
+                )
+                reviews = self.quality_service.review_candidates(candidates)
+                for review in reviews:
+                    quality_decisions[review.decision] = quality_decisions.get(review.decision, 0) + 1
+            except Exception as exc:  # quality is a rebuildable projection; keep extraction durable
+                quality_error = f"{type(exc).__name__}: {exc}"
             return ExtractionResult(
                 status="extracted",
                 run_id=stored.run_id,
@@ -108,6 +126,8 @@ class ExtractionService:
                 input_hash=context.input_hash,
                 candidate_count=stored.candidate_count,
                 event_count=len(context.event_ids),
+                quality_decisions=quality_decisions,
+                quality_error=quality_error,
             )
         except (
             ValidationError,

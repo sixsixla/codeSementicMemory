@@ -299,17 +299,39 @@ class ExtractionStore:
             return [self._run_dict(row) for row in rows]
 
     def list_candidates(
-        self, *, task_id: str | None = None, kind: str | None = None, limit: int = 100
+        self,
+        *,
+        task_id: str | None = None,
+        run_id: str | None = None,
+        kind: str | None = None,
+        limit: int = 100,
+        include_quarantine: bool = True,
     ) -> list[dict[str, Any]]:
+        """List candidates, optionally hiding quality-quarantined rows.
+
+        The low-level store keeps its historical audit-friendly default of
+        including every immutable candidate.  API/CLI retrieval surfaces pass
+        ``include_quarantine=False`` for the product's conservative default;
+        extraction and consolidation internals explicitly keep the full set.
+        """
+
         limit = max(1, min(int(limit), 1000))
         clauses = []
         params: list[Any] = []
         if task_id:
             clauses.append("task_id=?")
             params.append(task_id)
+        if run_id:
+            clauses.append("run_id=?")
+            params.append(run_id)
         if kind:
             clauses.append("kind=?")
             params.append(kind)
+        if not include_quarantine:
+            clauses.append(
+                "NOT EXISTS (SELECT 1 FROM candidate_quality_reviews cq "
+                "WHERE cq.candidate_id=memory_candidates.candidate_id AND cq.decision='quarantine')"
+            )
         where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
         with self.db.connection() as conn:
             rows = conn.execute(
@@ -355,23 +377,38 @@ class ExtractionStore:
             result["run"] = self.get_run(result["run_id"])
             return result
 
-    def search(self, query: str, *, task_id: str | None = None, limit: int = 20) -> list[dict[str, Any]]:
+    def search(
+        self,
+        query: str,
+        *,
+        task_id: str | None = None,
+        limit: int = 20,
+        include_quarantine: bool = True,
+    ) -> list[dict[str, Any]]:
+        """Search candidate FTS with an explicit quarantine audit switch."""
+
         query = query.strip()
         if not query:
             return []
         limit = max(1, min(int(limit), 200))
         with self.db.connection() as conn:
+            quality_suffix = "" if include_quarantine else (
+                " AND NOT EXISTS (SELECT 1 FROM candidate_quality_reviews cq "
+                "WHERE cq.candidate_id=c.candidate_id AND cq.decision='quarantine')"
+            )
             try:
                 if task_id:
                     rows = conn.execute(
                         "SELECT c.* FROM memory_candidate_fts f JOIN memory_candidates c ON c.candidate_id=f.candidate_id "
-                        "WHERE memory_candidate_fts MATCH ? AND f.task_id=? ORDER BY c.created_at DESC LIMIT ?",
+                        "WHERE memory_candidate_fts MATCH ? AND f.task_id=?" + quality_suffix
+                        + " ORDER BY c.created_at DESC LIMIT ?",
                         (query, task_id, limit),
                     ).fetchall()
                 else:
                     rows = conn.execute(
                         "SELECT c.* FROM memory_candidate_fts f JOIN memory_candidates c ON c.candidate_id=f.candidate_id "
-                        "WHERE memory_candidate_fts MATCH ? ORDER BY c.created_at DESC LIMIT ?",
+                        "WHERE memory_candidate_fts MATCH ?" + quality_suffix
+                        + " ORDER BY c.created_at DESC LIMIT ?",
                         (query, limit),
                     ).fetchall()
             except sqlite3.OperationalError:
@@ -379,13 +416,15 @@ class ExtractionStore:
                 if task_id:
                     rows = conn.execute(
                         "SELECT c.* FROM memory_candidate_fts f JOIN memory_candidates c ON c.candidate_id=f.candidate_id "
-                        "WHERE memory_candidate_fts MATCH ? AND f.task_id=? ORDER BY c.created_at DESC LIMIT ?",
+                        "WHERE memory_candidate_fts MATCH ? AND f.task_id=?" + quality_suffix
+                        + " ORDER BY c.created_at DESC LIMIT ?",
                         (literal, task_id, limit),
                     ).fetchall()
                 else:
                     rows = conn.execute(
                         "SELECT c.* FROM memory_candidate_fts f JOIN memory_candidates c ON c.candidate_id=f.candidate_id "
-                        "WHERE memory_candidate_fts MATCH ? ORDER BY c.created_at DESC LIMIT ?",
+                        "WHERE memory_candidate_fts MATCH ?" + quality_suffix
+                        + " ORDER BY c.created_at DESC LIMIT ?",
                         (literal, limit),
                     ).fetchall()
             # unicode61 treats a contiguous Chinese phrase as one token, so a
@@ -394,23 +433,42 @@ class ExtractionStore:
             # than requiring an embedding model in the Phase 2A baseline.
             if not rows:
                 if task_id:
+                    quality_suffix = "" if include_quarantine else (
+                        " AND NOT EXISTS (SELECT 1 FROM candidate_quality_reviews cq "
+                        "WHERE cq.candidate_id=memory_candidates.candidate_id AND cq.decision='quarantine')"
+                    )
                     rows = conn.execute(
                         "SELECT * FROM memory_candidates WHERE task_id=? AND "
-                        "(instr(statement, ?) > 0 OR instr(aliases_json, ?) > 0 OR instr(bindings_json, ?) > 0) "
+                        "(instr(statement, ?) > 0 OR instr(aliases_json, ?) > 0 OR instr(bindings_json, ?) > 0)"
+                        + quality_suffix
+                        + " "
                         "ORDER BY created_at DESC LIMIT ?",
                         (task_id, query, query, query, limit),
                     ).fetchall()
                 else:
                     rows = conn.execute(
                         "SELECT * FROM memory_candidates WHERE "
-                        "(instr(statement, ?) > 0 OR instr(aliases_json, ?) > 0 OR instr(bindings_json, ?) > 0) "
+                        "(instr(statement, ?) > 0 OR instr(aliases_json, ?) > 0 OR instr(bindings_json, ?) > 0)"
+                        + quality_suffix
+                        + " "
                         "ORDER BY created_at DESC LIMIT ?",
                         (query, query, query, limit),
                     ).fetchall()
             return [self._candidate_dict(row, conn) for row in rows]
 
-    def graph(self, *, task_id: str | None = None, limit: int = 300) -> dict[str, Any]:
-        """Return a bounded, UI-friendly graph projection from SQLite facts."""
+    def graph(
+        self,
+        *,
+        task_id: str | None = None,
+        limit: int = 300,
+        include_quarantine: bool = False,
+    ) -> dict[str, Any]:
+        """Return a bounded graph projection from SQLite facts.
+
+        Quarantined candidate observations are hidden by default while their
+        canonical events remain visible as provenance.  Auditing clients can
+        pass ``include_quarantine=True`` to inspect the complete projection.
+        """
 
         limit = max(20, min(int(limit), 2000))
         nodes: dict[str, dict[str, Any]] = {}
@@ -470,6 +528,17 @@ class ExtractionStore:
                     occurred_at=str(row["occurred_at"]),
                     completeness=str(row["completeness"]),
                 )
+                quality = conn.execute(
+                    "SELECT role,decision,signal_score,classifier_version FROM event_quality_evaluations WHERE event_id=?",
+                    (event_id,),
+                ).fetchone()
+                if quality is not None:
+                    nodes[event_node]["quality"] = {
+                        "role": str(quality["role"]),
+                        "decision": str(quality["decision"]),
+                        "signal_score": float(quality["signal_score"]),
+                        "classifier_version": str(quality["classifier_version"]),
+                    }
                 add_edge(f"task:{tid}", event_node, "contains")
                 if sid:
                     sid = str(sid)
@@ -486,8 +555,18 @@ class ExtractionStore:
                     add_node(file_node, "file", path, path=path)
                     add_edge(event_node, file_node, "mentions")
 
+            candidate_query = (
+                f"SELECT c.* FROM memory_candidates c "
+                f"WHERE c.task_id IN ({placeholders})"
+            )
+            if not include_quarantine:
+                candidate_query += (
+                    " AND NOT EXISTS (SELECT 1 FROM candidate_quality_reviews cq "
+                    "WHERE cq.candidate_id=c.candidate_id AND cq.decision='quarantine')"
+                )
+            candidate_query += " ORDER BY c.created_at DESC LIMIT ?"
             candidate_rows = conn.execute(
-                f"SELECT * FROM memory_candidates WHERE task_id IN ({placeholders}) ORDER BY created_at DESC LIMIT ?",
+                candidate_query,
                 (*selected_task_ids, limit),
             ).fetchall()
             for row in candidate_rows:
@@ -504,6 +583,19 @@ class ExtractionStore:
                     uncertainty=str(row["uncertainty"]),
                     aliases=json_value(row["aliases_json"], []),
                 )
+                quality = conn.execute(
+                    "SELECT decision,quality_score,dimensions_json,reasons_json,classifier_version "
+                    "FROM candidate_quality_reviews WHERE candidate_id=?",
+                    (cid,),
+                ).fetchone()
+                if quality is not None:
+                    nodes[candidate_node]["quality"] = {
+                        "decision": str(quality["decision"]),
+                        "quality_score": float(quality["quality_score"]),
+                        "dimensions": json_value(quality["dimensions_json"], {}),
+                        "reasons": json_value(quality["reasons_json"], []),
+                        "classifier_version": str(quality["classifier_version"]),
+                    }
                 add_edge(f"task:{row['task_id']}", candidate_node, "proposes")
                 links = conn.execute(
                     "SELECT target_type,target_id,relation_type,metadata_json FROM memory_candidate_links WHERE candidate_id=?",
@@ -584,7 +676,7 @@ class ExtractionStore:
                 (cid,),
             ).fetchall()
         ]
-        return {
+        result = {
             "candidate_id": cid,
             "run_id": str(row["run_id"]),
             "project_id": str(row["project_id"]),
@@ -602,6 +694,23 @@ class ExtractionStore:
             "created_at": str(row["created_at"]),
             "updated_at": str(row["updated_at"]),
         }
+        quality = conn.execute(
+            "SELECT decision,quality_score,dimensions_json,reasons_json,classifier_version,reviewed_at "
+            "FROM candidate_quality_reviews WHERE candidate_id=?",
+            (cid,),
+        ).fetchone()
+        if quality is not None:
+            result["quality"] = {
+                "decision": str(quality["decision"]),
+                "quality_score": float(quality["quality_score"]),
+                "dimensions": json_value(quality["dimensions_json"], {}),
+                "reasons": json_value(quality["reasons_json"], []),
+                "classifier_version": str(quality["classifier_version"]),
+                "reviewed_at": str(quality["reviewed_at"]),
+            }
+        else:
+            result["quality"] = None
+        return result
 
 
 def _trim_label(value: str, limit: int) -> str:

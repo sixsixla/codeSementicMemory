@@ -1,0 +1,186 @@
+{
+  "agent_runs": [],
+  "artifacts": {
+    "TaskContract": [
+      {
+        "artifact_id": "28b134ef-3923-4d69-b3de-78d86974d008",
+        "artifact_revision": 1,
+        "artifact_type": "TaskContract",
+        "data": {
+          "constraints": [
+            "SQLite remains the canonical local store; quality tables are additive projections and can be rebuilt by replay.",
+            "Preserve canonical event payloads, candidates, card versions, evidence, and relations; never use quality replay as a destructive reset.",
+            "Use deterministic local rules in the first implementation; provider/LLM-assisted classification may be added later behind the same versioned contract.",
+            "A code binding is accepted only with concrete repository evidence; URLs, globs, generated synthetic names, and skill/document paths are not code evidence.",
+            "Validation claims require an actual command or validation event; textual assertions alone are not proof.",
+            "Do not add an embedding service, graph database, cloud dependency, or native Codex Desktop hook in this slice."
+          ],
+          "goal": "Implement a permanent Phase 4A quality and scope gate for coding memory: classify imported events and extracted candidates, quarantine low-value or synthetic observations without deleting raw facts, resolve raw project ids into auditable logical project scopes, and expose deterministic replay/reporting through the service, CLI, API, and tests.",
+          "human_decisions_required": [],
+          "non_goals": [
+            "AST/LSP or live CodebaseMemory symbol verification; only evidence-shape and scope checks belong here.",
+            "Automatic destructive merging of all Project_J roots; alias suggestions must retain confidence and provenance.",
+            "Processing the remaining unextracted history until the quality gate itself is verified."
+          ],
+          "risk_profile": "T2",
+          "scope_allowlist": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md",
+            "pyproject.toml",
+            ".omx/state/**",
+            ".omx/plans/**"
+          ],
+          "scope_forbidden": [
+            ".git/**",
+            ".venv/**",
+            "*.sqlite",
+            "*.sqlite3",
+            "*.db",
+            "data/**",
+            "build/**",
+            "dist/**"
+          ],
+          "stop_condition": "Stop after the additive migration, quality classifier/store/service integration, logical-scope resolver, replay/report API and CLI, focused and full regression checks, and an evidence-backed report of any legacy rows left for review.",
+          "success_criteria": [
+            "Every new or replayed event receives a persisted quality evaluation with a classifier version, decision, score, and human-readable reasons; raw canonical events remain unchanged.",
+            "Every extracted candidate receives a persisted quality review; acknowledgement-only, future-tense, URL/glob/synthetic, or unsupported bindings cannot become accepted coding memories, while uncertain observations remain reviewable.",
+            "Consolidation is quality-aware and idempotent: quarantined candidates never create or mutate stable cards, accepted candidates retain evidence and existing card history, and unreviewed legacy rows are explicitly reported.",
+            "Raw project ids are preserved while exact roots and explicit aliases can resolve to a logical project scope with confidence and provenance; cross-scope references are reported rather than silently merged.",
+            "A replay/report command and REST endpoints can run the same gate over existing data in dry-run or write mode, with deterministic counts, input hashes, and quality-run audit records.",
+            "Focused quality, consolidation, API, replay, full regression, lint, compile, and UI syntax checks pass; no source or test scope drift is introduced."
+          ]
+        },
+        "owner": "codex-delivery-lead",
+        "producer_home_state": "INTAKE",
+        "recorded_at": "2026-09-04T12:03:34+00:00",
+        "schema_version": "1.0"
+      }
+    ]
+  },
+  "assignments": [],
+  "created_at": "2026-09-04T12:03:34+00:00",
+  "entry_mode": "DELIVER",
+  "entry_provenance": {
+    "kind": "DIRECT_DELIVERY",
+    "owner": "codex-delivery-lead",
+    "started_at": "2026-09-04T12:03:34+00:00"
+  },
+  "finalized_at": null,
+  "gate_ledger": [],
+  "lead": "codex-delivery-lead",
+  "ledger_version": "1.0",
+  "orchestration_activation_state": "INTAKE",
+  "orchestration_contract_version": "2.0",
+  "orchestration_events": [
+    {
+      "actor": "workflow-core",
+      "artifact_id": "28b134ef-3923-4d69-b3de-78d86974d008",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "INTAKE",
+      "kind": "workflow.contract.registered",
+      "observed": {
+        "artifact": {
+          "artifact_id": "28b134ef-3923-4d69-b3de-78d86974d008",
+          "artifact_revision": 1,
+          "artifact_type": "TaskContract",
+          "data": {
+            "constraints": [
+              "SQLite remains the canonical local store; quality tables are additive projections and can be rebuilt by replay.",
+              "Preserve canonical event payloads, candidates, card versions, evidence, and relations; never use quality replay as a destructive reset.",
+              "Use deterministic local rules in the first implementation; provider/LLM-assisted classification may be added later behind the same versioned contract.",
+              "A code binding is accepted only with concrete repository evidence; URLs, globs, generated synthetic names, and skill/document paths are not code evidence.",
+              "Validation claims require an actual command or validation event; textual assertions alone are not proof.",
+              "Do not add an embedding service, graph database, cloud dependency, or native Codex Desktop hook in this slice."
+            ],
+            "goal": "Implement a permanent Phase 4A quality and scope gate for coding memory: classify imported events and extracted candidates, quarantine low-value or synthetic observations without deleting raw facts, resolve raw project ids into auditable logical project scopes, and expose deterministic replay/reporting through the service, CLI, API, and tests.",
+            "human_decisions_required": [],
+            "non_goals": [
+              "AST/LSP or live CodebaseMemory symbol verification; only evidence-shape and scope checks belong here.",
+              "Automatic destructive merging of all Project_J roots; alias suggestions must retain confidence and provenance.",
+              "Processing the remaining unextracted history until the quality gate itself is verified."
+            ],
+            "risk_profile": "T2",
+            "scope_allowlist": [
+              "src/**",
+              "tests/**",
+              "migrations/**",
+              "schemas/**",
+              "fixtures/**",
+              "web/**",
+              "README.md",
+              "pyproject.toml",
+              ".omx/state/**",
+              ".omx/plans/**"
+            ],
+            "scope_forbidden": [
+              ".git/**",
+              ".venv/**",
+              "*.sqlite",
+              "*.sqlite3",
+              "*.db",
+              "data/**",
+              "build/**",
+              "dist/**"
+            ],
+            "stop_condition": "Stop after the additive migration, quality classifier/store/service integration, logical-scope resolver, replay/report API and CLI, focused and full regression checks, and an evidence-backed report of any legacy rows left for review.",
+            "success_criteria": [
+              "Every new or replayed event receives a persisted quality evaluation with a classifier version, decision, score, and human-readable reasons; raw canonical events remain unchanged.",
+              "Every extracted candidate receives a persisted quality review; acknowledgement-only, future-tense, URL/glob/synthetic, or unsupported bindings cannot become accepted coding memories, while uncertain observations remain reviewable.",
+              "Consolidation is quality-aware and idempotent: quarantined candidates never create or mutate stable cards, accepted candidates retain evidence and existing card history, and unreviewed legacy rows are explicitly reported.",
+              "Raw project ids are preserved while exact roots and explicit aliases can resolve to a logical project scope with confidence and provenance; cross-scope references are reported rather than silently merged.",
+              "A replay/report command and REST endpoints can run the same gate over existing data in dry-run or write mode, with deterministic counts, input hashes, and quality-run audit records.",
+              "Focused quality, consolidation, API, replay, full regression, lint, compile, and UI syntax checks pass; no source or test scope drift is introduced."
+            ]
+          },
+          "owner": "codex-delivery-lead",
+          "producer_home_state": "INTAKE",
+          "recorded_at": "2026-09-04T12:03:34+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "af11049e-a792-4181-9e40-8e539e7af0a1",
+      "schema_version": 2,
+      "seq": 1,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T12:03:34+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "INTAKE",
+      "kind": "workflow.mode.selected",
+      "observed": {
+        "entry_mode": "DELIVER",
+        "entry_provenance": {
+          "kind": "DIRECT_DELIVERY",
+          "owner": "codex-delivery-lead",
+          "started_at": "2026-09-04T12:03:34+00:00"
+        }
+      },
+      "run_id": "af11049e-a792-4181-9e40-8e539e7af0a1",
+      "schema_version": 2,
+      "seq": 2,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T12:03:34+00:00"
+    }
+  ],
+  "orchestration_legacy_gate_count": 0,
+  "resume": null,
+  "revision": 0,
+  "state": "INTAKE",
+  "task_id": "af11049e-a792-4181-9e40-8e539e7af0a1",
+  "tier": "T2",
+  "transitions": [],
+  "updated_at": "2026-09-04T12:03:34+00:00"
+}

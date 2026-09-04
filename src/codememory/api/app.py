@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import sys
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import FastAPI, Query, Request, status
 from fastapi.responses import FileResponse, JSONResponse
@@ -19,6 +19,7 @@ from ..extraction.service import ExtractionService
 from ..extraction.store import ExtractionStore
 from ..extraction.providers import provider_from_name
 from ..ingest.service import IngestService
+from ..quality.service import QualityService
 from ..storage.database import Database
 from ..storage.repository import ConflictError, MemoryRepository
 
@@ -62,16 +63,40 @@ class CardTransitionRequest(BaseModel):
     actor: str = Field(default="api", min_length=1, max_length=200)
 
 
+class QualityReplayRequest(BaseModel):
+    project_id: str | None = Field(default=None, max_length=300)
+    task_id: str | None = Field(default=None, max_length=300)
+    logical_project_id: str | None = Field(default=None, max_length=300)
+    limit: int = Field(default=100_000, ge=1, le=1_000_000)
+    write: bool = False
+
+
+class ProjectAliasRequest(BaseModel):
+    raw_project_id: str = Field(min_length=1, max_length=300)
+    logical_project_id: str = Field(min_length=1, max_length=300)
+    alias_value: str = Field(min_length=1, max_length=4000)
+    alias_type: Literal["root", "repo", "basename", "explicit", "inferred"] = "explicit"
+    normalized_root: str = Field(default="", max_length=2000)
+    confidence: float = Field(default=1.0, ge=0, le=1)
+    evidence: dict[str, Any] = Field(default_factory=dict)
+    display_name: str | None = Field(default=None, max_length=500)
+
+
 def create_app(db_path: str | Path | None = None) -> FastAPI:
     """Create an app instance; initialization is deterministic and testable."""
 
     database = Database(db_path or default_db_path())
     repository = MemoryRepository(database)
-    service = IngestService(repository)
+    quality_service = QualityService(repository)
+    service = IngestService(repository, quality_service=quality_service)
     extraction_store = ExtractionStore(database)
-    extraction_service = ExtractionService(repository, store=extraction_store)
+    extraction_service = ExtractionService(
+        repository, store=extraction_store, quality_service=quality_service
+    )
     card_store = CardStore(database)
-    consolidation_service = ConsolidationService(repository, store=card_store)
+    consolidation_service = ConsolidationService(
+        repository, store=card_store, quality_service=quality_service
+    )
     app = FastAPI(
         title="CodeSementicMemory",
         version="0.1.0",
@@ -84,6 +109,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     app.state.extraction_service = extraction_service
     app.state.card_store = card_store
     app.state.consolidation_service = consolidation_service
+    app.state.quality_service = quality_service
 
     web_candidates = (
         Path(__file__).resolve().parents[3] / "web",
@@ -230,10 +256,19 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         task_id: str,
         kind: str | None = Query(default=None),
         limit: int = Query(default=100, ge=1, le=1000),
+        include_quarantine: bool = Query(
+            default=False,
+            description="Include quarantined candidates for audit/debugging",
+        ),
     ) -> dict[str, Any]:
         return {
             "task_id": task_id,
-            "memories": extraction_store.list_candidates(task_id=task_id, kind=kind, limit=limit),
+            "memories": extraction_store.list_candidates(
+                task_id=task_id,
+                kind=kind,
+                limit=limit,
+                include_quarantine=include_quarantine,
+            ),
         }
 
     @app.get("/v1/tasks/{task_id}/extraction-runs")
@@ -241,6 +276,10 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         task_id: str, limit: int = Query(default=100, ge=1, le=1000)
     ) -> dict[str, Any]:
         return {"task_id": task_id, "runs": extraction_store.list_runs(task_id=task_id, limit=limit)}
+
+    @app.get("/v1/tasks/{task_id}/quality")
+    async def task_quality(task_id: str) -> dict[str, Any]:
+        return quality_service.report(task_id=task_id)
 
     @app.post("/v1/tasks/{task_id}/extract")
     async def extract_task(task_id: str, request: ExtractRequest | None = None) -> dict[str, Any]:
@@ -256,6 +295,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
             repository,
             store=extraction_store,
             provider=provider,
+            quality_service=quality_service,
         )
         result = task_extraction.extract_task(
             task_id, session_id=request.session_id, force=request.force
@@ -272,6 +312,62 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         )
         return {"task_id": task_id, **result.as_dict()}
 
+    @app.get("/v1/quality/report")
+    async def quality_report(
+        project_id: str | None = Query(default=None),
+        task_id: str | None = Query(default=None),
+        logical_project_id: str | None = Query(default=None),
+    ) -> dict[str, Any]:
+        return quality_service.report(
+            project_id=project_id,
+            task_id=task_id,
+            logical_project_id_value=logical_project_id,
+        )
+
+    @app.post("/v1/quality/replay")
+    async def quality_replay(request: QualityReplayRequest | None = None) -> dict[str, Any]:
+        request = request or QualityReplayRequest()
+        return quality_service.replay(
+            project_id=request.project_id,
+            task_id=request.task_id,
+            logical_project_id_value=request.logical_project_id,
+            limit=request.limit,
+            write=request.write,
+        ).as_dict()
+
+    @app.get("/v1/quality/projects")
+    async def quality_projects(limit: int = Query(default=1000, ge=1, le=10_000)) -> dict[str, Any]:
+        return {"projects": quality_service.store.list_logical_projects(limit=limit)}
+
+    @app.post("/v1/quality/projects/aliases", response_model=None)
+    async def register_project_alias(request: ProjectAliasRequest) -> Any:
+        try:
+            return quality_service.register_project_alias(
+                raw_project_id=request.raw_project_id,
+                logical_project_id=request.logical_project_id,
+                alias_value=request.alias_value,
+                alias_type=request.alias_type,
+                normalized_root=request.normalized_root,
+                confidence=request.confidence,
+                evidence=request.evidence,
+                display_name=request.display_name,
+            )
+        except ValueError as exc:
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={"error": "invalid_project_alias", "message": str(exc)},
+            )
+
+    @app.get("/v1/quality/candidates/{candidate_id}")
+    async def candidate_quality(candidate_id: str) -> JSONResponse:
+        review = quality_service.candidate_quality(candidate_id)
+        if review is None:
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND,
+                content={"error": "quality_review_not_found", "candidate_id": candidate_id},
+            )
+        return JSONResponse(content=review)
+
     @app.get("/v1/cards/search")
     async def search_cards(
         q: str = Query(min_length=1, max_length=500),
@@ -279,6 +375,10 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         task_id: str | None = Query(default=None),
         status_filter: str | None = Query(default=None, alias="status"),
         limit: int = Query(default=20, ge=1, le=200),
+        include_quarantine: bool = Query(
+            default=False,
+            description="Include cards backed by quarantined candidates for audit/debugging",
+        ),
     ) -> dict[str, Any]:
         return {
             "query": q,
@@ -288,6 +388,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
                 task_id=task_id,
                 status=status_filter,
                 limit=limit,
+                include_quarantine=include_quarantine,
             ),
         }
 
@@ -298,6 +399,10 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         status_filter: str | None = Query(default=None, alias="status"),
         kind: str | None = Query(default=None),
         limit: int = Query(default=100, ge=1, le=10_000),
+        include_quarantine: bool = Query(
+            default=False,
+            description="Include cards backed by quarantined candidates for audit/debugging",
+        ),
     ) -> dict[str, Any]:
         return {
             "cards": card_store.list_cards(
@@ -306,6 +411,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
                 status=status_filter,
                 kind=kind,
                 limit=limit,
+                include_quarantine=include_quarantine,
             )
         }
 
@@ -343,11 +449,20 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         q: str = Query(min_length=1, max_length=500),
         task_id: str | None = Query(default=None),
         limit: int = Query(default=20, ge=1, le=200),
+        include_quarantine: bool = Query(
+            default=False,
+            description="Include quarantined candidates for audit/debugging",
+        ),
     ) -> dict[str, Any]:
         return {
             "query": q,
             "task_id": task_id,
-            "results": extraction_store.search(q, task_id=task_id, limit=limit),
+            "results": extraction_store.search(
+                q,
+                task_id=task_id,
+                limit=limit,
+                include_quarantine=include_quarantine,
+            ),
         }
 
     # Keep the static ``search`` path above the dynamic candidate path. Starlette
@@ -377,9 +492,20 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     async def graph(
         task_id: str | None = Query(default=None),
         limit: int = Query(default=300, ge=20, le=2000),
+        include_quarantine: bool = Query(
+            default=False,
+            description="Include quarantined candidate/card nodes for audit/debugging",
+        ),
     ) -> dict[str, Any]:
-        graph_payload = extraction_store.graph(task_id=task_id, limit=limit)
-        return card_store.extend_graph(graph_payload, task_id=task_id, limit=limit)
+        graph_payload = extraction_store.graph(
+            task_id=task_id, limit=limit, include_quarantine=include_quarantine
+        )
+        return card_store.extend_graph(
+            graph_payload,
+            task_id=task_id,
+            limit=limit,
+            include_quarantine=include_quarantine,
+        )
 
     @app.get("/v1/search")
     async def search(

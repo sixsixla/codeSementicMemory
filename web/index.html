@@ -34,11 +34,15 @@
           <div class="section-title"><span>候选记忆</span><span id="candidate-count" class="muted">0</span></div>
           <div id="candidate-list" class="candidate-list"><div class="empty">选择任务后加载</div></div>
         </div>
+        <div class="sidebar-section quality-section">
+          <div class="section-title"><span>持续质量门禁</span><span id="quality-version" class="muted">—</span></div>
+          <div id="quality-summary" class="quality-summary"><div class="empty">选择任务后加载</div></div>
+        </div>
         <div class="sidebar-foot"><span class="status-dot"></span><span id="connection-status">本地 API 未连接</span></div>
       </aside>
       <main class="main-panel">
         <header class="topbar">
-          <div><div class="eyebrow">PHASE 3 · VERSIONED CODING MEMORY</div><h1 id="page-title">记忆关系图</h1></div>
+          <div><div class="eyebrow">PHASE 4A · QUALITY-GATED CODING MEMORY</div><h1 id="page-title">记忆关系图</h1></div>
           <div class="top-actions"><button id="refresh-button" class="ghost">↻ 刷新</button><a href="/docs" target="_blank" class="ghost link-button">API 文档 ↗</a></div>
         </header>
         <section class="stats" aria-label="graph statistics">
@@ -46,6 +50,7 @@
           <div class="stat-card"><span>关系</span><strong id="edge-count">—</strong></div>
           <div class="stat-card accent"><span>记忆卡片</span><strong id="memory-count">—</strong></div>
           <div class="stat-card"><span>证据事件</span><strong id="event-count">—</strong></div>
+          <div class="stat-card quality-stat"><span>门禁通过 / 待审</span><strong id="quality-count">—</strong></div>
         </section>
         <section class="graph-card">
           <div class="graph-toolbar"><span><span class="live-dot"></span> SQLite projection · drag to orbit · click node for evidence</span><span id="graph-caption" class="muted"></span></div>

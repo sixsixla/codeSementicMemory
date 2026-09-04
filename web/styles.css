@@ -29,6 +29,14 @@ select:focus, input:focus { border-color: rgba(85, 214, 231, .75); box-shadow: 0
 .search-row button, .ghost { border: 1px solid var(--line); border-radius: 9px; background: rgba(255,255,255,.03); padding: 8px 11px; cursor: pointer; }
 .search-row button:hover, .ghost:hover { border-color: rgba(85,214,231,.5); background: rgba(85,214,231,.08); }
 .candidate-section { min-height: 0; flex: 1; }
+.quality-section { border-top: 1px solid var(--line); padding-top: 14px; }
+.quality-summary { display: flex; flex-direction: column; gap: 5px; }
+.quality-row { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
+.quality-row b { color: var(--text); font-weight: 600; }
+.quality-accepted { color: var(--green) !important; }
+.quality-review, .quality-legacy_unreviewed { color: var(--orange) !important; }
+.quality-quarantine { color: #ff718b !important; }
+.quality-mismatch { color: #f7a8ff !important; }
 .card-list { overflow: auto; display: flex; flex-direction: column; gap: 7px; max-height: 260px; padding-right: 2px; margin-bottom: 8px; }
 .card-item { border: 1px solid rgba(169,140,255,.35); border-radius: 9px; padding: 9px 10px; background: rgba(169,140,255,.09); cursor: pointer; }
 .card-item:hover, .card-item.selected { border-color: rgba(169,140,255,.9); background: rgba(169,140,255,.2); }
@@ -51,11 +59,12 @@ select:focus, input:focus { border-color: rgba(85, 214, 231, .75); box-shadow: 0
 h1 { margin: 7px 0 0; font-size: clamp(23px, 3vw, 34px); letter-spacing: -.03em; }
 .top-actions { display: flex; gap: 8px; }
 .link-button { text-decoration: none; }
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+.stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
 .stat-card { border: 1px solid var(--line); border-radius: 12px; background: rgba(14,20,32,.78); padding: 14px 16px; }
 .stat-card span { color: var(--muted); font-size: 11px; }
 .stat-card strong { display: block; margin-top: 6px; font-size: 22px; letter-spacing: -.03em; }
 .stat-card.accent strong { color: var(--violet); }
+.quality-stat strong { color: var(--green); font-size: 18px; }
 .graph-card, .detail-card { border: 1px solid var(--line); border-radius: 14px; background: linear-gradient(145deg, rgba(18,26,41,.9), rgba(11,16,27,.9)); overflow: hidden; }
 .graph-toolbar { display: flex; justify-content: space-between; gap: 10px; padding: 12px 15px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 11px; }
 .graph-container { position: relative; min-height: 560px; height: min(65vh, 700px); background: radial-gradient(circle at center, rgba(32,52,82,.34), rgba(5,8,15,.35) 68%); }

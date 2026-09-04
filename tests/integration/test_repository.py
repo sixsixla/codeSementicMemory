@@ -17,7 +17,7 @@ def test_migration_is_repeatable_and_wal(tmp_path):
     db.initialize()
     db.initialize()
     assert db.journal_mode() == "wal"
-    assert db.migration_version() == "0005_memory_cards.sql"
+    assert db.migration_version() == "0006_quality_gate.sql"
     assert db.integrity_check() == "ok"
 
 

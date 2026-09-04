@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-const state = { graph: null, tasks: [], selectedTask: "", selectedNode: null, nodeObjects: new Map(), scene: null, camera: null, renderer: null, controls: null, frame: 0 };
+const state = { graph: null, quality: null, tasks: [], selectedTask: "", selectedNode: null, nodeObjects: new Map(), scene: null, camera: null, renderer: null, controls: null, frame: 0 };
 const $ = (id) => document.getElementById(id);
 const colors = { card: 0xd8c9ff, memory: 0xa98cff, card_version: 0x8d7bbd, event: 0x55d6e7, file: 0xffb86b, symbol: 0x6ee7ad, task: 0xf3f4f6, session: 0x91a7ff };
 
@@ -30,11 +30,32 @@ async function loadGraph() {
   const graph = await requestJson(`/v1/graph${suffix}`);
   state.graph = graph;
   renderStats(graph);
+  await loadQuality();
   renderCards(state.selectedTask);
   renderCandidates(state.selectedTask);
   renderGraph(graph);
   $("connection-status").textContent = "SQLite API 已连接";
   $("connection-status").previousElementSibling.classList.add("ok");
+}
+
+async function loadQuality() {
+  const suffix = state.selectedTask ? `?task_id=${encodeURIComponent(state.selectedTask)}` : "";
+  try {
+    const report = await requestJson(`/v1/quality/report${suffix}`);
+    state.quality = report;
+    const events = report.events || {}, candidates = report.candidates || {};
+    const accepted = (events.decisions?.accepted || 0) + (candidates.decisions?.accepted || 0);
+    const review = (events.decisions?.review || 0) + (candidates.decisions?.review || 0);
+    const quarantine = (events.decisions?.quarantine || 0) + (candidates.decisions?.quarantine || 0);
+    $("quality-count").textContent = `${accepted} / ${review}`;
+    $("quality-version").textContent = report.classifier_version || "gate";
+    const mismatches = (events.scope_mismatches || 0) + (candidates.scope_mismatches || 0);
+    $("quality-summary").innerHTML = `<div class="quality-row"><span>已评估事件</span><b>${events.evaluated || 0}/${events.total || 0}</b></div><div class="quality-row"><span>已审候选</span><b>${candidates.reviewed || 0}/${candidates.total || 0}</b></div><div class="quality-row"><span>隔离</span><b class="quality-quarantine">${quarantine}</b></div><div class="quality-row"><span>跨项目引用</span><b class="quality-mismatch">${mismatches}</b></div>`;
+  } catch (error) {
+    state.quality = null;
+    $("quality-count").textContent = "—";
+    $("quality-summary").innerHTML = `<div class="empty">质量报告读取失败：${escapeHtml(error.message)}</div>`;
+  }
 }
 
 async function renderCards(taskId) {
@@ -53,7 +74,8 @@ async function renderCards(taskId) {
       const item = document.createElement("div");
       item.className = "card-item";
       item.dataset.node = `card:${card.card_id}`;
-      item.innerHTML = `<strong>${escapeHtml(card.statement || card.card_id)}</strong><small><span>${escapeHtml(card.status)} · ${escapeHtml(card.kind)}</span><span>${Math.round(card.confidence * 100)}%</span></small>`;
+      const quality = card.quality?.decision || "legacy_unreviewed";
+      item.innerHTML = `<strong>${escapeHtml(card.statement || card.card_id)}</strong><small><span>${escapeHtml(card.status)} · ${escapeHtml(card.kind)}</span><span class="quality-${escapeHtml(quality)}">${escapeHtml(quality)} · ${Math.round(card.confidence * 100)}%</span></small>`;
       item.addEventListener("click", () => selectNode(`card:${card.card_id}`));
       list.append(item);
     }
@@ -72,7 +94,8 @@ async function renderCandidates(taskId) {
     if (!memories.length) { list.innerHTML = '<div class="empty">还没有候选记忆。运行 <code>codememory extract</code> 后刷新。</div>'; return; }
     for (const memory of memories) {
       const item = document.createElement("div"); item.className = "candidate-item"; item.dataset.node = `candidate:${memory.candidate_id}`;
-      item.innerHTML = `<strong>${escapeHtml(memory.statement)}</strong><small><span>${escapeHtml(memory.kind)}</span><span>${Math.round(memory.confidence * 100)}%</span></small>`;
+      const quality = memory.quality?.decision || "legacy_unreviewed";
+      item.innerHTML = `<strong>${escapeHtml(memory.statement)}</strong><small><span>${escapeHtml(memory.kind)}</span><span class="quality-${escapeHtml(quality)}">${escapeHtml(quality)} · ${Math.round(memory.confidence * 100)}%</span></small>`;
       item.addEventListener("click", () => selectNode(`candidate:${memory.candidate_id}`));
       list.append(item);
     }

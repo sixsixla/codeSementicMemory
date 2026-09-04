@@ -23,6 +23,7 @@ from .extraction.providers import provider_from_name
 from .history.codex import CodexHistoryImporter
 from .ingest.service import IngestService, replay_jsonl
 from .maintenance import ProjectionMaintenance
+from .quality.service import QualityService
 from .storage.database import Database
 from .storage.repository import ConflictError, MemoryRepository
 from .workers.extraction import ExtractionWorker
@@ -114,13 +115,13 @@ def build_parser() -> argparse.ArgumentParser:
 
     rebuild_memory = sub.add_parser(
         "rebuild-memory",
-        help="clear rebuildable candidate/card projections after a policy upgrade",
+        help="clear rebuildable candidate/card/quality projections after a policy upgrade",
     )
     rebuild_memory.add_argument("--db", help="database path")
     rebuild_memory.add_argument(
         "--yes",
         action="store_true",
-        help="confirm deleting only extraction/card projections (source events stay intact)",
+        help="confirm deleting only extraction/card/quality projections (source events stay intact)",
     )
 
     outbox = sub.add_parser("outbox", help="inspect or claim outbox jobs")
@@ -190,11 +191,66 @@ def build_parser() -> argparse.ArgumentParser:
     memories.add_argument("--task-id")
     memories.add_argument("--kind")
     memories.add_argument("--limit", type=int, default=100)
+    memories.add_argument(
+        "--include-quarantine",
+        action="store_true",
+        help="include quarantined candidate memories for audit",
+    )
 
     graph = sub.add_parser("graph", help="print the graph projection used by the web UI")
     graph.add_argument("--db", help="database path")
     graph.add_argument("--task-id")
     graph.add_argument("--limit", type=int, default=300)
+    graph.add_argument(
+        "--include-quarantine",
+        action="store_true",
+        help="include quarantined candidate/card nodes for audit",
+    )
+
+    quality_report = sub.add_parser(
+        "quality-report", help="show continuous quality-gate coverage and decisions"
+    )
+    quality_report.add_argument("--db", help="database path")
+    quality_report.add_argument("--project-id")
+    quality_report.add_argument("--task-id")
+    quality_report.add_argument("--logical-project-id")
+
+    quality_replay = sub.add_parser(
+        "quality-replay", help="re-evaluate events/candidates with the versioned quality gate"
+    )
+    quality_replay.add_argument("--db", help="database path")
+    quality_replay.add_argument("--project-id")
+    quality_replay.add_argument("--task-id")
+    quality_replay.add_argument("--logical-project-id")
+    quality_replay.add_argument("--limit", type=int, default=100_000)
+    quality_replay.add_argument(
+        "--write",
+        action="store_true",
+        help="persist evaluations and aliases (default previews them; the replay audit is still recorded)",
+    )
+
+    quality_projects = sub.add_parser(
+        "quality-projects", help="list logical projects and auditable raw-id aliases"
+    )
+    quality_projects.add_argument("--db", help="database path")
+    quality_projects.add_argument("--limit", type=int, default=1000)
+
+    project_alias = sub.add_parser(
+        "project-alias", help="attach a reviewed raw project id to a logical project"
+    )
+    project_alias.add_argument("--db", help="database path")
+    project_alias.add_argument("--raw-project-id", required=True)
+    project_alias.add_argument("--logical-project-id", required=True)
+    project_alias.add_argument("--alias-value", required=True)
+    project_alias.add_argument(
+        "--alias-type",
+        choices=["root", "repo", "basename", "explicit", "inferred"],
+        default="explicit",
+    )
+    project_alias.add_argument("--normalized-root", default="")
+    project_alias.add_argument("--confidence", type=float, default=1.0)
+    project_alias.add_argument("--evidence-json", default="{}")
+    project_alias.add_argument("--display-name")
 
     consolidate = sub.add_parser("consolidate", help="promote candidate memories into versioned cards")
     consolidate.add_argument("--db", help="database path")
@@ -210,6 +266,11 @@ def build_parser() -> argparse.ArgumentParser:
     cards.add_argument("--status")
     cards.add_argument("--kind")
     cards.add_argument("--limit", type=int, default=100)
+    cards.add_argument(
+        "--include-quarantine",
+        action="store_true",
+        help="include cards backed by quarantined candidates for audit",
+    )
 
     card = sub.add_parser("card", help="inspect or transition one memory card")
     card_sub = card.add_subparsers(dest="card_command", required=True)
@@ -513,7 +574,10 @@ def main(argv: list[str] | None = None) -> int:
                 {
                     "task_id": args.task_id,
                     "memories": store.list_candidates(
-                        task_id=args.task_id, kind=args.kind, limit=args.limit
+                        task_id=args.task_id,
+                        kind=args.kind,
+                        limit=args.limit,
+                        include_quarantine=args.include_quarantine,
                     ),
                 }
             )
@@ -538,6 +602,7 @@ def main(argv: list[str] | None = None) -> int:
                         status=args.status,
                         kind=args.kind,
                         limit=args.limit,
+                        include_quarantine=args.include_quarantine,
                     )
                 }
             )
@@ -567,8 +632,66 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
         if args.command == "graph":
             database, repository, _ = _service(path)
-            graph_payload = ExtractionStore(database).graph(task_id=args.task_id, limit=args.limit)
-            _print(CardStore(database).extend_graph(graph_payload, task_id=args.task_id, limit=args.limit))
+            graph_payload = ExtractionStore(database).graph(
+                task_id=args.task_id,
+                limit=args.limit,
+                include_quarantine=args.include_quarantine,
+            )
+            _print(
+                CardStore(database).extend_graph(
+                    graph_payload,
+                    task_id=args.task_id,
+                    limit=args.limit,
+                    include_quarantine=args.include_quarantine,
+                )
+            )
+            return 0
+        if args.command == "quality-report":
+            _, repository, _ = _service(path)
+            quality = QualityService(repository)
+            _print(
+                quality.report(
+                    project_id=args.project_id,
+                    task_id=args.task_id,
+                    logical_project_id_value=args.logical_project_id,
+                )
+            )
+            return 0
+        if args.command == "quality-replay":
+            _, repository, _ = _service(path)
+            result = QualityService(repository).replay(
+                project_id=args.project_id,
+                task_id=args.task_id,
+                logical_project_id_value=args.logical_project_id,
+                limit=args.limit,
+                write=args.write,
+            )
+            _print(result.as_dict())
+            return 0
+        if args.command == "quality-projects":
+            _, repository, _ = _service(path)
+            _print({"projects": QualityService(repository).store.list_logical_projects(limit=args.limit)})
+            return 0
+        if args.command == "project-alias":
+            _, repository, _ = _service(path)
+            try:
+                evidence = json.loads(args.evidence_json)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"--evidence-json must be a JSON object: {exc}") from exc
+            if not isinstance(evidence, dict):
+                raise ValueError("--evidence-json must decode to an object")
+            _print(
+                QualityService(repository).register_project_alias(
+                    raw_project_id=args.raw_project_id,
+                    logical_project_id=args.logical_project_id,
+                    alias_value=args.alias_value,
+                    alias_type=args.alias_type,
+                    normalized_root=args.normalized_root,
+                    confidence=args.confidence,
+                    evidence=evidence,
+                    display_name=args.display_name,
+                )
+            )
             return 0
         if args.command == "serve":
             import uvicorn

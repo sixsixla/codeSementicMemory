@@ -889,6 +889,21 @@ class MemoryRepository:
                 "consolidation_decisions": int(
                     conn.execute("SELECT COUNT(*) FROM consolidation_decisions").fetchone()[0]
                 ),
+                "event_quality_evaluations": int(
+                    conn.execute("SELECT COUNT(*) FROM event_quality_evaluations").fetchone()[0]
+                ),
+                "candidate_quality_reviews": int(
+                    conn.execute("SELECT COUNT(*) FROM candidate_quality_reviews").fetchone()[0]
+                ),
+                "logical_projects": int(
+                    conn.execute("SELECT COUNT(*) FROM logical_projects").fetchone()[0]
+                ),
+                "project_aliases": int(
+                    conn.execute("SELECT COUNT(*) FROM project_aliases").fetchone()[0]
+                ),
+                "quality_runs": int(
+                    conn.execute("SELECT COUNT(*) FROM quality_runs").fetchone()[0]
+                ),
             }
             unresolved_parents = int(
                 conn.execute(

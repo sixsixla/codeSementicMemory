@@ -208,6 +208,77 @@ class CardStore:
             "aliases": _value(row["aliases_json"], []) if row["aliases_json"] is not None else [],
         }
 
+    @staticmethod
+    def _card_quality(conn: sqlite3.Connection, card_id: str) -> dict[str, Any]:
+        """Summarize source-candidate gate decisions without changing cards."""
+
+        rows = conn.execute(
+            "SELECT q.decision,q.quality_score,q.reasons_json,q.classifier_version "
+            "FROM candidate_quality_reviews q "
+            "JOIN memory_card_evidence e ON e.candidate_id=q.candidate_id "
+            "JOIN memory_card_versions v ON v.card_version_id=e.card_version_id "
+            "WHERE v.card_id=?",
+            (card_id,),
+        ).fetchall()
+        if not rows:
+            return {
+                "decision": "legacy_unreviewed",
+                "reviewed_candidates": 0,
+                "scores": [],
+                "reasons": [],
+                "classifier_versions": [],
+            }
+        decisions = {str(row["decision"]) for row in rows}
+        decision = (
+            "quarantine"
+            if "quarantine" in decisions
+            else "review"
+            if "review" in decisions
+            else "accepted"
+        )
+        reasons: list[str] = []
+        for row in rows:
+            try:
+                values = json.loads(str(row["reasons_json"] or "[]"))
+            except (TypeError, json.JSONDecodeError):
+                values = []
+            for reason in values if isinstance(values, list) else []:
+                text = str(reason)
+                if text and text not in reasons:
+                    reasons.append(text)
+                if len(reasons) >= 12:
+                    break
+            if len(reasons) >= 12:
+                break
+        return {
+            "decision": decision,
+            "reviewed_candidates": len(rows),
+            "scores": [float(row["quality_score"]) for row in rows],
+            "reasons": reasons,
+            "classifier_versions": sorted({str(row["classifier_version"]) for row in rows}),
+        }
+
+    @staticmethod
+    def _quality_visibility_clause(
+        *, card_alias: str = "c", include_quarantine: bool = False
+    ) -> str:
+        """Return the default card visibility guard.
+
+        Quality is a side projection, so legacy cards without a review remain
+        visible (and are labelled ``legacy_unreviewed``).  Only an explicit
+        quarantine review hides a card from normal listing/search/graph
+        results.  Callers that are auditing history can opt in to all cards.
+        """
+
+        if include_quarantine:
+            return ""
+        return (
+            "NOT EXISTS (SELECT 1 FROM memory_card_evidence qce "
+            "JOIN memory_card_versions qcv ON qcv.card_version_id=qce.card_version_id "
+            "JOIN candidate_quality_reviews qcr ON qcr.candidate_id=qce.candidate_id "
+            f"WHERE qcv.card_id={card_alias}.card_id AND qcr.decision='quarantine')"
+        )
+
     def list_cards(
         self,
         *,
@@ -216,6 +287,7 @@ class CardStore:
         status: str | None = None,
         kind: str | None = None,
         limit: int = 100,
+        include_quarantine: bool = False,
     ) -> list[dict[str, Any]]:
         clauses: list[str] = []
         params: list[Any] = []
@@ -238,6 +310,11 @@ class CardStore:
                 raise ValueError(f"unknown card kind: {kind}")
             clauses.append("c.kind=?")
             params.append(kind)
+        quality_clause = self._quality_visibility_clause(
+            card_alias="c", include_quarantine=include_quarantine
+        )
+        if quality_clause:
+            clauses.append(quality_clause)
         where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
         limit = max(1, min(int(limit), 10_000))
         with self.db.connection() as conn:
@@ -248,7 +325,12 @@ class CardStore:
                 f"{where} ORDER BY c.updated_at DESC, c.card_id LIMIT ?",
                 (*params, limit),
             ).fetchall()
-            return [self._card_summary(row) for row in rows]
+            result = []
+            for row in rows:
+                summary = self._card_summary(row)
+                summary["quality"] = self._card_quality(conn, summary["card_id"])
+                result.append(summary)
+            return result
 
     def get_card(self, card_id: str) -> dict[str, Any] | None:
         with self.db.connection() as conn:
@@ -270,6 +352,7 @@ class CardStore:
                 "created_at": str(row["created_at"]),
                 "updated_at": str(row["updated_at"]),
             }
+            summary["quality"] = self._card_quality(conn, card_id)
             versions = [
                 self._version_from_row(version, conn)
                 for version in conn.execute(
@@ -343,6 +426,7 @@ class CardStore:
         task_id: str | None = None,
         status: str | None = None,
         limit: int = 20,
+        include_quarantine: bool = False,
     ) -> list[dict[str, Any]]:
         query = query.strip()
         if not query:
@@ -366,6 +450,11 @@ class CardStore:
                 raise ValueError(f"unknown card status: {status}")
             clauses.append("c.status=?")
             params.append(status)
+        quality_clause = self._quality_visibility_clause(
+            card_alias="c", include_quarantine=include_quarantine
+        )
+        if quality_clause:
+            clauses.append(quality_clause)
         suffix = (" AND " + " AND ".join(clauses)) if clauses else ""
         params.append(limit)
         with self.db.connection() as conn:
@@ -417,6 +506,8 @@ class CardStore:
                     )
                 if status:
                     extra += " AND c.status=?"
+                if quality_clause:
+                    extra += " AND " + quality_clause
                 rows = conn.execute(
                     "SELECT c.*, v.version_no, v.statement, v.aliases_json "
                     "FROM memory_cards c LEFT JOIN memory_card_versions v ON v.card_version_id=c.current_version_id "
@@ -424,7 +515,12 @@ class CardStore:
                     + " ORDER BY c.updated_at DESC LIMIT ?",
                     tuple(fallback_params),
                 ).fetchall()
-            return [self._card_summary(row) for row in rows]
+            result = []
+            for row in rows:
+                summary = self._card_summary(row)
+                summary["quality"] = self._card_quality(conn, summary["card_id"])
+                result.append(summary)
+            return result
 
     # ---- transactional write helpers used by ConsolidationService ----
 
@@ -758,6 +854,7 @@ class CardStore:
         *,
         task_id: str | None = None,
         limit: int = 300,
+        include_quarantine: bool = False,
     ) -> dict[str, Any]:
         """Add card/version/binding nodes to the existing candidate graph."""
 
@@ -786,12 +883,17 @@ class CardStore:
             where = ""
             if task_id:
                 where = (
-                    "WHERE c.task_id=? OR EXISTS (SELECT 1 FROM memory_card_versions ev "
+                    "WHERE (c.task_id=? OR EXISTS (SELECT 1 FROM memory_card_versions ev "
                     "JOIN memory_card_evidence ce ON ce.card_version_id=ev.card_version_id "
                     "JOIN memory_candidates mc ON mc.candidate_id=ce.candidate_id "
-                    "WHERE ev.card_id=c.card_id AND mc.task_id=?)"
+                    "WHERE ev.card_id=c.card_id AND mc.task_id=?))"
                 )
                 params.extend([task_id, task_id])
+            quality_clause = self._quality_visibility_clause(
+                card_alias="c", include_quarantine=include_quarantine
+            )
+            if quality_clause:
+                where = (where + " AND " if where else "WHERE ") + quality_clause
             cards = conn.execute(
                 "SELECT c.*,v.version_no,v.statement,v.aliases_json "
                 "FROM memory_cards c LEFT JOIN memory_card_versions v ON v.card_version_id=c.current_version_id "
@@ -811,6 +913,7 @@ class CardStore:
                     confidence=float(card["confidence"]),
                     version_no=int(card["version_no"]) if card["version_no"] is not None else None,
                     aliases=_value(card["aliases_json"], []),
+                    quality=self._card_quality(conn, cid),
                 )
                 if card["task_id"]:
                     task_node = f"task:{card['task_id']}"

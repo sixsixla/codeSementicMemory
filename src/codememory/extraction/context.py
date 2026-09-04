@@ -53,11 +53,13 @@ class ContextAssembler:
         self,
         repository: MemoryRepository,
         *,
+        quality_service: Any | None = None,
         max_events: int = 500,
         max_chars: int = 120_000,
         max_event_chars: int = 12_000,
     ) -> None:
         self.repository = repository
+        self.quality_service = quality_service
         self.max_events = max(1, min(int(max_events), 5000))
         self.max_chars = max(1000, min(int(max_chars), 2_000_000))
         self.max_event_chars = max(200, min(int(max_event_chars), 100_000))
@@ -156,6 +158,20 @@ class ContextAssembler:
                 truncated = True
             projections.append(self._event_projection(event, text))
 
+        if self.quality_service is not None:
+            for projection in projections:
+                event_id = str(projection.get("event_id") or "")
+                if not event_id:
+                    continue
+                quality = self.quality_service.event_quality(event_id)
+                if quality is not None:
+                    projection["quality"] = {
+                        "role": quality.get("role"),
+                        "decision": quality.get("decision"),
+                        "signal_score": quality.get("signal_score"),
+                        "classifier_version": quality.get("classifier_version"),
+                    }
+
         # Keep both sides of a bounded window when a few verbose assistant
         # messages exhaust the character budget.  The head and tail budgets
         # are independent; omitted middle records remain represented by the
@@ -220,7 +236,14 @@ class ContextAssembler:
             "project_id": project_id,
             "task_id": task_id,
             "session_id": effective_session_id,
-            "events": selected,
+            # Quality labels are an explainability overlay.  They are
+            # deliberately excluded from the extraction input fingerprint so
+            # backfilling the Phase 4A projection cannot create a spurious
+            # second extraction run for unchanged canonical events.
+            "events": [
+                {key: value for key, value in item.items() if key != "quality"}
+                for item in selected
+            ],
             "truncated": truncated,
         }
         input_hash = hashlib.sha256(json_text(canonical).encode("utf-8")).hexdigest()

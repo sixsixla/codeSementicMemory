@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -11,21 +12,43 @@ from pydantic import ValidationError
 
 from ..adapters import FixtureAdapter
 from ..domain.events import EventEnvelope
+from ..quality.service import QualityService
 from ..storage.repository import ConflictError, IngestResult, MemoryRepository
 from .redaction import redact_event
+
+
+logger = logging.getLogger(__name__)
 
 
 class IngestService:
     """Validate, redact, and persist events through one canonical path."""
 
-    def __init__(self, repository: MemoryRepository):
+    def __init__(
+        self,
+        repository: MemoryRepository,
+        *,
+        quality_service: QualityService | None = None,
+    ):
         self.repository = repository
+        # Quality is a post-commit projection: a malformed classifier can
+        # never roll back canonical facts, while every normal ingress path
+        # still receives an evaluation before the caller continues.
+        self.quality_service = quality_service or QualityService(repository)
 
     def ingest(self, event: EventEnvelope | dict[str, Any]) -> IngestResult:
         normalized = (
             event if isinstance(event, EventEnvelope) else EventEnvelope.model_validate(event)
         )
-        return self.repository.ingest(redact_event(normalized))
+        result = self.repository.ingest(redact_event(normalized))
+        if result.status in {"accepted", "duplicate"}:
+            try:
+                self.quality_service.evaluate_event_id(result.event_id)
+            except Exception:
+                # Quality is an additive projection.  A classifier/database
+                # hiccup must not turn an already-committed canonical event
+                # into an apparent ingest failure; the next replay repairs it.
+                logger.exception("quality evaluation failed for event %s", result.event_id)
+        return result
 
     def ingest_many(
         self, events: Iterable[EventEnvelope | dict[str, Any]], *, atomic: bool = True
@@ -36,7 +59,24 @@ class IngestService:
             )
             for event in events
         ]
-        return self.repository.ingest_many(normalized, atomic=atomic)
+        results = self.repository.ingest_many(normalized, atomic=atomic)
+        if results:
+            # Evaluate the normalized envelopes directly in one projection
+            # batch.  Looking every id back up and opening a transaction per
+            # event makes a 10k-event replay needlessly expensive.
+            by_id = {event.event_id: event for event in normalized}
+            events = [
+                event.canonical_dict()
+                for result in results
+                if result.status in {"accepted", "duplicate"}
+                for event in [by_id.get(result.event_id)]
+                if event is not None
+            ]
+            try:
+                self.quality_service.evaluate_events(events)
+            except Exception:
+                logger.exception("quality evaluation failed for ingest batch (%d events)", len(events))
+        return results
 
 
 @dataclass
