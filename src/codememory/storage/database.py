@@ -6,6 +6,7 @@ import sqlite3
 import os
 import tempfile
 import sys
+import threading
 from contextlib import closing, contextmanager
 from pathlib import Path
 from typing import Iterator
@@ -23,6 +24,13 @@ class Database:
         self.migrations_dir = (
             Path(migrations_dir) if migrations_dir else self._default_migrations_dir()
         )
+        # A long extraction replay may call ``ensure_initialized`` once per
+        # task.  Migrations are immutable for the lifetime of a Database
+        # instance, so cache the successful check while retaining a lock for
+        # concurrent API/worker callers.  This removes thousands of redundant
+        # filesystem reads without changing migration semantics.
+        self._initialized = False
+        self._initialize_lock = threading.Lock()
 
     @staticmethod
     def _default_migrations_dir() -> Path:
@@ -113,7 +121,12 @@ class Database:
     def ensure_initialized(self) -> None:
         # initialize() is idempotent and also repairs a database left between
         # migrations after a process interruption.
-        self.initialize()
+        if self._initialized:
+            return
+        with self._initialize_lock:
+            if not self._initialized:
+                self.initialize()
+                self._initialized = True
 
     def migration_version(self) -> str | None:
         self.ensure_initialized()
@@ -123,10 +136,24 @@ class Database:
             ).fetchone()
             return str(row[0]) if row else None
 
-    def integrity_check(self) -> str:
+    def integrity_check(self, *, deep: bool = False) -> str:
+        """Run a bounded health check (or the optional full check).
+
+        ``PRAGMA integrity_check`` scans every index/table and becomes
+        prohibitively slow for a large local history archive.  The default
+        ``quick_check`` is suitable for request-path health probes; operators
+        can request the exhaustive scan with ``deep=True`` during maintenance.
+        """
+
         self.ensure_initialized()
         with self.connection() as conn:
-            return str(conn.execute("PRAGMA integrity_check").fetchone()[0])
+            pragma = "integrity_check" if deep else "quick_check"
+            return str(conn.execute(f"PRAGMA {pragma}").fetchone()[0])
+
+    def deep_integrity_check(self) -> str:
+        """Run SQLite's exhaustive integrity scan explicitly."""
+
+        return self.integrity_check(deep=True)
 
     def journal_mode(self) -> str:
         with self.connection() as conn:

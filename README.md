@@ -2,9 +2,13 @@
 
 CodeSementicMemory is a local, SQLite-first long-term memory core specialized for coding agents and vibe-coding workflows. The repository name keeps the original `codeSementicMemory` spelling; the Python package and CLI are named `codememory`.
 
-The first-round product is intentionally below the LLM layer. It captures trustworthy coding evidence through a stable event contract, persists it idempotently, and creates durable outbox work for the extraction/consolidation layer that will follow.
+The canonical store remains below the LLM layer, while the repository now also
+contains an offline-first Phase 2A/3 extraction and consolidation slice. It
+captures trustworthy coding evidence through a stable event contract, persists
+it idempotently, extracts auditable candidate memories, and exposes their
+evidence graph locally.
 
-## First-round status
+## Current status (Phase 0–1 + Phase 2A + Phase 3)
 
 Implemented:
 
@@ -16,14 +20,28 @@ Implemented:
 - Shared ingest service used by localhost HTTP and JSONL replay.
 - Timeline, FTS search, health/doctor, backup, and outbox inspection/lease operations.
 - Seven deterministic coding-session fixtures (including six minimal edge-case streams) and automated unit/integration tests.
+- Strict `codememory.extraction_batch.v1` models and evidence-closed candidate validation.
+- Deterministic `MockLLMProvider`, idempotent `extraction_runs`, candidate memory rows, and rebuildable candidate FTS.
+- A bounded Codex history importer; the three authorized seed threads are captured in [`fixtures/codex-history/selected-threads.json`](fixtures/codex-history/selected-threads.json) with `partial` provenance.
+- An outbox extraction worker and CLI commands for importing history, extracting a task, listing memories, and printing the graph projection.
+- A local Three.js 3D graph inspector served by the same localhost API.
+- Versioned memory cards with deterministic merge/new-version decisions, evidence and binding links, lifecycle audit, and rebuildable card FTS.
+- A coding-focused offline extractor that suppresses empty/admin noise and distinguishes modified-file evidence from context hints.
+- Bounded replay of the complete locally indexed visible Codex history export, with source-time ordering, host-block filtering, and partial provenance.
+
+The local replay database is an external runtime artifact, not a checked-in
+fixture. The 2026-09-04 delivery replayed 2,573 indexed visible threads into
+54,684 canonical events; the first extraction pass covered 1,082 tasks and a
+follow-up replay covered one additional task, for 1,083 successful runs in
+total. The database contains 2,304 candidates / 1,798 proposed cards.
+Remaining imported tasks can be resumed with `extract-all` in bounded batches.
 
 Not in this round:
 
-- LLM memory-card extraction and consolidation.
-- Card/entity/relation lifecycle and code-snapshot validation.
+- AST/LSP or live CodebaseMemory code-snapshot validation of paths and symbols.
 - Embedding/vector projection.
 - Codex Desktop or other agent adapters.
-- Web/3D graph visualization.
+- Production web hosting, authentication, and a production-grade graph layout.
 
 These remain separate layers; they do not require replacing the event store.
 
@@ -36,7 +54,11 @@ flowchart LR
     C --> D[(SQLite WAL<br/>events and entities)]
     D --> E[Durable outbox]
     D --> F[Timeline and FTS search]
-    E --> G[Future extraction and consolidation worker]
+    E --> G[Phase 2A extraction worker]
+    G --> H[(Candidate memories + evidence links)]
+    H --> I[Phase 3 deterministic consolidator]
+    I --> J[(Versioned cards + lifecycle audit)]
+    J --> K[Local 3D graph inspector]
 ```
 
 HTTP, CLI replay, and future adapters all enter through the same `IngestService`. Ingestion never waits for an LLM, embedding model, or downstream worker.
@@ -61,13 +83,28 @@ $db = Join-Path $env:TEMP "codememory-demo.sqlite3"
 .venv\Scripts\codememory export backup.jsonl --db $db --task-id task-npc-share
 ```
 
+Run the offline Phase 2A sample with the selected local Codex history:
+
+```powershell
+$history = "fixtures/codex-history/selected-threads.json"
+.venv\Scripts\codememory import-codex-history $history --db $db
+.venv\Scripts\codememory extract codex-thread:01a00f1c-1f03-7b01-9b94-e661258dde04 --db $db
+.venv\Scripts\codememory memories --db $db --task-id codex-thread:01a00f1c-1f03-7b01-9b94-e661258dde04
+.venv\Scripts\codememory graph --db $db --task-id codex-thread:01a00f1c-1f03-7b01-9b94-e661258dde04
+.venv\Scripts\codememory consolidate --db $db --task-id codex-thread:01a00f1c-1f03-7b01-9b94-e661258dde04
+.venv\Scripts\codememory cards --db $db --task-id codex-thread:01a00f1c-1f03-7b01-9b94-e661258dde04
+```
+
+For a larger local history replay, keep the raw export outside Git and use the
+bounded run described in [`src/codememory/docs/phase3-delivery.md`](src/codememory/docs/phase3-delivery.md).
+
 Run the localhost API:
 
 ```powershell
 .venv\Scripts\codememory serve --db $db --host 127.0.0.1 --port 8765
 ```
 
-Interactive API documentation is then available at `http://127.0.0.1:8765/docs`.
+Open `http://127.0.0.1:8765/` for the local 3D graph inspector. Interactive API documentation is available at `http://127.0.0.1:8765/docs`.
 
 If `--db` is omitted, the path is resolved from `CODEMEMORY_DB`, then `CODEMEMORY_DATA_DIR`, then the platform-local application data directory.
 
@@ -82,15 +119,27 @@ If `--db` is omitted, the path is resolved from `CODEMEMORY_DB`, then `CODEMEMOR
 | `GET` | `/v1/tasks/{task_id}/timeline` | Inspect the ordered evidence timeline |
 | `GET` | `/v1/search?q=...` | Query the rebuildable FTS5 projection |
 | `GET` | `/v1/outbox` | Inspect durable downstream jobs |
-| `POST` | `/v1/outbox/claim` | Lease jobs for a future extractor worker |
+| `POST` | `/v1/outbox/claim` | Lease jobs for the extraction worker |
 | `POST` | `/v1/outbox/{job_id}/complete` | Acknowledge a leased job |
 | `POST` | `/v1/outbox/{job_id}/fail` | Retry or dead-letter a leased job |
+| `GET` | `/v1/tasks` | List tasks for the graph inspector |
+| `GET` | `/v1/tasks/{task_id}/memories` | List candidate memories and bindings |
+| `GET` | `/v1/tasks/{task_id}/extraction-runs` | Inspect extraction attempts and hashes |
+| `GET` | `/v1/memories/{candidate_id}` | Inspect one candidate and bounded source excerpts |
+| `POST` | `/v1/tasks/{task_id}/extract` | Run the offline mock extractor (explicit worker call) |
+| `GET` | `/v1/memories/search?q=...` | Search candidate-memory FTS |
+| `POST` | `/v1/tasks/{task_id}/consolidate` | Merge task candidates into versioned cards |
+| `GET` | `/v1/cards` | List versioned cards with status/task/kind filters |
+| `GET` | `/v1/cards/search?q=...` | Search current card statements, aliases, and bindings |
+| `GET` | `/v1/cards/{card_id}` | Inspect versions, evidence, links, decisions, and lifecycle |
+| `POST` | `/v1/cards/{card_id}/transition` | Apply an audited lifecycle transition |
+| `GET` | `/v1/graph` | Return bounded nodes/edges for the 3D UI |
 
 An accepted event returns HTTP `201`; an exact duplicate returns `200` and the original outbox id; a reused identity with changed content returns `409`.
 
 ## Event contract
 
-The human-readable JSON Schema is at [`schemas/codememory.event.v1.json`](schemas/codememory.event.v1.json). Protocol notes are in [`src/codememory/docs/event-protocol.md`](src/codememory/docs/event-protocol.md); the executable Pydantic contract is `codememory.domain.events.EventEnvelope`. The future extraction boundary is described in [`src/codememory/docs/extraction-contract.md`](src/codememory/docs/extraction-contract.md).
+The human-readable JSON Schema is at [`schemas/codememory.event.v1.json`](schemas/codememory.event.v1.json). Protocol notes are in [`src/codememory/docs/event-protocol.md`](src/codememory/docs/event-protocol.md); the executable Pydantic contract is `codememory.domain.events.EventEnvelope`. The Phase 2A extraction boundary is described in [`src/codememory/docs/extraction-contract.md`](src/codememory/docs/extraction-contract.md).
 
 The envelope keeps stable routing fields at the top level and adapter-specific information inside `context` or `payload`:
 
@@ -141,7 +190,7 @@ Parent links are allowed to arrive out of order. They are indexed but intentiona
 - `codememory export` emits canonical JSON/JSONL envelopes for migration and an additional human-readable backup path.
 - Downstream jobs support claim leases, expired-lease recovery, exponential retry, completion, and dead-letter status.
 - Raw coding events are append-only through the public repository API. Search is a projection and can be rebuilt later.
-- The current built-in redactor removes common API key, token, authorization, password, and `sk-...` patterns from payloads and artifact metadata before storage.
+- The current built-in redactor removes common API key, token, authorization, password, and `sk-...` patterns from payloads and artifact metadata before storage. The implementation record for this round is in [`src/codememory/docs/phase2a-delivery.md`](src/codememory/docs/phase2a-delivery.md).
 
 ## Development and verification
 
@@ -151,14 +200,20 @@ py -m pytest -q
 
 The fixture `fixtures/route-success.jsonl` models a successful request-to-code route: user intent, searches, source reads, edits, validation, VCS revision, final answer, and session completion. Replaying it twice must produce 12 accepted events followed by 12 duplicates without adding rows or outbox jobs. The other streams in [`fixtures/index.json`](fixtures/index.json) cover partial input, failed validation, refactoring, feedback correction, and the smallest complete session; each has a checked-in expected result under `fixtures/expected/`.
 
-## Next implementation slice
+## Phase 2A/3 boundary and next slices
 
-The next phase consumes `event.ingested` outbox jobs and adds the coding-specific memory pipeline:
+Phase 2A consumes a task window (directly or through `event.ingested` jobs) and adds the coding-specific candidate pipeline:
 
 1. Task-window assembly from immutable events.
 2. Strict LLM candidate JSON for route observations, decisions, failures, conventions, and validation outcomes.
-3. Deterministic merge/link/version policy with provenance and confidence.
-4. Code-entity resolution against the current repository snapshot.
-5. Hybrid retrieval over structured filters, FTS, optional embeddings, and graph expansion.
+3. Deterministic candidate persistence/linking with provenance and confidence.
+4. A bounded local Codex history seed and graph inspection surface.
+5. Versioned card consolidation, evidence/binding relations, and guarded lifecycle transitions.
 
-The LLM and embedding providers will remain replaceable plugins; neither becomes the canonical store.
+The next planned slice is Phase 4: resolve paths and symbols against a selected
+Git/P4 snapshot and automatically mark bindings verified, missing, renamed, or
+stale. Embeddings/vector projections, MCP, and a native Codex adapter remain
+separate replaceable layers; none is required by the SQLite core.
+
+The complete implementation record, data-layer invariants, replay command, and
+verification boundary are in [`src/codememory/docs/phase3-delivery.md`](src/codememory/docs/phase3-delivery.md).

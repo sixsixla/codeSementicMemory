@@ -1,0 +1,184 @@
+{
+  "agent_runs": [],
+  "artifacts": {
+    "TaskContract": [
+      {
+        "artifact_id": "b328bf85-345f-4494-8638-1b4ff03fa72c",
+        "artifact_revision": 1,
+        "artifact_type": "TaskContract",
+        "data": {
+          "constraints": [
+            "SQLite remains the canonical fact store; FTS and graph tables are rebuildable projections.",
+            "Consolidation is deterministic by default and never gives an LLM direct stable-card write authority.",
+            "Candidate and card history is append-only; stale, superseded, rejected, and uncertain states remain queryable.",
+            "Only visible user, assistant, tool, command, file, and validation records may be imported; hidden reasoning and credentials are not persisted.",
+            "The complete local history export is processed outside the repository and is not committed as a raw archive.",
+            "No embedding/vector dependency, graph database, or private Codex database mutation is introduced in this slice."
+          ],
+          "goal": "Deliver the next coding-memory vertical slice: promote evidence-backed extraction candidates into versioned memory cards with relations and lifecycle states, add deterministic consolidation and inspection APIs/CLI, and ingest all locally indexed visible Codex history through a bounded replay path.",
+          "human_decisions_required": [],
+          "non_goals": [
+            "AST/LSP or live CodebaseMemory symbol verification (Phase 4).",
+            "Production MCP server and native Codex Desktop hook (Phase 5/7).",
+            "Cloud-hosted UI or authentication."
+          ],
+          "risk_profile": "T2",
+          "scope_allowlist": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md",
+            "pyproject.toml",
+            ".omx/state/**"
+          ],
+          "scope_forbidden": [
+            ".git/**",
+            ".venv/**",
+            "*.sqlite",
+            "*.sqlite3",
+            "*.db",
+            "data/**",
+            "build/**",
+            "dist/**"
+          ],
+          "stop_condition": "Stop after the card consolidation/lifecycle vertical slice, bounded complete-history import and extraction smoke, API/CLI/UI projection updates, regression verification, and explicit recording of remaining Phase 4+ gaps.",
+          "success_criteria": [
+            "Candidate rows remain immutable and can be consolidated idempotently into versioned cards with evidence, aliases, bindings, and auditable relation links.",
+            "Repeated observations merge without duplicate cards; changed bindings or contradictory observations create explicit versions/relations rather than silently overwriting history.",
+            "Every stable or proposed card is traceable to at least one canonical event and every stored binding retains its source evidence ids.",
+            "The importer can process the complete local Codex history export in bounded batches, preserve thread/cwd/source/completeness provenance, and safely replay duplicates.",
+            "Card listing, detail, history, relations, consolidation, and graph projection are available through the service layer, CLI, and REST API.",
+            "Existing tests plus new consolidation, lifecycle, bulk-history, API, and integrity tests pass; malformed provider data and failed consolidation do not damage canonical events or prior card versions."
+          ]
+        },
+        "owner": "delivery-lead",
+        "producer_home_state": "INTAKE",
+        "recorded_at": "2026-09-04T08:27:02+00:00",
+        "schema_version": "1.0"
+      }
+    ]
+  },
+  "assignments": [],
+  "created_at": "2026-09-04T08:27:02+00:00",
+  "entry_mode": "DELIVER",
+  "entry_provenance": {
+    "kind": "DIRECT_DELIVERY",
+    "owner": "delivery-lead",
+    "started_at": "2026-09-04T08:27:02+00:00"
+  },
+  "finalized_at": null,
+  "gate_ledger": [],
+  "lead": "delivery-lead",
+  "ledger_version": "1.0",
+  "orchestration_activation_state": "INTAKE",
+  "orchestration_contract_version": "2.0",
+  "orchestration_events": [
+    {
+      "actor": "workflow-core",
+      "artifact_id": "b328bf85-345f-4494-8638-1b4ff03fa72c",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "INTAKE",
+      "kind": "workflow.contract.registered",
+      "observed": {
+        "artifact": {
+          "artifact_id": "b328bf85-345f-4494-8638-1b4ff03fa72c",
+          "artifact_revision": 1,
+          "artifact_type": "TaskContract",
+          "data": {
+            "constraints": [
+              "SQLite remains the canonical fact store; FTS and graph tables are rebuildable projections.",
+              "Consolidation is deterministic by default and never gives an LLM direct stable-card write authority.",
+              "Candidate and card history is append-only; stale, superseded, rejected, and uncertain states remain queryable.",
+              "Only visible user, assistant, tool, command, file, and validation records may be imported; hidden reasoning and credentials are not persisted.",
+              "The complete local history export is processed outside the repository and is not committed as a raw archive.",
+              "No embedding/vector dependency, graph database, or private Codex database mutation is introduced in this slice."
+            ],
+            "goal": "Deliver the next coding-memory vertical slice: promote evidence-backed extraction candidates into versioned memory cards with relations and lifecycle states, add deterministic consolidation and inspection APIs/CLI, and ingest all locally indexed visible Codex history through a bounded replay path.",
+            "human_decisions_required": [],
+            "non_goals": [
+              "AST/LSP or live CodebaseMemory symbol verification (Phase 4).",
+              "Production MCP server and native Codex Desktop hook (Phase 5/7).",
+              "Cloud-hosted UI or authentication."
+            ],
+            "risk_profile": "T2",
+            "scope_allowlist": [
+              "src/**",
+              "tests/**",
+              "migrations/**",
+              "schemas/**",
+              "fixtures/**",
+              "web/**",
+              "README.md",
+              "pyproject.toml",
+              ".omx/state/**"
+            ],
+            "scope_forbidden": [
+              ".git/**",
+              ".venv/**",
+              "*.sqlite",
+              "*.sqlite3",
+              "*.db",
+              "data/**",
+              "build/**",
+              "dist/**"
+            ],
+            "stop_condition": "Stop after the card consolidation/lifecycle vertical slice, bounded complete-history import and extraction smoke, API/CLI/UI projection updates, regression verification, and explicit recording of remaining Phase 4+ gaps.",
+            "success_criteria": [
+              "Candidate rows remain immutable and can be consolidated idempotently into versioned cards with evidence, aliases, bindings, and auditable relation links.",
+              "Repeated observations merge without duplicate cards; changed bindings or contradictory observations create explicit versions/relations rather than silently overwriting history.",
+              "Every stable or proposed card is traceable to at least one canonical event and every stored binding retains its source evidence ids.",
+              "The importer can process the complete local Codex history export in bounded batches, preserve thread/cwd/source/completeness provenance, and safely replay duplicates.",
+              "Card listing, detail, history, relations, consolidation, and graph projection are available through the service layer, CLI, and REST API.",
+              "Existing tests plus new consolidation, lifecycle, bulk-history, API, and integrity tests pass; malformed provider data and failed consolidation do not damage canonical events or prior card versions."
+            ]
+          },
+          "owner": "delivery-lead",
+          "producer_home_state": "INTAKE",
+          "recorded_at": "2026-09-04T08:27:02+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "6c4106f9-38a4-4f1a-9217-f2085d5a3e9d",
+      "schema_version": 2,
+      "seq": 1,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T08:27:02+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "INTAKE",
+      "kind": "workflow.mode.selected",
+      "observed": {
+        "entry_mode": "DELIVER",
+        "entry_provenance": {
+          "kind": "DIRECT_DELIVERY",
+          "owner": "delivery-lead",
+          "started_at": "2026-09-04T08:27:02+00:00"
+        }
+      },
+      "run_id": "6c4106f9-38a4-4f1a-9217-f2085d5a3e9d",
+      "schema_version": 2,
+      "seq": 2,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T08:27:02+00:00"
+    }
+  ],
+  "orchestration_legacy_gate_count": 0,
+  "resume": null,
+  "revision": 0,
+  "state": "INTAKE",
+  "task_id": "6c4106f9-38a4-4f1a-9217-f2085d5a3e9d",
+  "tier": "T2",
+  "transitions": [],
+  "updated_at": "2026-09-04T08:27:02+00:00"
+}

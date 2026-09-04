@@ -145,7 +145,12 @@ class MemoryRepository:
             for value in (
                 event.payload,
                 event.context.model_dump(mode="json"),
-                [artifact.model_dump(mode="json") for artifact in event.artifacts],
+                [
+                    artifact.model_dump(mode="json")
+                    if hasattr(artifact, "model_dump")
+                    else dict(artifact)
+                    for artifact in event.artifacts
+                ],
             )
         )
         return " ".join(pieces)
@@ -187,7 +192,11 @@ class MemoryRepository:
         return digest, f"artifact-{digest[:32]}"
 
     def _prepare_artifact(self, event: EventEnvelope, artifact: Any) -> dict[str, Any]:
-        data = artifact.model_dump(mode="json")
+        data = (
+            artifact.model_dump(mode="json")
+            if hasattr(artifact, "model_dump")
+            else dict(artifact)
+        )
         digest, artifact_id = self._artifact_identity(event, artifact)
         metadata = dict(data.get("metadata") or {})
         content_bytes = self._artifact_bytes(data)
@@ -226,7 +235,11 @@ class MemoryRepository:
         stored_refs: list[dict[str, Any]] = []
         for ordinal, artifact in enumerate(event.artifacts):
             prepared = self._prepare_artifact(event, artifact)
-            stored_ref = artifact.model_dump(mode="json")
+            stored_ref = (
+                artifact.model_dump(mode="json")
+                if hasattr(artifact, "model_dump")
+                else dict(artifact)
+            )
             if stored_ref.get("content") is not None:
                 # Keep the event row a bounded reference. The artifact table
                 # owns the excerpt; raw content is never duplicated into the
@@ -264,6 +277,12 @@ class MemoryRepository:
         return links, stored_refs
 
     def _ensure_entities(self, conn: sqlite3.Connection, event: EventEnvelope, now: str) -> None:
+        # Entity timestamps describe the source activity, not the time a
+        # large replay happened.  Keeping the event time here makes task
+        # listing and recent-history selection useful after importing an old
+        # Codex archive, while ``ingested_at`` on the event still records when
+        # this process accepted it.
+        source_time = event.occurred_at.isoformat()
         existing_task = conn.execute(
             "SELECT project_id FROM tasks WHERE task_id=?", (event.task_id,)
         ).fetchone()
@@ -273,15 +292,15 @@ class MemoryRepository:
             )
         conn.execute(
             "INSERT INTO projects(project_id, name, created_at, updated_at) VALUES (?, ?, ?, ?) "
-            "ON CONFLICT(project_id) DO UPDATE SET updated_at=excluded.updated_at",
-            (event.project_id, event.project_id, now, now),
+            "ON CONFLICT(project_id) DO UPDATE SET updated_at=MAX(projects.updated_at, excluded.updated_at)",
+            (event.project_id, event.project_id, source_time, source_time),
         )
         title = self._task_title(event)
         conn.execute(
             "INSERT INTO tasks(task_id, project_id, title, status, created_at, updated_at) VALUES (?, ?, ?, 'active', ?, ?) "
             "ON CONFLICT(task_id) DO UPDATE SET project_id=excluded.project_id, "
-            "title=COALESCE(tasks.title, excluded.title), updated_at=excluded.updated_at",
-            (event.task_id, event.project_id, title, now, now),
+            "title=COALESCE(tasks.title, excluded.title), updated_at=MAX(tasks.updated_at, excluded.updated_at)",
+            (event.task_id, event.project_id, title, source_time, source_time),
         )
         repo_id = self._repo_id(event)
         if repo_id:
@@ -302,15 +321,15 @@ class MemoryRepository:
                 "INSERT INTO repositories(repo_id, project_id, root_path, vcs_type, remote_url, created_at, updated_at) "
                 "VALUES (?, ?, ?, ?, ?, ?, ?) "
                 "ON CONFLICT(repo_id) DO UPDATE SET project_id=excluded.project_id, root_path=excluded.root_path, "
-                "vcs_type=excluded.vcs_type, updated_at=excluded.updated_at",
+                "vcs_type=excluded.vcs_type, updated_at=MAX(repositories.updated_at, excluded.updated_at)",
                 (
                     repo_id,
                     event.project_id,
                     expected_root,
                     "p4" if context.p4_changelist else "git" if context.commit_id else "unknown",
                     None,
-                    now,
-                    now,
+                    source_time,
+                    source_time,
                 ),
             )
         if event.session_id:
@@ -453,7 +472,13 @@ class MemoryRepository:
             raise ConflictError("event violates a uniqueness or relationship constraint") from exc
 
         job_id = str(uuid.uuid4())
-        payload = {"event_id": event.event_id, "event_type": event.event_type.value}
+        payload = {
+            "event_id": event.event_id,
+            "event_type": event.event_type.value,
+            "project_id": event.project_id,
+            "task_id": event.task_id,
+            "session_id": event.session_id,
+        }
         conn.execute(
             "INSERT INTO outbox(job_id, job_type, aggregate_id, dedupe_key, payload_json, status, attempts, "
             "available_at, max_attempts, created_at, updated_at) VALUES (?, 'event.ingested', ?, ?, ?, 'pending', 0, ?, 8, ?, ?)",
@@ -557,6 +582,69 @@ class MemoryRepository:
                     (task_id, limit),
                 ).fetchall()
             return [self._event_from_row(row) for row in rows]
+
+    def list_tasks(
+        self,
+        *,
+        project_id: str | None = None,
+        limit: int = 1000,
+        updated_since: str | None = None,
+        min_events: int = 0,
+    ) -> list[dict[str, Any]]:
+        """List canonical tasks for bulk extraction and inspection."""
+
+        limit = max(1, min(int(limit), 100_000))
+        min_events = max(0, int(min_events))
+        with self.db.connection() as conn:
+            clauses: list[str] = []
+            params: list[Any] = []
+            if project_id:
+                clauses.append("t.project_id=?")
+                params.append(project_id)
+            if updated_since:
+                clauses.append("t.updated_at>=?")
+                params.append(updated_since)
+            if min_events:
+                clauses.append(
+                    "(SELECT COUNT(*) FROM events e WHERE e.task_id=t.task_id)>=?"
+                )
+                params.append(min_events)
+            where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+            rows = conn.execute(
+                "SELECT t.task_id,t.project_id,t.title,t.status,t.created_at,t.updated_at FROM tasks t "
+                f"{where} ORDER BY t.updated_at DESC, t.task_id LIMIT ?",
+                (*params, limit),
+            ).fetchall()
+            return [
+                {
+                    "task_id": str(row["task_id"]),
+                    "project_id": str(row["project_id"]),
+                    "title": row["title"],
+                    "status": str(row["status"]),
+                    "created_at": str(row["created_at"]),
+                    "updated_at": str(row["updated_at"]),
+                }
+                for row in rows
+            ]
+
+    def complete_outbox_for_task(self, task_id: str, *, job_type: str = "event.ingested") -> int:
+        """Acknowledge pending event jobs after a successful task-level run.
+
+        Bulk extraction operates once per task instead of once per event.  This
+        helper keeps the durable event outbox consistent without replaying the
+        same task thousands of times; leased jobs owned by another worker are
+        intentionally left untouched.
+        """
+
+        now = iso_now()
+        with self.db.transaction() as conn:
+            result = conn.execute(
+                "UPDATE outbox SET status='completed', lease_until=NULL, updated_at=? "
+                "WHERE job_type=? AND status IN ('pending','retry') "
+                "AND json_extract(payload_json, '$.task_id')=?",
+                (now, job_type, task_id),
+            )
+            return int(result.rowcount)
 
     def get_event(self, event_id: str) -> dict[str, Any] | None:
         with self.db.connection() as conn:
@@ -676,7 +764,13 @@ class MemoryRepository:
                 ).fetchall()
             return [OutboxJob.from_row(row) for row in rows]
 
-    def claim_outbox(self, *, limit: int = 20, lease_seconds: int = 60) -> list[OutboxJob]:
+    def claim_outbox(
+        self,
+        *,
+        limit: int = 20,
+        lease_seconds: int = 60,
+        job_type: str | None = None,
+    ) -> list[OutboxJob]:
         now = utc_now()
         now_text = now.isoformat()
         lease_until = (now + timedelta(seconds=max(1, lease_seconds))).isoformat()
@@ -689,11 +783,18 @@ class MemoryRepository:
                 "WHERE status='processing' AND lease_until IS NOT NULL AND lease_until <= ?",
                 (now_text, now_text, now_text),
             )
-            rows = conn.execute(
-                "SELECT job_id FROM outbox WHERE status IN ('pending', 'retry') AND available_at <= ? "
-                "ORDER BY created_at LIMIT ?",
-                (now_text, limit),
-            ).fetchall()
+            if job_type:
+                rows = conn.execute(
+                    "SELECT job_id FROM outbox WHERE status IN ('pending', 'retry') "
+                    "AND available_at <= ? AND job_type=? ORDER BY created_at LIMIT ?",
+                    (now_text, job_type, limit),
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    "SELECT job_id FROM outbox WHERE status IN ('pending', 'retry') AND available_at <= ? "
+                    "ORDER BY created_at LIMIT ?",
+                    (now_text, limit),
+                ).fetchall()
             ids = [str(row[0]) for row in rows]
             if not ids:
                 return []
@@ -754,9 +855,9 @@ class MemoryRepository:
             )
             return result.rowcount == 1
 
-    def health(self) -> dict[str, Any]:
+    def health(self, *, check_integrity: bool = True) -> dict[str, Any]:
         self.db.ensure_initialized()
-        integrity = self.db.integrity_check()
+        integrity = self.db.integrity_check() if check_integrity else "not_run"
         with self.db.connection() as conn:
             counts = {
                 "projects": int(conn.execute("SELECT COUNT(*) FROM projects").fetchone()[0]),
@@ -764,6 +865,30 @@ class MemoryRepository:
                 "sessions": int(conn.execute("SELECT COUNT(*) FROM sessions").fetchone()[0]),
                 "events": int(conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]),
                 "artifacts": int(conn.execute("SELECT COUNT(*) FROM artifacts").fetchone()[0]),
+                "extraction_runs": int(
+                    conn.execute("SELECT COUNT(*) FROM extraction_runs").fetchone()[0]
+                ),
+                "memory_candidates": int(
+                    conn.execute("SELECT COUNT(*) FROM memory_candidates").fetchone()[0]
+                ),
+                "memory_cards": int(
+                    conn.execute("SELECT COUNT(*) FROM memory_cards").fetchone()[0]
+                ),
+                "memory_card_versions": int(
+                    conn.execute("SELECT COUNT(*) FROM memory_card_versions").fetchone()[0]
+                ),
+                "memory_card_evidence": int(
+                    conn.execute("SELECT COUNT(*) FROM memory_card_evidence").fetchone()[0]
+                ),
+                "memory_card_bindings": int(
+                    conn.execute("SELECT COUNT(*) FROM memory_card_bindings").fetchone()[0]
+                ),
+                "memory_card_links": int(
+                    conn.execute("SELECT COUNT(*) FROM memory_card_links").fetchone()[0]
+                ),
+                "consolidation_decisions": int(
+                    conn.execute("SELECT COUNT(*) FROM consolidation_decisions").fetchone()[0]
+                ),
             }
             unresolved_parents = int(
                 conn.execute(
@@ -773,11 +898,12 @@ class MemoryRepository:
                 ).fetchone()[0]
             )
         return {
-            "status": "ok" if integrity == "ok" else "degraded",
+            "status": "ok" if integrity in {"ok", "not_run"} else "degraded",
             "database": str(Path(self.db.path).resolve()),
             "journal_mode": self.db.journal_mode(),
             "schema_version": self.db.migration_version(),
             "integrity_check": integrity,
+            "integrity_checked": check_integrity,
             "counts": counts,
             "unresolved_parent_links": unresolved_parents,
             "outbox": self.outbox_count(),

@@ -19,7 +19,8 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "httpx>=0.27,<1",
-  "pytest>=8.3,<9"
+  "pytest>=8.3,<9",
+  "ruff>=0.6,<1"
 ]
 
 [project.scripts]
@@ -35,6 +36,7 @@ where = ["src"]
 [tool.setuptools.data-files]
 "migrations" = ["migrations/*.sql"]
 "schemas" = ["schemas/*.json"]
+"web" = ["web/index.html", "web/styles.css", "web/app.js"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

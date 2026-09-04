@@ -10,6 +10,7 @@
     "project_id",
     "task_id",
     "source_event_ids",
+    "extractor",
     "candidates"
   ],
   "properties": {

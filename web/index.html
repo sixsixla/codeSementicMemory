@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CodeMemory · 记忆图谱</title>
+    <link rel="stylesheet" href="/web/styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark">◇</span><div><strong>CodeMemory</strong><small>local graph inspector</small></div></div>
+        <div class="sidebar-section">
+          <label for="task-select">任务上下文</label>
+          <select id="task-select"><option value="">加载任务…</option></select>
+        </div>
+        <div class="sidebar-section">
+          <label for="search-input">搜索候选记忆</label>
+          <div class="search-row"><input id="search-input" placeholder="例如：归属 / SendMessage" /><button id="search-button">⌕</button></div>
+        </div>
+        <div class="sidebar-section candidate-section">
+          <div class="section-title"><span>版本化记忆卡片</span><span id="card-count" class="muted">0</span></div>
+          <div id="card-list" class="card-list"><div class="empty">选择任务后加载</div></div>
+        </div>
+        <div class="sidebar-section candidate-section">
+          <div class="section-title"><span>候选记忆</span><span id="candidate-count" class="muted">0</span></div>
+          <div id="candidate-list" class="candidate-list"><div class="empty">选择任务后加载</div></div>
+        </div>
+        <div class="sidebar-foot"><span class="status-dot"></span><span id="connection-status">本地 API 未连接</span></div>
+      </aside>
+      <main class="main-panel">
+        <header class="topbar">
+          <div><div class="eyebrow">PHASE 3 · VERSIONED CODING MEMORY</div><h1 id="page-title">记忆关系图</h1></div>
+          <div class="top-actions"><button id="refresh-button" class="ghost">↻ 刷新</button><a href="/docs" target="_blank" class="ghost link-button">API 文档 ↗</a></div>
+        </header>
+        <section class="stats" aria-label="graph statistics">
+          <div class="stat-card"><span>节点</span><strong id="node-count">—</strong></div>
+          <div class="stat-card"><span>关系</span><strong id="edge-count">—</strong></div>
+          <div class="stat-card accent"><span>记忆卡片</span><strong id="memory-count">—</strong></div>
+          <div class="stat-card"><span>证据事件</span><strong id="event-count">—</strong></div>
+        </section>
+        <section class="graph-card">
+          <div class="graph-toolbar"><span><span class="live-dot"></span> SQLite projection · drag to orbit · click node for evidence</span><span id="graph-caption" class="muted"></span></div>
+          <div id="graph-container" class="graph-container"><div class="loading">正在初始化 3D 图谱…</div></div>
+          <div class="legend"><span><i class="legend-card"></i>card</span><span><i class="legend-memory"></i>candidate</span><span><i class="legend-event"></i>event</span><span><i class="legend-file"></i>file</span><span><i class="legend-symbol"></i>symbol</span><span><i class="legend-task"></i>task</span></div>
+        </section>
+        <section class="detail-card">
+          <div class="detail-heading"><span>节点详情</span><span id="detail-kind" class="pill">未选择</span></div>
+          <div id="detail-content" class="detail-content"><div class="empty">点击图中的节点查看原始证据、候选记忆和代码绑定。</div></div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/web/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,5277 @@
+{
+  "agent_runs": [
+    {
+      "agent_run_id": "phase2a-discovery-run",
+      "assignment_id": "phase2a-discovery",
+      "attempt": 1,
+      "context_id": "phase2a-local-context",
+      "ended_at": "2026-09-04T07:23:46+00:00",
+      "evidence": [
+        "CodexHistoryImporter tests passed",
+        "Deterministic timestamp/idempotency regression test passed",
+        "DiscoveryPacket records authorized scope and known gaps"
+      ],
+      "home_state": "DISCOVERY",
+      "last_seen_at": "2026-09-04T07:23:46+00:00",
+      "output_artifact_refs": [
+        "e976f4bf-16b0-436f-8b42-ded07551bae0"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "phase2a-investigator-runtime",
+      "runtime_kind": "SERIAL_DISCOVERY",
+      "started_at": "2026-09-04T07:23:26+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "phase2a-triage-run",
+      "assignment_id": "phase2a-triage",
+      "attempt": 1,
+      "context_id": "phase2a-local-context",
+      "ended_at": "2026-09-04T07:24:53+00:00",
+      "evidence": [
+        "TriagePacket 7491e943-1f39-4083-b260-e96f7360cade",
+        "Phase 2A scope and invariants reviewed"
+      ],
+      "home_state": "TRIAGE",
+      "last_seen_at": "2026-09-04T07:24:53+00:00",
+      "output_artifact_refs": [
+        "7491e943-1f39-4083-b260-e96f7360cade"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "phase2a-domain-lead-runtime",
+      "runtime_kind": "SERIAL_DOMAIN_TRIAGE",
+      "started_at": "2026-09-04T07:24:21+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "phase2a-design-run",
+      "assignment_id": "phase2a-design",
+      "attempt": 1,
+      "context_id": "phase2a-local-context",
+      "ended_at": "2026-09-04T07:25:40+00:00",
+      "evidence": [
+        "ChangeSpec e0dba6ec-37d9-4380-9325-531eefff6a5d",
+        "Provider, storage, worker, and UI boundaries frozen"
+      ],
+      "home_state": "DESIGN",
+      "last_seen_at": "2026-09-04T07:25:40+00:00",
+      "output_artifact_refs": [
+        "e0dba6ec-37d9-4380-9325-531eefff6a5d"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "phase2a-architect-runtime",
+      "runtime_kind": "SERIAL_ARCHITECTURE_DESIGN",
+      "started_at": "2026-09-04T07:25:13+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "phase2a-implementation-run",
+      "assignment_id": "phase2a-implementation",
+      "attempt": 1,
+      "context_id": "phase2a-local-context",
+      "ended_at": "2026-09-04T07:27:05+00:00",
+      "evidence": [
+        "PatchManifest 9c83ff3b-b339-4892-97db-a7f2a20556fb",
+        "ruff, compileall, node syntax, and 32-test suite passed",
+        "33-event authorized history import and local HTTP smoke passed"
+      ],
+      "home_state": "IMPLEMENT",
+      "last_seen_at": "2026-09-04T07:27:05+00:00",
+      "output_artifact_refs": [
+        "9c83ff3b-b339-4892-97db-a7f2a20556fb"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "phase2a-implementer-runtime",
+      "runtime_kind": "SERIAL_IMPLEMENTATION",
+      "started_at": "2026-09-04T07:26:35+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "phase2a-review-run",
+      "assignment_id": "phase2a-review",
+      "attempt": 1,
+      "context_id": "phase2a-fresh-review-context",
+      "ended_at": "2026-09-04T07:28:13+00:00",
+      "evidence": [
+        "ReviewReport df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+        "git diff --check passed",
+        "Fresh-context review found no blocking scope or contract issue; independence degraded is explicitly noted"
+      ],
+      "home_state": "REVIEW",
+      "last_seen_at": "2026-09-04T07:28:13+00:00",
+      "output_artifact_refs": [
+        "df0e1f41-b3e5-4b00-9b85-b0f14e585028"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "phase2a-reviewer-runtime",
+      "runtime_kind": "INDEPENDENT_REVIEW",
+      "started_at": "2026-09-04T07:27:52+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "phase2a-verification-run",
+      "assignment_id": "phase2a-verification",
+      "attempt": 1,
+      "context_id": "phase2a-fresh-verification-context",
+      "ended_at": "2026-09-04T07:31:05+00:00",
+      "evidence": [
+        "VerificationLedger 2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+        "BEHAVIOR_REGRESSION and RUNTIME_VALIDATION passed"
+      ],
+      "home_state": "VERIFY",
+      "last_seen_at": "2026-09-04T07:31:05+00:00",
+      "output_artifact_refs": [
+        "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "phase2a-verifier-runtime",
+      "runtime_kind": "BEHAVIOR_REGRESSION",
+      "started_at": "2026-09-04T07:29:05+00:00",
+      "status": "SUCCEEDED"
+    }
+  ],
+  "artifacts": {
+    "ChangeSpec": [
+      {
+        "artifact_id": "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+        "artifact_revision": 1,
+        "artifact_type": "ChangeSpec",
+        "data": {
+          "behavior_matrix": [
+            {
+              "case": "new event",
+              "expected": "event plus deduplicated outbox job committed atomically"
+            },
+            {
+              "case": "history replay",
+              "expected": "same event ids and timestamps return duplicates"
+            },
+            {
+              "case": "provider contract violation",
+              "expected": "retry/dead run with zero new unverifiable candidates"
+            },
+            {
+              "case": "worker execution",
+              "expected": "only event.ingested jobs are claimed and extraction is idempotent"
+            },
+            {
+              "case": "graph query",
+              "expected": "bounded task/session/event/memory/file/symbol nodes and links"
+            }
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            ".venv/**",
+            "*.sqlite",
+            "*.sqlite3",
+            "*.db",
+            "data/**",
+            "build/**",
+            "dist/**"
+          ],
+          "implementation_slices": [
+            "migration 0004 extraction_runs and candidate/link tables",
+            "ContextAssembler and strict extraction models",
+            "provider boundary, validation, and idempotent store",
+            "Codex history import from selected read_thread evidence",
+            "outbox worker and CLI/API surfaces",
+            "3D Three.js local inspector and smoke tests"
+          ],
+          "invariants": [
+            "IngestService remains the only canonical event write path.",
+            "LLM/provider execution is after event acknowledgement and replaceable.",
+            "Strict Pydantic output and evidence closure are mandatory before candidate insert.",
+            "Candidate rows and FTS/graph links are rebuildable and do not mutate events.",
+            "History importer omits reasoning and keeps explicit partial provenance.",
+            "Forced extraction replacement is transactional and preserves last good candidates on failure."
+          ],
+          "primary_domain": "SQLite-first coding memory extraction",
+          "required_gates": [
+            "DESIGN_CONTRACT",
+            "WRITE_AUTHORIZATION",
+            "SCOPE_CONFORMANCE",
+            "STATIC_CORRECTNESS",
+            "INDEPENDENT_REVIEW",
+            "BEHAVIOR_REGRESSION"
+          ],
+          "required_roles": [
+            "architect",
+            "implementer",
+            "reviewer",
+            "verifier"
+          ],
+          "rollback_or_recovery": "Do not delete canonical events. Rebuild candidate FTS/graph projections or force a bounded extraction retry; preserve the previous successful candidate rows until replacement commits.",
+          "secondary_contracts": [
+            "codememory.event.v1",
+            "codememory.extraction_batch.v1",
+            "outbox lease/ack semantics",
+            "local HTTP graph projection"
+          ],
+          "validation_plan": [
+            {
+              "command": "ruff check src tests",
+              "evidence": "no lint findings"
+            },
+            {
+              "command": "py -m compileall -q src",
+              "evidence": "Python compile succeeds"
+            },
+            {
+              "command": "py -m pytest -q",
+              "evidence": "all regression and Phase 2A tests"
+            },
+            {
+              "command": "node --check web/app.js",
+              "evidence": "frontend syntax succeeds"
+            },
+            {
+              "command": "import fixture twice and inspect health",
+              "evidence": "33 events, second pass duplicates"
+            },
+            {
+              "command": "HTTP smoke against local server",
+              "evidence": "health/graph/root return 200"
+            }
+          ],
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md",
+            ".omx/state/**"
+          ]
+        },
+        "owner": "phase2a-architect",
+        "producer_agent_run_id": "phase2a-design-run",
+        "producer_assignment_id": "phase2a-design",
+        "producer_home_state": "DESIGN",
+        "recorded_at": "2026-09-04T07:25:30+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "DiscoveryPacket": [
+      {
+        "artifact_id": "e976f4bf-16b0-436f-8b42-ded07551bae0",
+        "artifact_revision": 1,
+        "artifact_type": "DiscoveryPacket",
+        "data": {
+          "affected_consumers": [
+            "IngestService and SQLite event store",
+            "ExtractionWorker and future LLM providers",
+            "Local CLI/API clients",
+            "Three.js graph inspector"
+          ],
+          "current_behavior": "Phase 2A is implemented as a SQLite-first, provider-neutral candidate extraction pipeline. The selected Codex history is imported as bounded visible evidence, and the local API exposes a rebuildable graph projection.",
+          "entry_points": [
+            "src/codememory/history/codex.py::CodexHistoryImporter",
+            "src/codememory/extraction/service.py::ExtractionService",
+            "src/codememory/api/app.py::create_app",
+            "web/index.html"
+          ],
+          "evidence": [
+            "Three explicitly authorized Codex thread ids are present in fixtures/codex-history/selected-threads.json.",
+            "The fixture retains visible user/assistant/file/tool evidence and marks completeness=partial.",
+            "Automated extraction, history-import, API, and UI tests cover the delivered boundary."
+          ],
+          "falsifiers": [
+            "A repeated import changes event identity or timestamps for a timestamp-free export.",
+            "A malformed provider batch can create a candidate without source evidence.",
+            "A forced retry deletes the last successful candidate projection.",
+            "The graph endpoint or local page cannot render the imported candidate evidence."
+          ],
+          "recommended_knowledge_routes": [
+            "Treat events and extraction runs as canonical provenance.",
+            "Use strict extraction_batch.v1 before adding any provider.",
+            "Keep candidate graph and FTS as rebuildable projections.",
+            "Promote only verified candidates in a later lifecycle phase."
+          ],
+          "reuse_decision": "EXTEND",
+          "runtime_or_system_owner": "CodeSementicMemory local process and delivery lead; extraction runs are durable SQLite records and the 3D page is a local inspection surface.",
+          "unknowns": [
+            "Full Codex Desktop event-hook coverage is not yet available.",
+            "Candidate bindings still need live repository snapshot validation.",
+            "Embedding/vector projections and stable-card lifecycle are intentionally deferred."
+          ]
+        },
+        "owner": "phase2a-investigator",
+        "producer_agent_run_id": "phase2a-discovery-run",
+        "producer_assignment_id": "phase2a-discovery",
+        "producer_home_state": "DISCOVERY",
+        "recorded_at": "2026-09-04T07:23:40+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "FinalHandoff": [
+      {
+        "artifact_id": "b5cddbb0-6e0e-46df-aa4a-1ce2a672db2c",
+        "artifact_revision": 1,
+        "artifact_type": "FinalHandoff",
+        "data": {
+          "evidence": [
+            "PatchManifest 9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "ReviewReport df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+            "VerificationLedger 2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+            "Local database health: 33 events, 3 tasks, 3 extraction runs, 6 candidates, WAL, integrity ok",
+            "py -m pytest -q: 32 passed",
+            "HTTP smoke: health, graph, and root all 200"
+          ],
+          "outcome": "Phase 2A delivered: SQLite-first evidence ingestion, strict candidate extraction, authorized Codex history import, outbox worker, and local 3D graph inspection are runnable and verified.",
+          "recovery_entry": "Re-run codememory import-codex-history and codememory extract with the same database; use --force only for an explicit bounded retry, then inspect /v1/graph and /v1/memories/search.",
+          "remaining_actions": [
+            "Implement Phase 3 candidate consolidation and relation lifecycle.",
+            "Add Phase 4 repository snapshot and symbol validity checks.",
+            "Add optional embeddings/vector projection and a native Codex adapter after the core contracts stabilize."
+          ],
+          "remaining_risks": [
+            "Candidate observations are not stable cards and have no supersede/stale/forgetting lifecycle yet.",
+            "Code paths and symbols are not validated against a live repository snapshot.",
+            "The first 3D preview loads Three.js from a pinned CDN and is intended for local inspection."
+          ]
+        },
+        "owner": "delivery-lead",
+        "producer_home_state": "HANDOFF",
+        "recorded_at": "2026-09-04T07:31:28+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "PatchManifest": [
+      {
+        "artifact_id": "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+        "artifact_revision": 1,
+        "artifact_type": "PatchManifest",
+        "data": {
+          "behavior_changed": [
+            "Adds strict, evidence-closed candidate extraction runs and SQLite links.",
+            "Imports the three selected Codex histories as deterministic provenance-preserving events.",
+            "Adds an outbox extraction worker, CLI/API inspection routes, and a local Three.js graph UI.",
+            "Keeps LLM/embedding work off the ingest acknowledgement path and makes projections rebuildable."
+          ],
+          "changed_artifacts": [
+            "README.md",
+            "migrations/0004_extraction_candidates.sql",
+            "src/codememory/api/app.py",
+            "src/codememory/cli.py",
+            "src/codememory/docs/extraction-contract.md",
+            "src/codememory/docs/phase2a-delivery.md",
+            "src/codememory/extraction/__init__.py",
+            "src/codememory/extraction/context.py",
+            "src/codememory/extraction/models.py",
+            "src/codememory/extraction/providers.py",
+            "src/codememory/extraction/service.py",
+            "src/codememory/extraction/store.py",
+            "src/codememory/history/__init__.py",
+            "src/codememory/history/codex.py",
+            "src/codememory/storage/repository.py",
+            "src/codememory/workers/__init__.py",
+            "src/codememory/workers/extraction.py",
+            "tests/integration/test_codex_history_import.py",
+            "tests/integration/test_phase2a_api_and_ui.py",
+            "tests/integration/test_phase2a_extraction.py",
+            "tests/integration/test_repository.py",
+            "fixtures/codex-history/selected-threads.json",
+            "web/index.html",
+            "web/styles.css",
+            "web/app.js"
+          ],
+          "contracts_satisfied": [
+            "TaskContract success criteria for Phase 2A",
+            "codememory.event.v1 ingest and idempotency contract",
+            "codememory.extraction_batch.v1 strict provider contract",
+            "SQLite migration, FTS, graph, and outbox boundaries"
+          ],
+          "known_gaps": [
+            "Candidates are not yet promoted to stable cards or reconciled with supersede/stale/forgetting policy.",
+            "Paths and symbols are not checked against a live repository snapshot.",
+            "Embeddings/vector search, MCP, native Codex adapter, and production auth/hosting remain later layers.",
+            "Three.js first preview uses a pinned CDN module and therefore expects browser network access."
+          ],
+          "local_checks": [
+            {
+              "command": "ruff check src tests",
+              "result": "All checks passed"
+            },
+            {
+              "command": "py -m compileall -q src",
+              "result": "passed"
+            },
+            {
+              "command": "node --check web/app.js",
+              "result": "passed"
+            },
+            {
+              "command": "py -m pytest -q",
+              "result": "32 passed, 1 deprecation warning"
+            },
+            {
+              "command": "Codex fixture import twice",
+              "result": "33 accepted first pass; 33 duplicates second pass"
+            },
+            {
+              "command": "local API smoke",
+              "result": "/v1/health, /v1/graph, / returned 200"
+            }
+          ],
+          "scope_exceptions": []
+        },
+        "owner": "phase2a-implementer",
+        "producer_agent_run_id": "phase2a-implementation-run",
+        "producer_assignment_id": "phase2a-implementation",
+        "producer_home_state": "IMPLEMENT",
+        "recorded_at": "2026-09-04T07:26:51+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "ReviewReport": [
+      {
+        "artifact_id": "df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+        "artifact_revision": 1,
+        "artifact_type": "ReviewReport",
+        "data": {
+          "contract_violations": [],
+          "findings": [
+            {
+              "area": "provenance",
+              "finding": "The three authorized Codex seed threads are bounded and explicitly marked partial; reasoning/context-compaction records are omitted by policy.",
+              "severity": "info"
+            },
+            {
+              "area": "integrity",
+              "finding": "Extraction candidates are evidence-closed, idempotent by task/input/extractor/prompt/schema key, and forced replacement is transactional.",
+              "severity": "info"
+            },
+            {
+              "area": "projection",
+              "finding": "FTS and graph links are rebuildable SQLite projections; canonical events remain immutable.",
+              "severity": "info"
+            },
+            {
+              "area": "ui",
+              "finding": "The local Three.js inspector is read-only and bounded; CDN loading is documented as a preview limitation.",
+              "severity": "info"
+            },
+            {
+              "area": "independence",
+              "finding": "Reviewer ran in a fresh logical context but the host had no subagent runtime; independence is degraded and recorded explicitly.",
+              "severity": "process"
+            }
+          ],
+          "required_rework": [],
+          "scope_drift": [],
+          "unverified_assumptions": [
+            "Live repository symbol existence and binding validity remain a Phase 4 concern.",
+            "The selected Codex export is not a complete private transcript."
+          ],
+          "verdict": "PASS"
+        },
+        "owner": "phase2a-reviewer",
+        "producer_agent_run_id": "phase2a-review-run",
+        "producer_assignment_id": "phase2a-review",
+        "producer_home_state": "REVIEW",
+        "recorded_at": "2026-09-04T07:28:04+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "TaskContract": [
+      {
+        "artifact_id": "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+        "artifact_revision": 1,
+        "artifact_type": "TaskContract",
+        "data": {
+          "constraints": [
+            "SQLite remains the canonical fact store; FTS, candidate search, and graph rows are rebuildable projections.",
+            "LLM and embedding providers are optional replaceable boundaries and are never on the synchronous event-ingest acknowledgement path.",
+            "Every candidate binding and relation must point to evidence event ids from the assembled input; hidden chain-of-thought is not persisted.",
+            "Only the three explicitly supplied Codex task ids may be used as real history input in this delivery.",
+            "Raw history archives containing local paths remain outside the repository; checked-in fixtures must be bounded and intentional.",
+            "The web page is a local inspection preview, not an authentication, cloud, or production deployment surface."
+          ],
+          "goal": "Deliver the first executable Phase 2A coding-memory extraction slice, ingest three explicitly selected local Codex task histories as provenance-preserving events, and expose the resulting candidate-memory graph through a local 3D web inspection surface.",
+          "human_decisions_required": [],
+          "non_goals": [
+            "Stable-card merge, supersede, stale, or forgetting lifecycle (Phase 3).",
+            "Code snapshot or symbol resolution against a live repository (Phase 4).",
+            "Embeddings, vector database, MCP adapter, Codex Desktop hook, or remote provider integration.",
+            "Production-grade 3D layout, collaboration, authentication, or hosted frontend."
+          ],
+          "risk_profile": "T2",
+          "scope_allowlist": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md",
+            "pyproject.toml",
+            ".gitignore",
+            ".omx/state/**"
+          ],
+          "scope_forbidden": [
+            ".git/**",
+            ".venv/**",
+            "*.sqlite",
+            "*.sqlite3",
+            "*.db",
+            "data/**",
+            "build/**",
+            "dist/**"
+          ],
+          "stop_condition": "Stop after the Phase 2A extraction, authorized history import, graph API/UI slice, regression checks, and artifact/verification ledger are complete; record Phase 3+ gaps instead of expanding scope.",
+          "success_criteria": [
+            "A bounded task-window ContextAssembler produces a deterministic input hash and evidence id set from immutable events.",
+            "A provider-replaceable extraction service validates strict ExtractionBatch output, persists idempotent extraction runs and candidate memories, and never mutates canonical events or stable cards.",
+            "Malformed or incomplete provider output is rejected with a durable run error and does not create unverifiable candidates.",
+            "The three user-authorized Codex task histories are converted from original message/file evidence into codememory.event.v1 records, ingested through IngestService, and retain thread, source, cwd, and completeness provenance.",
+            "A local HTTP graph endpoint and bundled 3D web page display tasks, sessions, evidence events, candidate memories, bindings, and evidence links from SQLite.",
+            "Existing Phase 0-1 tests remain green and new extraction, history-import, API, and UI smoke tests pass locally."
+          ]
+        },
+        "owner": "delivery-lead",
+        "producer_home_state": "INTAKE",
+        "recorded_at": "2026-09-04T06:50:40+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "TriagePacket": [
+      {
+        "artifact_id": "7491e943-1f39-4083-b260-e96f7360cade",
+        "artifact_revision": 1,
+        "artifact_type": "TriagePacket",
+        "data": {
+          "behavior_matrix": [
+            {
+              "case": "authorized Codex history import",
+              "expected": "visible events retain thread/title/cwd/completeness provenance"
+            },
+            {
+              "case": "repeat import",
+              "expected": "deterministic duplicate results without new rows"
+            },
+            {
+              "case": "valid extraction",
+              "expected": "candidate rows, evidence links, and FTS projection are stored"
+            },
+            {
+              "case": "invalid extraction",
+              "expected": "run error is durable and no unverifiable candidate is inserted"
+            },
+            {
+              "case": "3D inspection",
+              "expected": "task/candidate/event/file/symbol graph is returned by localhost API"
+            }
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            ".venv/**",
+            "*.sqlite",
+            "*.sqlite3",
+            "*.db",
+            "data/**",
+            "build/**",
+            "dist/**"
+          ],
+          "implementation_slices": [
+            "strict extraction models and schema validation",
+            "deterministic context assembly and run idempotency",
+            "candidate/evidence/link SQLite persistence",
+            "Codex history importer and outbox worker",
+            "graph API and local Three.js inspector",
+            "regression and fixture coverage"
+          ],
+          "invariants": [
+            "Canonical events are append-only and acknowledged without waiting for LLM or embedding work.",
+            "Every candidate and binding is evidence-closed to assembled event ids.",
+            "History provenance remains explicit and hidden reasoning is excluded.",
+            "FTS and graph rows are rebuildable projections, not source of truth.",
+            "The local UI is an inspection surface and cannot mutate facts."
+          ],
+          "primary_domain": "coding-agent persistent memory extraction",
+          "required_gates": [
+            "DESIGN_CONTRACT",
+            "WRITE_AUTHORIZATION",
+            "SCOPE_CONFORMANCE",
+            "STATIC_CORRECTNESS",
+            "INDEPENDENT_REVIEW",
+            "BEHAVIOR_REGRESSION"
+          ],
+          "required_roles": [
+            "domain-lead",
+            "architect",
+            "implementer",
+            "reviewer",
+            "verifier"
+          ],
+          "rollback_or_recovery": "Keep canonical events immutable; if a candidate projection is wrong, rerun the same input hash with an explicit force flag or rebuild projections, then defer stable-card reconciliation to Phase 3.",
+          "secondary_contracts": [
+            "codememory.event.v1",
+            "codememory.extraction_batch.v1",
+            "SQLite migration and outbox contract",
+            "local graph API contract"
+          ],
+          "validation_plan": [
+            {
+              "command": "ruff check src tests",
+              "evidence": "lint output"
+            },
+            {
+              "command": "py -m compileall -q src",
+              "evidence": "compile exit code"
+            },
+            {
+              "command": "py -m pytest -q",
+              "evidence": "full regression suite"
+            },
+            {
+              "command": "node --check web/app.js",
+              "evidence": "frontend syntax check"
+            },
+            {
+              "command": "localhost HTTP smoke",
+              "evidence": "health, graph, and root status 200"
+            }
+          ],
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md",
+            ".omx/state/**"
+          ]
+        },
+        "owner": "phase2a-domain-lead",
+        "producer_agent_run_id": "phase2a-triage-run",
+        "producer_assignment_id": "phase2a-triage",
+        "producer_home_state": "TRIAGE",
+        "recorded_at": "2026-09-04T07:24:40+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "VerificationLedger": [
+      {
+        "artifact_id": "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+        "artifact_revision": 1,
+        "artifact_type": "VerificationLedger",
+        "data": {
+          "gate_results": [
+            {
+              "claim_proven": "Phase 2A extraction, authorized history import, and local graph inspection scope is frozen in TaskContract.",
+              "evidence": [
+                ".omx/state/codememory-phase2a-task-contract.json",
+                "README.md",
+                "src/codememory/docs/phase2a-delivery.md"
+              ],
+              "executor": "delivery-lead",
+              "gate_id": "GOAL_AND_SCOPE",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "The repository boundary, authorized history seed, provenance policy, and Phase 3+ falsifiers are recorded.",
+              "evidence": [
+                "e976f4bf-16b0-436f-8b42-ded07551bae0",
+                "phase2a-discovery-run",
+                "py -m pytest -q: 32 passed"
+              ],
+              "executor": "phase2a-investigator-runtime",
+              "gate_id": "DISCOVERY_COMPLETE",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "The Phase 2A implementation boundary, invariants, rollback path, and validation plan are frozen in ChangeSpec.",
+              "evidence": [
+                "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+                "phase2a-design-run",
+                "src/codememory/docs/extraction-contract.md"
+              ],
+              "executor": "phase2a-architect-runtime",
+              "gate_id": "DESIGN_CONTRACT",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "The user explicitly authorized implementing Phase 2A, importing the three selected Codex histories, and adding the local graph inspector within the TaskContract scope.",
+              "evidence": [
+                "User request to complete Phase 2A and use the three referenced Codex tasks",
+                "TaskContract 7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+                "ChangeSpec e0dba6ec-37d9-4380-9325-531eefff6a5d"
+              ],
+              "executor": "delivery-lead",
+              "gate_id": "WRITE_AUTHORIZATION",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "All Phase 2A changed files are inside the approved allowlist and no runtime database/build artifacts are tracked.",
+              "evidence": [
+                "adaptive_vibe scope-check returned ok=true and violations=[]",
+                "PatchManifest 9c83ff3b-b339-4892-97db-a7f2a20556fb",
+                "git status --short"
+              ],
+              "executor": "phase2a-implementer-runtime",
+              "gate_id": "SCOPE_CONFORMANCE",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "Python compilation, lint, frontend syntax, and the complete local test suite pass for the Phase 2A boundary.",
+              "evidence": [
+                "ruff check src tests: All checks passed",
+                "py -m compileall -q src: passed",
+                "node --check web/app.js: passed",
+                "py -m pytest -q: 32 passed, 1 warning"
+              ],
+              "executor": "phase2a-implementer-runtime",
+              "gate_id": "STATIC_CORRECTNESS",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "The fresh review context found no blocking scope, contract, persistence-integrity, provenance, or UI/API findings; host-level independence is degraded and explicitly documented.",
+              "evidence": [
+                "ReviewReport df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+                "phase2a-review-run",
+                "git diff --check passed",
+                "py -m pytest -q: 32 passed"
+              ],
+              "executor": "phase2a-reviewer-runtime",
+              "gate_id": "INDEPENDENT_REVIEW",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "Fresh verification confirms the 32-test suite, deterministic history replay, extraction idempotency, evidence links, and SQLite health counts for the authorized seed.",
+              "evidence": [
+                "py -m pytest -q: 32 passed",
+                "CodexHistoryImporter first pass 33 accepted and second pass 33 duplicates",
+                "Local DB health: events=33, tasks=3, extraction_runs=3, memory_candidates=6, integrity_check=ok, journal_mode=wal",
+                "Forced retry preservation and timestamp-free replay tests passed"
+              ],
+              "executor": "phase2a-verifier-runtime",
+              "gate_id": "BEHAVIOR_REGRESSION",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "A fresh localhost process served the graph API and 3D page successfully, and the selected task graph contained memory nodes and supports edges.",
+              "evidence": [
+                "GET /v1/health returned 200",
+                "GET /v1/graph?task_id=... returned 200 with 18 nodes, 41 edges, 2 memory nodes, 10 supports edges",
+                "GET / returned 200 and page contained the Three.js import map"
+              ],
+              "executor": "phase2a-verifier-runtime",
+              "gate_id": "RUNTIME_VALIDATION",
+              "status": "PASS"
+            }
+          ],
+          "remaining_gaps": [],
+          "required_gates": [
+            "GOAL_AND_SCOPE",
+            "DISCOVERY_COMPLETE",
+            "DESIGN_CONTRACT",
+            "WRITE_AUTHORIZATION",
+            "SCOPE_CONFORMANCE",
+            "STATIC_CORRECTNESS",
+            "INDEPENDENT_REVIEW",
+            "BEHAVIOR_REGRESSION"
+          ]
+        },
+        "owner": "phase2a-verifier",
+        "producer_agent_run_id": "phase2a-verification-run",
+        "producer_assignment_id": "phase2a-verification",
+        "producer_home_state": "VERIFY",
+        "recorded_at": "2026-09-04T07:30:50+00:00",
+        "schema_version": "1.0",
+        "source_gate_count": 9
+      }
+    ]
+  },
+  "assignments": [
+    {
+      "assignment_id": "phase2a-discovery",
+      "created_at": "2026-09-04T07:23:20+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-04T07:23:53+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:DiscoveryPacket"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "*.db"
+      ],
+      "home_state": "DISCOVERY",
+      "input_artifact_refs": [
+        "7fc69225-c6b6-4590-a6f2-4fb065b3a937"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0",
+            "phase2a-discovery-run"
+          ],
+          "label": "Record repository, history, and risk evidence",
+          "milestone_id": "discovery-evidence",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:23:53+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "e976f4bf-16b0-436f-8b42-ded07551bae0"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "fixtures/**",
+        "web/**",
+        "README.md"
+      ],
+      "required": true,
+      "role": "investigator",
+      "status": "COMPLETED",
+      "task_slice": "Inspect the Phase 2A repository boundary, authorized Codex history provenance, and extraction/UI evidence without changing source files.",
+      "updated_at": "2026-09-04T07:23:53+00:00",
+      "write_scope": []
+    },
+    {
+      "assignment_id": "phase2a-triage",
+      "created_at": "2026-09-04T07:24:14+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-04T07:24:53+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:TriagePacket"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "*.db"
+      ],
+      "home_state": "TRIAGE",
+      "input_artifact_refs": [
+        "e976f4bf-16b0-436f-8b42-ded07551bae0"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            "7491e943-1f39-4083-b260-e96f7360cade",
+            "phase2a-triage-run"
+          ],
+          "label": "Record domain invariants and implementation slices",
+          "milestone_id": "triage-contract",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:24:53+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "7491e943-1f39-4083-b260-e96f7360cade"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "migrations/**",
+        "schemas/**",
+        "fixtures/**",
+        "web/**",
+        "README.md"
+      ],
+      "required": true,
+      "role": "domain-lead",
+      "status": "COMPLETED",
+      "task_slice": "Freeze the coding-memory domain boundary, invariants, write scope, and validation slices for this Phase 2A delivery.",
+      "updated_at": "2026-09-04T07:24:53+00:00",
+      "write_scope": []
+    },
+    {
+      "assignment_id": "phase2a-design",
+      "created_at": "2026-09-04T07:25:07+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-04T07:25:40+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:ChangeSpec"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "*.db"
+      ],
+      "home_state": "DESIGN",
+      "input_artifact_refs": [
+        "e976f4bf-16b0-436f-8b42-ded07551bae0",
+        "7491e943-1f39-4083-b260-e96f7360cade"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "phase2a-design-run"
+          ],
+          "label": "Record implementation and validation contract",
+          "milestone_id": "design-contract",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:25:40+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "e0dba6ec-37d9-4380-9325-531eefff6a5d"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "migrations/**",
+        "schemas/**",
+        "fixtures/**",
+        "web/**",
+        "README.md"
+      ],
+      "required": true,
+      "role": "architect",
+      "status": "COMPLETED",
+      "task_slice": "Freeze the executable Phase 2A change contract, persistence boundaries, provider interface, and local graph inspection behavior.",
+      "updated_at": "2026-09-04T07:25:40+00:00",
+      "write_scope": []
+    },
+    {
+      "assignment_id": "phase2a-implementation",
+      "created_at": "2026-09-04T07:26:26+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-04T07:27:06+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:PatchManifest"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        ".venv/**",
+        "*.sqlite",
+        "*.sqlite3",
+        "*.db",
+        "data/**",
+        "build/**",
+        "dist/**"
+      ],
+      "home_state": "IMPLEMENT",
+      "input_artifact_refs": [
+        "e0dba6ec-37d9-4380-9325-531eefff6a5d"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "py -m pytest -q: 32 passed"
+          ],
+          "label": "Implement strict extraction and SQLite candidate pipeline",
+          "milestone_id": "core-pipeline",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:27:06+00:00"
+        },
+        {
+          "evidence": [
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "33-event import and HTTP smoke"
+          ],
+          "label": "Import authorized history and expose graph inspection",
+          "milestone_id": "history-ui",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:27:06+00:00"
+        },
+        {
+          "evidence": [
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "ruff/compileall/node --check passed"
+          ],
+          "label": "Add tests and run local checks",
+          "milestone_id": "regression",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:27:06+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "9c83ff3b-b339-4892-97db-a7f2a20556fb"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "migrations/**",
+        "schemas/**",
+        "fixtures/**",
+        "web/**",
+        "README.md"
+      ],
+      "required": true,
+      "role": "implementer",
+      "status": "COMPLETED",
+      "task_slice": "Implement and verify the frozen Phase 2A extraction, authorized Codex history import, outbox worker, HTTP graph API, and local 3D inspector within the approved write scope.",
+      "updated_at": "2026-09-04T07:27:06+00:00",
+      "write_scope": [
+        "src/**",
+        "tests/**",
+        "migrations/**",
+        "schemas/**",
+        "fixtures/**",
+        "web/**",
+        "README.md"
+      ]
+    },
+    {
+      "assignment_id": "phase2a-review",
+      "created_at": "2026-09-04T07:27:44+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-04T07:28:13+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:ReviewReport"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "*.db"
+      ],
+      "home_state": "REVIEW",
+      "input_artifact_refs": [
+        "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+        "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+        "9c83ff3b-b339-4892-97db-a7f2a20556fb"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            "df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+            "phase2a-review-run"
+          ],
+          "label": "Record independent review verdict and findings",
+          "milestone_id": "review-findings",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:28:13+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "df0e1f41-b3e5-4b00-9b85-b0f14e585028"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "migrations/**",
+        "schemas/**",
+        "fixtures/**",
+        "web/**",
+        "README.md"
+      ],
+      "required": true,
+      "role": "reviewer",
+      "status": "COMPLETED",
+      "task_slice": "Review the frozen contract, implementation diff, history provenance, extraction integrity, scope, and UI/API boundary for blocking findings.",
+      "updated_at": "2026-09-04T07:28:13+00:00",
+      "write_scope": []
+    },
+    {
+      "assignment_id": "phase2a-verification",
+      "created_at": "2026-09-04T07:28:58+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-04T07:31:05+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:VerificationLedger"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "*.db"
+      ],
+      "home_state": "VERIFY",
+      "input_artifact_refs": [
+        "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+        "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+        "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+        "df0e1f41-b3e5-4b00-9b85-b0f14e585028"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+            "BEHAVIOR_REGRESSION"
+          ],
+          "label": "Verify extraction, idempotency, provenance, and projections",
+          "milestone_id": "behavior-regression",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:31:05+00:00"
+        },
+        {
+          "evidence": [
+            "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+            "RUNTIME_VALIDATION"
+          ],
+          "label": "Verify localhost health, graph endpoint, and web page",
+          "milestone_id": "runtime-validation",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:31:05+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "migrations/**",
+        "schemas/**",
+        "fixtures/**",
+        "web/**",
+        "README.md"
+      ],
+      "required": true,
+      "role": "verifier",
+      "status": "COMPLETED",
+      "task_slice": "Run fresh behavioral, persistence, history replay, graph API, and local UI checks against the Phase 2A delivery and record the evidence ledger.",
+      "updated_at": "2026-09-04T07:31:05+00:00",
+      "write_scope": []
+    }
+  ],
+  "created_at": "2026-09-04T06:50:40+00:00",
+  "entry_mode": "DELIVER",
+  "entry_provenance": {
+    "kind": "DIRECT_DELIVERY",
+    "owner": "delivery-lead",
+    "started_at": "2026-09-04T06:50:40+00:00"
+  },
+  "finalized_at": "2026-09-04T07:31:39+00:00",
+  "gate_ledger": [
+    {
+      "claim_proven": "Phase 2A extraction, authorized history import, and local graph inspection scope is frozen in TaskContract.",
+      "evidence": [
+        ".omx/state/codememory-phase2a-task-contract.json",
+        "README.md",
+        "src/codememory/docs/phase2a-delivery.md"
+      ],
+      "executor": "delivery-lead",
+      "gate_id": "GOAL_AND_SCOPE",
+      "recorded_at": "2026-09-04T07:23:01+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The repository boundary, authorized history seed, provenance policy, and Phase 3+ falsifiers are recorded.",
+      "evidence": [
+        "e976f4bf-16b0-436f-8b42-ded07551bae0",
+        "phase2a-discovery-run",
+        "py -m pytest -q: 32 passed"
+      ],
+      "executor": "phase2a-investigator-runtime",
+      "gate_id": "DISCOVERY_COMPLETE",
+      "recorded_at": "2026-09-04T07:24:00+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The Phase 2A implementation boundary, invariants, rollback path, and validation plan are frozen in ChangeSpec.",
+      "evidence": [
+        "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+        "phase2a-design-run",
+        "src/codememory/docs/extraction-contract.md"
+      ],
+      "executor": "phase2a-architect-runtime",
+      "gate_id": "DESIGN_CONTRACT",
+      "recorded_at": "2026-09-04T07:25:48+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The user explicitly authorized implementing Phase 2A, importing the three selected Codex histories, and adding the local graph inspector within the TaskContract scope.",
+      "evidence": [
+        "User request to complete Phase 2A and use the three referenced Codex tasks",
+        "TaskContract 7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+        "ChangeSpec e0dba6ec-37d9-4380-9325-531eefff6a5d"
+      ],
+      "executor": "delivery-lead",
+      "gate_id": "WRITE_AUTHORIZATION",
+      "recorded_at": "2026-09-04T07:25:57+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "All Phase 2A changed files are inside the approved allowlist and no runtime database/build artifacts are tracked.",
+      "evidence": [
+        "adaptive_vibe scope-check returned ok=true and violations=[]",
+        "PatchManifest 9c83ff3b-b339-4892-97db-a7f2a20556fb",
+        "git status --short"
+      ],
+      "executor": "phase2a-implementer-runtime",
+      "gate_id": "SCOPE_CONFORMANCE",
+      "recorded_at": "2026-09-04T07:27:22+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "Python compilation, lint, frontend syntax, and the complete local test suite pass for the Phase 2A boundary.",
+      "evidence": [
+        "ruff check src tests: All checks passed",
+        "py -m compileall -q src: passed",
+        "node --check web/app.js: passed",
+        "py -m pytest -q: 32 passed, 1 warning"
+      ],
+      "executor": "phase2a-implementer-runtime",
+      "gate_id": "STATIC_CORRECTNESS",
+      "recorded_at": "2026-09-04T07:27:28+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The fresh review context found no blocking scope, contract, persistence-integrity, provenance, or UI/API findings; host-level independence is degraded and explicitly documented.",
+      "evidence": [
+        "ReviewReport df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+        "phase2a-review-run",
+        "git diff --check passed",
+        "py -m pytest -q: 32 passed"
+      ],
+      "executor": "phase2a-reviewer-runtime",
+      "gate_id": "INDEPENDENT_REVIEW",
+      "recorded_at": "2026-09-04T07:28:22+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "Fresh verification confirms the 32-test suite, deterministic history replay, extraction idempotency, evidence links, and SQLite health counts for the authorized seed.",
+      "evidence": [
+        "py -m pytest -q: 32 passed",
+        "CodexHistoryImporter first pass 33 accepted and second pass 33 duplicates",
+        "Local DB health: events=33, tasks=3, extraction_runs=3, memory_candidates=6, integrity_check=ok, journal_mode=wal",
+        "Forced retry preservation and timestamp-free replay tests passed"
+      ],
+      "executor": "phase2a-verifier-runtime",
+      "gate_id": "BEHAVIOR_REGRESSION",
+      "recorded_at": "2026-09-04T07:30:11+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "A fresh localhost process served the graph API and 3D page successfully, and the selected task graph contained memory nodes and supports edges.",
+      "evidence": [
+        "GET /v1/health returned 200",
+        "GET /v1/graph?task_id=... returned 200 with 18 nodes, 41 edges, 2 memory nodes, 10 supports edges",
+        "GET / returned 200 and page contained the Three.js import map"
+      ],
+      "executor": "phase2a-verifier-runtime",
+      "gate_id": "RUNTIME_VALIDATION",
+      "recorded_at": "2026-09-04T07:30:12+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "all required artifacts and gates support the delivery claim",
+      "evidence": [
+        {
+          "ledger_revision": 48
+        },
+        {
+          "required_gates": [
+            "GOAL_AND_SCOPE",
+            "DISCOVERY_COMPLETE",
+            "DESIGN_CONTRACT",
+            "WRITE_AUTHORIZATION",
+            "SCOPE_CONFORMANCE",
+            "STATIC_CORRECTNESS",
+            "INDEPENDENT_REVIEW",
+            "BEHAVIOR_REGRESSION"
+          ]
+        },
+        {
+          "required_artifacts": [
+            "TaskContract",
+            "DiscoveryPacket",
+            "TriagePacket",
+            "ChangeSpec",
+            "PatchManifest",
+            "ReviewReport",
+            "VerificationLedger",
+            "FinalHandoff"
+          ]
+        }
+      ],
+      "executor": "delivery-lead",
+      "gate_id": "FINALIZE",
+      "recorded_at": "2026-09-04T07:31:39+00:00",
+      "status": "PASS"
+    }
+  ],
+  "lead": "delivery-lead",
+  "ledger_version": "1.0",
+  "orchestration_activation_state": "INTAKE",
+  "orchestration_contract_version": "2.0",
+  "orchestration_events": [
+    {
+      "actor": "workflow-core",
+      "artifact_id": "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "INTAKE",
+      "kind": "workflow.contract.registered",
+      "observed": {
+        "artifact": {
+          "artifact_id": "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+          "artifact_revision": 1,
+          "artifact_type": "TaskContract",
+          "data": {
+            "constraints": [
+              "SQLite remains the canonical fact store; FTS, candidate search, and graph rows are rebuildable projections.",
+              "LLM and embedding providers are optional replaceable boundaries and are never on the synchronous event-ingest acknowledgement path.",
+              "Every candidate binding and relation must point to evidence event ids from the assembled input; hidden chain-of-thought is not persisted.",
+              "Only the three explicitly supplied Codex task ids may be used as real history input in this delivery.",
+              "Raw history archives containing local paths remain outside the repository; checked-in fixtures must be bounded and intentional.",
+              "The web page is a local inspection preview, not an authentication, cloud, or production deployment surface."
+            ],
+            "goal": "Deliver the first executable Phase 2A coding-memory extraction slice, ingest three explicitly selected local Codex task histories as provenance-preserving events, and expose the resulting candidate-memory graph through a local 3D web inspection surface.",
+            "human_decisions_required": [],
+            "non_goals": [
+              "Stable-card merge, supersede, stale, or forgetting lifecycle (Phase 3).",
+              "Code snapshot or symbol resolution against a live repository (Phase 4).",
+              "Embeddings, vector database, MCP adapter, Codex Desktop hook, or remote provider integration.",
+              "Production-grade 3D layout, collaboration, authentication, or hosted frontend."
+            ],
+            "risk_profile": "T2",
+            "scope_allowlist": [
+              "src/**",
+              "tests/**",
+              "migrations/**",
+              "schemas/**",
+              "fixtures/**",
+              "web/**",
+              "README.md",
+              "pyproject.toml",
+              ".gitignore",
+              ".omx/state/**"
+            ],
+            "scope_forbidden": [
+              ".git/**",
+              ".venv/**",
+              "*.sqlite",
+              "*.sqlite3",
+              "*.db",
+              "data/**",
+              "build/**",
+              "dist/**"
+            ],
+            "stop_condition": "Stop after the Phase 2A extraction, authorized history import, graph API/UI slice, regression checks, and artifact/verification ledger are complete; record Phase 3+ gaps instead of expanding scope.",
+            "success_criteria": [
+              "A bounded task-window ContextAssembler produces a deterministic input hash and evidence id set from immutable events.",
+              "A provider-replaceable extraction service validates strict ExtractionBatch output, persists idempotent extraction runs and candidate memories, and never mutates canonical events or stable cards.",
+              "Malformed or incomplete provider output is rejected with a durable run error and does not create unverifiable candidates.",
+              "The three user-authorized Codex task histories are converted from original message/file evidence into codememory.event.v1 records, ingested through IngestService, and retain thread, source, cwd, and completeness provenance.",
+              "A local HTTP graph endpoint and bundled 3D web page display tasks, sessions, evidence events, candidate memories, bindings, and evidence links from SQLite.",
+              "Existing Phase 0-1 tests remain green and new extraction, history-import, API, and UI smoke tests pass locally."
+            ]
+          },
+          "owner": "delivery-lead",
+          "producer_home_state": "INTAKE",
+          "recorded_at": "2026-09-04T06:50:40+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 1,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T06:50:40+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "INTAKE",
+      "kind": "workflow.mode.selected",
+      "observed": {
+        "entry_mode": "DELIVER",
+        "entry_provenance": {
+          "kind": "DIRECT_DELIVERY",
+          "owner": "delivery-lead",
+          "started_at": "2026-09-04T06:50:40+00:00"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 2,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T06:50:40+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "GOAL_AND_SCOPE"
+      ],
+      "home_state": "INTAKE",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "Phase 2A extraction, authorized history import, and local graph inspection scope is frozen in TaskContract.",
+        "evidence": [
+          ".omx/state/codememory-phase2a-task-contract.json",
+          "README.md",
+          "src/codememory/docs/phase2a-delivery.md"
+        ],
+        "executor": "delivery-lead",
+        "gate": {
+          "claim_proven": "Phase 2A extraction, authorized history import, and local graph inspection scope is frozen in TaskContract.",
+          "evidence": [
+            ".omx/state/codememory-phase2a-task-contract.json",
+            "README.md",
+            "src/codememory/docs/phase2a-delivery.md"
+          ],
+          "executor": "delivery-lead",
+          "gate_id": "GOAL_AND_SCOPE",
+          "recorded_at": "2026-09-04T07:23:01+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 3,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-04T07:23:01+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "INTAKE",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-04T07:23:08+00:00",
+          "from": "INTAKE",
+          "reason": "Scope accepted; begin evidence discovery.",
+          "to": "DISCOVERY"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 4,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:23:08+00:00",
+      "to_state": "DISCOVERY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-discovery",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-discovery",
+          "created_at": "2026-09-04T07:23:20+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:DiscoveryPacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "DISCOVERY",
+          "input_artifact_refs": [
+            "7fc69225-c6b6-4590-a6f2-4fb065b3a937"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Record repository, history, and risk evidence",
+              "milestone_id": "discovery-evidence",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:23:20+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "investigator",
+          "status": "PLANNED",
+          "task_slice": "Inspect the Phase 2A repository boundary, authorized Codex history provenance, and extraction/UI evidence without changing source files.",
+          "updated_at": "2026-09-04T07:23:20+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 5,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-04T07:23:20+00:00"
+    },
+    {
+      "accepted_at": "2026-09-04T07:23:20+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "INTAKE",
+      "handoff_id": "1004bdaf-d3e8-45b6-bfba-68e128f2470d",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:23:20+00:00",
+          "artifact_id": "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+          "from_assignment_id": null,
+          "from_state": "INTAKE",
+          "handoff_id": "1004bdaf-d3e8-45b6-bfba-68e128f2470d",
+          "to_assignment_id": "phase2a-discovery",
+          "to_state": "DISCOVERY"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 6,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:23:20+00:00",
+      "to_assignment_id": "phase2a-discovery",
+      "to_state": "DISCOVERY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-discovery",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-discovery",
+          "created_at": "2026-09-04T07:23:20+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:DiscoveryPacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "DISCOVERY",
+          "input_artifact_refs": [
+            "7fc69225-c6b6-4590-a6f2-4fb065b3a937"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Record repository, history, and risk evidence",
+              "milestone_id": "discovery-evidence",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:23:20+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "investigator",
+          "status": "ACTIVE",
+          "task_slice": "Inspect the Phase 2A repository boundary, authorized Codex history provenance, and extraction/UI evidence without changing source files.",
+          "updated_at": "2026-09-04T07:23:26+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 7,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-04T07:23:26+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-discovery-run",
+      "assignment_id": "phase2a-discovery",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-discovery-run",
+          "assignment_id": "phase2a-discovery",
+          "attempt": 1,
+          "context_id": "phase2a-local-context",
+          "evidence": [
+            "git status --short",
+            "fixtures/codex-history/selected-threads.json",
+            "src/codememory/docs/extraction-contract.md"
+          ],
+          "home_state": "DISCOVERY",
+          "last_seen_at": "2026-09-04T07:23:26+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-investigator-runtime",
+          "runtime_kind": "SERIAL_DISCOVERY",
+          "started_at": "2026-09-04T07:23:26+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 8,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-04T07:23:26+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-discovery-run",
+      "artifact_id": "e976f4bf-16b0-436f-8b42-ded07551bae0",
+      "assignment_id": "phase2a-discovery",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "e976f4bf-16b0-436f-8b42-ded07551bae0",
+          "artifact_revision": 1,
+          "artifact_type": "DiscoveryPacket",
+          "data": {
+            "affected_consumers": [
+              "IngestService and SQLite event store",
+              "ExtractionWorker and future LLM providers",
+              "Local CLI/API clients",
+              "Three.js graph inspector"
+            ],
+            "current_behavior": "Phase 2A is implemented as a SQLite-first, provider-neutral candidate extraction pipeline. The selected Codex history is imported as bounded visible evidence, and the local API exposes a rebuildable graph projection.",
+            "entry_points": [
+              "src/codememory/history/codex.py::CodexHistoryImporter",
+              "src/codememory/extraction/service.py::ExtractionService",
+              "src/codememory/api/app.py::create_app",
+              "web/index.html"
+            ],
+            "evidence": [
+              "Three explicitly authorized Codex thread ids are present in fixtures/codex-history/selected-threads.json.",
+              "The fixture retains visible user/assistant/file/tool evidence and marks completeness=partial.",
+              "Automated extraction, history-import, API, and UI tests cover the delivered boundary."
+            ],
+            "falsifiers": [
+              "A repeated import changes event identity or timestamps for a timestamp-free export.",
+              "A malformed provider batch can create a candidate without source evidence.",
+              "A forced retry deletes the last successful candidate projection.",
+              "The graph endpoint or local page cannot render the imported candidate evidence."
+            ],
+            "recommended_knowledge_routes": [
+              "Treat events and extraction runs as canonical provenance.",
+              "Use strict extraction_batch.v1 before adding any provider.",
+              "Keep candidate graph and FTS as rebuildable projections.",
+              "Promote only verified candidates in a later lifecycle phase."
+            ],
+            "reuse_decision": "EXTEND",
+            "runtime_or_system_owner": "CodeSementicMemory local process and delivery lead; extraction runs are durable SQLite records and the 3D page is a local inspection surface.",
+            "unknowns": [
+              "Full Codex Desktop event-hook coverage is not yet available.",
+              "Candidate bindings still need live repository snapshot validation.",
+              "Embedding/vector projections and stable-card lifecycle are intentionally deferred."
+            ]
+          },
+          "owner": "phase2a-investigator",
+          "producer_agent_run_id": "phase2a-discovery-run",
+          "producer_assignment_id": "phase2a-discovery",
+          "producer_home_state": "DISCOVERY",
+          "recorded_at": "2026-09-04T07:23:40+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 9,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:23:40+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-discovery-run",
+      "assignment_id": "phase2a-discovery",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-discovery-run",
+          "assignment_id": "phase2a-discovery",
+          "attempt": 1,
+          "context_id": "phase2a-local-context",
+          "ended_at": "2026-09-04T07:23:46+00:00",
+          "evidence": [
+            "CodexHistoryImporter tests passed",
+            "Deterministic timestamp/idempotency regression test passed",
+            "DiscoveryPacket records authorized scope and known gaps"
+          ],
+          "home_state": "DISCOVERY",
+          "last_seen_at": "2026-09-04T07:23:46+00:00",
+          "output_artifact_refs": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-investigator-runtime",
+          "runtime_kind": "SERIAL_DISCOVERY",
+          "started_at": "2026-09-04T07:23:26+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 10,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-04T07:23:46+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-discovery",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "discovery-evidence",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0",
+            "phase2a-discovery-run"
+          ],
+          "label": "Record repository, history, and risk evidence",
+          "milestone_id": "discovery-evidence",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:23:53+00:00"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 11,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:23:53+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-discovery",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-discovery",
+          "created_at": "2026-09-04T07:23:20+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-04T07:23:53+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:DiscoveryPacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "DISCOVERY",
+          "input_artifact_refs": [
+            "7fc69225-c6b6-4590-a6f2-4fb065b3a937"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                "e976f4bf-16b0-436f-8b42-ded07551bae0",
+                "phase2a-discovery-run"
+              ],
+              "label": "Record repository, history, and risk evidence",
+              "milestone_id": "discovery-evidence",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-04T07:23:53+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "investigator",
+          "status": "COMPLETED",
+          "task_slice": "Inspect the Phase 2A repository boundary, authorized Codex history provenance, and extraction/UI evidence without changing source files.",
+          "updated_at": "2026-09-04T07:23:53+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 12,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:23:53+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "DISCOVERY_COMPLETE"
+      ],
+      "home_state": "DISCOVERY",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The repository boundary, authorized history seed, provenance policy, and Phase 3+ falsifiers are recorded.",
+        "evidence": [
+          "e976f4bf-16b0-436f-8b42-ded07551bae0",
+          "phase2a-discovery-run",
+          "py -m pytest -q: 32 passed"
+        ],
+        "executor": "phase2a-investigator-runtime",
+        "gate": {
+          "claim_proven": "The repository boundary, authorized history seed, provenance policy, and Phase 3+ falsifiers are recorded.",
+          "evidence": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0",
+            "phase2a-discovery-run",
+            "py -m pytest -q: 32 passed"
+          ],
+          "executor": "phase2a-investigator-runtime",
+          "gate_id": "DISCOVERY_COMPLETE",
+          "recorded_at": "2026-09-04T07:24:00+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 13,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-04T07:24:00+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "DISCOVERY",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-04T07:24:06+00:00",
+          "from": "DISCOVERY",
+          "reason": "Discovery evidence accepted; define coding-memory domain boundaries.",
+          "to": "TRIAGE"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 14,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:24:06+00:00",
+      "to_state": "TRIAGE"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-triage",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-triage",
+          "created_at": "2026-09-04T07:24:14+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:TriagePacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "TRIAGE",
+          "input_artifact_refs": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Record domain invariants and implementation slices",
+              "milestone_id": "triage-contract",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:24:14+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "domain-lead",
+          "status": "PLANNED",
+          "task_slice": "Freeze the coding-memory domain boundary, invariants, write scope, and validation slices for this Phase 2A delivery.",
+          "updated_at": "2026-09-04T07:24:14+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 15,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-04T07:24:14+00:00"
+    },
+    {
+      "accepted_at": "2026-09-04T07:24:14+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "e976f4bf-16b0-436f-8b42-ded07551bae0",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "phase2a-discovery",
+      "from_state": "DISCOVERY",
+      "handoff_id": "49c38f71-0a79-4e90-a2df-65c73abc9a46",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:24:14+00:00",
+          "artifact_id": "e976f4bf-16b0-436f-8b42-ded07551bae0",
+          "from_assignment_id": "phase2a-discovery",
+          "from_state": "DISCOVERY",
+          "handoff_id": "49c38f71-0a79-4e90-a2df-65c73abc9a46",
+          "to_assignment_id": "phase2a-triage",
+          "to_state": "TRIAGE"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 16,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:24:14+00:00",
+      "to_assignment_id": "phase2a-triage",
+      "to_state": "TRIAGE"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-triage",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-triage",
+          "created_at": "2026-09-04T07:24:14+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:TriagePacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "TRIAGE",
+          "input_artifact_refs": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Record domain invariants and implementation slices",
+              "milestone_id": "triage-contract",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:24:14+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "domain-lead",
+          "status": "ACTIVE",
+          "task_slice": "Freeze the coding-memory domain boundary, invariants, write scope, and validation slices for this Phase 2A delivery.",
+          "updated_at": "2026-09-04T07:24:21+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 17,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-04T07:24:21+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-triage-run",
+      "assignment_id": "phase2a-triage",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-triage-run",
+          "assignment_id": "phase2a-triage",
+          "attempt": 1,
+          "context_id": "phase2a-local-context",
+          "evidence": [
+            "DiscoveryPacket e976f4bf-16b0-436f-8b42-ded07551bae0",
+            "TaskContract 7fc69225-c6b6-4590-a6f2-4fb065b3a937"
+          ],
+          "home_state": "TRIAGE",
+          "last_seen_at": "2026-09-04T07:24:21+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-domain-lead-runtime",
+          "runtime_kind": "SERIAL_DOMAIN_TRIAGE",
+          "started_at": "2026-09-04T07:24:21+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 18,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-04T07:24:21+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-triage-run",
+      "artifact_id": "7491e943-1f39-4083-b260-e96f7360cade",
+      "assignment_id": "phase2a-triage",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "7491e943-1f39-4083-b260-e96f7360cade",
+          "artifact_revision": 1,
+          "artifact_type": "TriagePacket",
+          "data": {
+            "behavior_matrix": [
+              {
+                "case": "authorized Codex history import",
+                "expected": "visible events retain thread/title/cwd/completeness provenance"
+              },
+              {
+                "case": "repeat import",
+                "expected": "deterministic duplicate results without new rows"
+              },
+              {
+                "case": "valid extraction",
+                "expected": "candidate rows, evidence links, and FTS projection are stored"
+              },
+              {
+                "case": "invalid extraction",
+                "expected": "run error is durable and no unverifiable candidate is inserted"
+              },
+              {
+                "case": "3D inspection",
+                "expected": "task/candidate/event/file/symbol graph is returned by localhost API"
+              }
+            ],
+            "forbidden_scope": [
+              ".git/**",
+              ".venv/**",
+              "*.sqlite",
+              "*.sqlite3",
+              "*.db",
+              "data/**",
+              "build/**",
+              "dist/**"
+            ],
+            "implementation_slices": [
+              "strict extraction models and schema validation",
+              "deterministic context assembly and run idempotency",
+              "candidate/evidence/link SQLite persistence",
+              "Codex history importer and outbox worker",
+              "graph API and local Three.js inspector",
+              "regression and fixture coverage"
+            ],
+            "invariants": [
+              "Canonical events are append-only and acknowledged without waiting for LLM or embedding work.",
+              "Every candidate and binding is evidence-closed to assembled event ids.",
+              "History provenance remains explicit and hidden reasoning is excluded.",
+              "FTS and graph rows are rebuildable projections, not source of truth.",
+              "The local UI is an inspection surface and cannot mutate facts."
+            ],
+            "primary_domain": "coding-agent persistent memory extraction",
+            "required_gates": [
+              "DESIGN_CONTRACT",
+              "WRITE_AUTHORIZATION",
+              "SCOPE_CONFORMANCE",
+              "STATIC_CORRECTNESS",
+              "INDEPENDENT_REVIEW",
+              "BEHAVIOR_REGRESSION"
+            ],
+            "required_roles": [
+              "domain-lead",
+              "architect",
+              "implementer",
+              "reviewer",
+              "verifier"
+            ],
+            "rollback_or_recovery": "Keep canonical events immutable; if a candidate projection is wrong, rerun the same input hash with an explicit force flag or rebuild projections, then defer stable-card reconciliation to Phase 3.",
+            "secondary_contracts": [
+              "codememory.event.v1",
+              "codememory.extraction_batch.v1",
+              "SQLite migration and outbox contract",
+              "local graph API contract"
+            ],
+            "validation_plan": [
+              {
+                "command": "ruff check src tests",
+                "evidence": "lint output"
+              },
+              {
+                "command": "py -m compileall -q src",
+                "evidence": "compile exit code"
+              },
+              {
+                "command": "py -m pytest -q",
+                "evidence": "full regression suite"
+              },
+              {
+                "command": "node --check web/app.js",
+                "evidence": "frontend syntax check"
+              },
+              {
+                "command": "localhost HTTP smoke",
+                "evidence": "health, graph, and root status 200"
+              }
+            ],
+            "write_scope": [
+              "src/**",
+              "tests/**",
+              "migrations/**",
+              "schemas/**",
+              "fixtures/**",
+              "web/**",
+              "README.md",
+              ".omx/state/**"
+            ]
+          },
+          "owner": "phase2a-domain-lead",
+          "producer_agent_run_id": "phase2a-triage-run",
+          "producer_assignment_id": "phase2a-triage",
+          "producer_home_state": "TRIAGE",
+          "recorded_at": "2026-09-04T07:24:40+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 19,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:24:40+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-triage-run",
+      "assignment_id": "phase2a-triage",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-triage-run",
+          "assignment_id": "phase2a-triage",
+          "attempt": 1,
+          "context_id": "phase2a-local-context",
+          "ended_at": "2026-09-04T07:24:53+00:00",
+          "evidence": [
+            "TriagePacket 7491e943-1f39-4083-b260-e96f7360cade",
+            "Phase 2A scope and invariants reviewed"
+          ],
+          "home_state": "TRIAGE",
+          "last_seen_at": "2026-09-04T07:24:53+00:00",
+          "output_artifact_refs": [
+            "7491e943-1f39-4083-b260-e96f7360cade"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-domain-lead-runtime",
+          "runtime_kind": "SERIAL_DOMAIN_TRIAGE",
+          "started_at": "2026-09-04T07:24:21+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 20,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-04T07:24:53+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-triage",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "triage-contract",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "7491e943-1f39-4083-b260-e96f7360cade",
+            "phase2a-triage-run"
+          ],
+          "label": "Record domain invariants and implementation slices",
+          "milestone_id": "triage-contract",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:24:53+00:00"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 21,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:24:53+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-triage",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-triage",
+          "created_at": "2026-09-04T07:24:14+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-04T07:24:53+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:TriagePacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "TRIAGE",
+          "input_artifact_refs": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                "7491e943-1f39-4083-b260-e96f7360cade",
+                "phase2a-triage-run"
+              ],
+              "label": "Record domain invariants and implementation slices",
+              "milestone_id": "triage-contract",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-04T07:24:53+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "7491e943-1f39-4083-b260-e96f7360cade"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "domain-lead",
+          "status": "COMPLETED",
+          "task_slice": "Freeze the coding-memory domain boundary, invariants, write scope, and validation slices for this Phase 2A delivery.",
+          "updated_at": "2026-09-04T07:24:53+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 22,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:24:53+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "TRIAGE",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-04T07:24:58+00:00",
+          "from": "TRIAGE",
+          "reason": "Domain boundary accepted; freeze implementation contract.",
+          "to": "DESIGN"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 23,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:24:58+00:00",
+      "to_state": "DESIGN"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-design",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-design",
+          "created_at": "2026-09-04T07:25:07+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:ChangeSpec"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "DESIGN",
+          "input_artifact_refs": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0",
+            "7491e943-1f39-4083-b260-e96f7360cade"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Record implementation and validation contract",
+              "milestone_id": "design-contract",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:25:07+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "architect",
+          "status": "PLANNED",
+          "task_slice": "Freeze the executable Phase 2A change contract, persistence boundaries, provider interface, and local graph inspection behavior.",
+          "updated_at": "2026-09-04T07:25:07+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 24,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-04T07:25:07+00:00"
+    },
+    {
+      "accepted_at": "2026-09-04T07:25:07+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "e976f4bf-16b0-436f-8b42-ded07551bae0",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "phase2a-discovery",
+      "from_state": "DISCOVERY",
+      "handoff_id": "f8d531d2-3adb-466a-9b02-886928fbcc1d",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:25:07+00:00",
+          "artifact_id": "e976f4bf-16b0-436f-8b42-ded07551bae0",
+          "from_assignment_id": "phase2a-discovery",
+          "from_state": "DISCOVERY",
+          "handoff_id": "f8d531d2-3adb-466a-9b02-886928fbcc1d",
+          "to_assignment_id": "phase2a-design",
+          "to_state": "DESIGN"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 25,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:25:07+00:00",
+      "to_assignment_id": "phase2a-design",
+      "to_state": "DESIGN"
+    },
+    {
+      "accepted_at": "2026-09-04T07:25:07+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "7491e943-1f39-4083-b260-e96f7360cade",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "phase2a-triage",
+      "from_state": "TRIAGE",
+      "handoff_id": "bde7b382-fd90-4350-b636-8a230566c0b1",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:25:07+00:00",
+          "artifact_id": "7491e943-1f39-4083-b260-e96f7360cade",
+          "from_assignment_id": "phase2a-triage",
+          "from_state": "TRIAGE",
+          "handoff_id": "bde7b382-fd90-4350-b636-8a230566c0b1",
+          "to_assignment_id": "phase2a-design",
+          "to_state": "DESIGN"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 26,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:25:07+00:00",
+      "to_assignment_id": "phase2a-design",
+      "to_state": "DESIGN"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-design",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-design",
+          "created_at": "2026-09-04T07:25:07+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:ChangeSpec"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "DESIGN",
+          "input_artifact_refs": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0",
+            "7491e943-1f39-4083-b260-e96f7360cade"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Record implementation and validation contract",
+              "milestone_id": "design-contract",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:25:07+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "architect",
+          "status": "ACTIVE",
+          "task_slice": "Freeze the executable Phase 2A change contract, persistence boundaries, provider interface, and local graph inspection behavior.",
+          "updated_at": "2026-09-04T07:25:13+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 27,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-04T07:25:13+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-design-run",
+      "assignment_id": "phase2a-design",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-design-run",
+          "assignment_id": "phase2a-design",
+          "attempt": 1,
+          "context_id": "phase2a-local-context",
+          "evidence": [
+            "TriagePacket 7491e943-1f39-4083-b260-e96f7360cade",
+            "Extraction contract and migration design"
+          ],
+          "home_state": "DESIGN",
+          "last_seen_at": "2026-09-04T07:25:13+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-architect-runtime",
+          "runtime_kind": "SERIAL_ARCHITECTURE_DESIGN",
+          "started_at": "2026-09-04T07:25:13+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 28,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-04T07:25:13+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-design-run",
+      "artifact_id": "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+      "assignment_id": "phase2a-design",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+          "artifact_revision": 1,
+          "artifact_type": "ChangeSpec",
+          "data": {
+            "behavior_matrix": [
+              {
+                "case": "new event",
+                "expected": "event plus deduplicated outbox job committed atomically"
+              },
+              {
+                "case": "history replay",
+                "expected": "same event ids and timestamps return duplicates"
+              },
+              {
+                "case": "provider contract violation",
+                "expected": "retry/dead run with zero new unverifiable candidates"
+              },
+              {
+                "case": "worker execution",
+                "expected": "only event.ingested jobs are claimed and extraction is idempotent"
+              },
+              {
+                "case": "graph query",
+                "expected": "bounded task/session/event/memory/file/symbol nodes and links"
+              }
+            ],
+            "forbidden_scope": [
+              ".git/**",
+              ".venv/**",
+              "*.sqlite",
+              "*.sqlite3",
+              "*.db",
+              "data/**",
+              "build/**",
+              "dist/**"
+            ],
+            "implementation_slices": [
+              "migration 0004 extraction_runs and candidate/link tables",
+              "ContextAssembler and strict extraction models",
+              "provider boundary, validation, and idempotent store",
+              "Codex history import from selected read_thread evidence",
+              "outbox worker and CLI/API surfaces",
+              "3D Three.js local inspector and smoke tests"
+            ],
+            "invariants": [
+              "IngestService remains the only canonical event write path.",
+              "LLM/provider execution is after event acknowledgement and replaceable.",
+              "Strict Pydantic output and evidence closure are mandatory before candidate insert.",
+              "Candidate rows and FTS/graph links are rebuildable and do not mutate events.",
+              "History importer omits reasoning and keeps explicit partial provenance.",
+              "Forced extraction replacement is transactional and preserves last good candidates on failure."
+            ],
+            "primary_domain": "SQLite-first coding memory extraction",
+            "required_gates": [
+              "DESIGN_CONTRACT",
+              "WRITE_AUTHORIZATION",
+              "SCOPE_CONFORMANCE",
+              "STATIC_CORRECTNESS",
+              "INDEPENDENT_REVIEW",
+              "BEHAVIOR_REGRESSION"
+            ],
+            "required_roles": [
+              "architect",
+              "implementer",
+              "reviewer",
+              "verifier"
+            ],
+            "rollback_or_recovery": "Do not delete canonical events. Rebuild candidate FTS/graph projections or force a bounded extraction retry; preserve the previous successful candidate rows until replacement commits.",
+            "secondary_contracts": [
+              "codememory.event.v1",
+              "codememory.extraction_batch.v1",
+              "outbox lease/ack semantics",
+              "local HTTP graph projection"
+            ],
+            "validation_plan": [
+              {
+                "command": "ruff check src tests",
+                "evidence": "no lint findings"
+              },
+              {
+                "command": "py -m compileall -q src",
+                "evidence": "Python compile succeeds"
+              },
+              {
+                "command": "py -m pytest -q",
+                "evidence": "all regression and Phase 2A tests"
+              },
+              {
+                "command": "node --check web/app.js",
+                "evidence": "frontend syntax succeeds"
+              },
+              {
+                "command": "import fixture twice and inspect health",
+                "evidence": "33 events, second pass duplicates"
+              },
+              {
+                "command": "HTTP smoke against local server",
+                "evidence": "health/graph/root return 200"
+              }
+            ],
+            "write_scope": [
+              "src/**",
+              "tests/**",
+              "migrations/**",
+              "schemas/**",
+              "fixtures/**",
+              "web/**",
+              "README.md",
+              ".omx/state/**"
+            ]
+          },
+          "owner": "phase2a-architect",
+          "producer_agent_run_id": "phase2a-design-run",
+          "producer_assignment_id": "phase2a-design",
+          "producer_home_state": "DESIGN",
+          "recorded_at": "2026-09-04T07:25:30+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 29,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:25:30+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-design-run",
+      "assignment_id": "phase2a-design",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-design-run",
+          "assignment_id": "phase2a-design",
+          "attempt": 1,
+          "context_id": "phase2a-local-context",
+          "ended_at": "2026-09-04T07:25:40+00:00",
+          "evidence": [
+            "ChangeSpec e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "Provider, storage, worker, and UI boundaries frozen"
+          ],
+          "home_state": "DESIGN",
+          "last_seen_at": "2026-09-04T07:25:40+00:00",
+          "output_artifact_refs": [
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-architect-runtime",
+          "runtime_kind": "SERIAL_ARCHITECTURE_DESIGN",
+          "started_at": "2026-09-04T07:25:13+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 30,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-04T07:25:40+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-design",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "design-contract",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "phase2a-design-run"
+          ],
+          "label": "Record implementation and validation contract",
+          "milestone_id": "design-contract",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:25:40+00:00"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 31,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:25:40+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-design",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-design",
+          "created_at": "2026-09-04T07:25:07+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-04T07:25:40+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:ChangeSpec"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "DESIGN",
+          "input_artifact_refs": [
+            "e976f4bf-16b0-436f-8b42-ded07551bae0",
+            "7491e943-1f39-4083-b260-e96f7360cade"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+                "phase2a-design-run"
+              ],
+              "label": "Record implementation and validation contract",
+              "milestone_id": "design-contract",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-04T07:25:40+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "architect",
+          "status": "COMPLETED",
+          "task_slice": "Freeze the executable Phase 2A change contract, persistence boundaries, provider interface, and local graph inspection behavior.",
+          "updated_at": "2026-09-04T07:25:40+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 32,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:25:40+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "DESIGN_CONTRACT"
+      ],
+      "home_state": "DESIGN",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The Phase 2A implementation boundary, invariants, rollback path, and validation plan are frozen in ChangeSpec.",
+        "evidence": [
+          "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+          "phase2a-design-run",
+          "src/codememory/docs/extraction-contract.md"
+        ],
+        "executor": "phase2a-architect-runtime",
+        "gate": {
+          "claim_proven": "The Phase 2A implementation boundary, invariants, rollback path, and validation plan are frozen in ChangeSpec.",
+          "evidence": [
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "phase2a-design-run",
+            "src/codememory/docs/extraction-contract.md"
+          ],
+          "executor": "phase2a-architect-runtime",
+          "gate_id": "DESIGN_CONTRACT",
+          "recorded_at": "2026-09-04T07:25:48+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 33,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-04T07:25:48+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "WRITE_AUTHORIZATION"
+      ],
+      "home_state": "DESIGN",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The user explicitly authorized implementing Phase 2A, importing the three selected Codex histories, and adding the local graph inspector within the TaskContract scope.",
+        "evidence": [
+          "User request to complete Phase 2A and use the three referenced Codex tasks",
+          "TaskContract 7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+          "ChangeSpec e0dba6ec-37d9-4380-9325-531eefff6a5d"
+        ],
+        "executor": "delivery-lead",
+        "gate": {
+          "claim_proven": "The user explicitly authorized implementing Phase 2A, importing the three selected Codex histories, and adding the local graph inspector within the TaskContract scope.",
+          "evidence": [
+            "User request to complete Phase 2A and use the three referenced Codex tasks",
+            "TaskContract 7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+            "ChangeSpec e0dba6ec-37d9-4380-9325-531eefff6a5d"
+          ],
+          "executor": "delivery-lead",
+          "gate_id": "WRITE_AUTHORIZATION",
+          "recorded_at": "2026-09-04T07:25:57+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 34,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-04T07:25:57+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "DESIGN",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-04T07:26:07+00:00",
+          "from": "DESIGN",
+          "reason": "Design contract and write authorization accepted; record implementation evidence.",
+          "to": "IMPLEMENT"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 35,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:26:07+00:00",
+      "to_state": "IMPLEMENT"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-implementation",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-implementation",
+          "created_at": "2026-09-04T07:26:26+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:PatchManifest"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            ".venv/**",
+            "*.sqlite",
+            "*.sqlite3",
+            "*.db",
+            "data/**",
+            "build/**",
+            "dist/**"
+          ],
+          "home_state": "IMPLEMENT",
+          "input_artifact_refs": [
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Implement strict extraction and SQLite candidate pipeline",
+              "milestone_id": "core-pipeline",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:26:26+00:00"
+            },
+            {
+              "evidence": [],
+              "label": "Import authorized history and expose graph inspection",
+              "milestone_id": "history-ui",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:26:26+00:00"
+            },
+            {
+              "evidence": [],
+              "label": "Add tests and run local checks",
+              "milestone_id": "regression",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:26:26+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "implementer",
+          "status": "PLANNED",
+          "task_slice": "Implement and verify the frozen Phase 2A extraction, authorized Codex history import, outbox worker, HTTP graph API, and local 3D inspector within the approved write scope.",
+          "updated_at": "2026-09-04T07:26:26+00:00",
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ]
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 36,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-04T07:26:26+00:00"
+    },
+    {
+      "accepted_at": "2026-09-04T07:26:26+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "phase2a-design",
+      "from_state": "DESIGN",
+      "handoff_id": "67583c01-b282-47c5-9d93-870918c0ce61",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:26:26+00:00",
+          "artifact_id": "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+          "from_assignment_id": "phase2a-design",
+          "from_state": "DESIGN",
+          "handoff_id": "67583c01-b282-47c5-9d93-870918c0ce61",
+          "to_assignment_id": "phase2a-implementation",
+          "to_state": "IMPLEMENT"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 37,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:26:26+00:00",
+      "to_assignment_id": "phase2a-implementation",
+      "to_state": "IMPLEMENT"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-implementation",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-implementation",
+          "created_at": "2026-09-04T07:26:26+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:PatchManifest"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            ".venv/**",
+            "*.sqlite",
+            "*.sqlite3",
+            "*.db",
+            "data/**",
+            "build/**",
+            "dist/**"
+          ],
+          "home_state": "IMPLEMENT",
+          "input_artifact_refs": [
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Implement strict extraction and SQLite candidate pipeline",
+              "milestone_id": "core-pipeline",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:26:26+00:00"
+            },
+            {
+              "evidence": [],
+              "label": "Import authorized history and expose graph inspection",
+              "milestone_id": "history-ui",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:26:26+00:00"
+            },
+            {
+              "evidence": [],
+              "label": "Add tests and run local checks",
+              "milestone_id": "regression",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:26:26+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "implementer",
+          "status": "ACTIVE",
+          "task_slice": "Implement and verify the frozen Phase 2A extraction, authorized Codex history import, outbox worker, HTTP graph API, and local 3D inspector within the approved write scope.",
+          "updated_at": "2026-09-04T07:26:35+00:00",
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ]
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 38,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-04T07:26:35+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-implementation-run",
+      "assignment_id": "phase2a-implementation",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-implementation-run",
+          "assignment_id": "phase2a-implementation",
+          "attempt": 1,
+          "context_id": "phase2a-local-context",
+          "evidence": [
+            "ChangeSpec e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "git diff and tests"
+          ],
+          "home_state": "IMPLEMENT",
+          "last_seen_at": "2026-09-04T07:26:35+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-implementer-runtime",
+          "runtime_kind": "SERIAL_IMPLEMENTATION",
+          "started_at": "2026-09-04T07:26:35+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 39,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-04T07:26:35+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-implementation-run",
+      "artifact_id": "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+      "assignment_id": "phase2a-implementation",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+          "artifact_revision": 1,
+          "artifact_type": "PatchManifest",
+          "data": {
+            "behavior_changed": [
+              "Adds strict, evidence-closed candidate extraction runs and SQLite links.",
+              "Imports the three selected Codex histories as deterministic provenance-preserving events.",
+              "Adds an outbox extraction worker, CLI/API inspection routes, and a local Three.js graph UI.",
+              "Keeps LLM/embedding work off the ingest acknowledgement path and makes projections rebuildable."
+            ],
+            "changed_artifacts": [
+              "README.md",
+              "migrations/0004_extraction_candidates.sql",
+              "src/codememory/api/app.py",
+              "src/codememory/cli.py",
+              "src/codememory/docs/extraction-contract.md",
+              "src/codememory/docs/phase2a-delivery.md",
+              "src/codememory/extraction/__init__.py",
+              "src/codememory/extraction/context.py",
+              "src/codememory/extraction/models.py",
+              "src/codememory/extraction/providers.py",
+              "src/codememory/extraction/service.py",
+              "src/codememory/extraction/store.py",
+              "src/codememory/history/__init__.py",
+              "src/codememory/history/codex.py",
+              "src/codememory/storage/repository.py",
+              "src/codememory/workers/__init__.py",
+              "src/codememory/workers/extraction.py",
+              "tests/integration/test_codex_history_import.py",
+              "tests/integration/test_phase2a_api_and_ui.py",
+              "tests/integration/test_phase2a_extraction.py",
+              "tests/integration/test_repository.py",
+              "fixtures/codex-history/selected-threads.json",
+              "web/index.html",
+              "web/styles.css",
+              "web/app.js"
+            ],
+            "contracts_satisfied": [
+              "TaskContract success criteria for Phase 2A",
+              "codememory.event.v1 ingest and idempotency contract",
+              "codememory.extraction_batch.v1 strict provider contract",
+              "SQLite migration, FTS, graph, and outbox boundaries"
+            ],
+            "known_gaps": [
+              "Candidates are not yet promoted to stable cards or reconciled with supersede/stale/forgetting policy.",
+              "Paths and symbols are not checked against a live repository snapshot.",
+              "Embeddings/vector search, MCP, native Codex adapter, and production auth/hosting remain later layers.",
+              "Three.js first preview uses a pinned CDN module and therefore expects browser network access."
+            ],
+            "local_checks": [
+              {
+                "command": "ruff check src tests",
+                "result": "All checks passed"
+              },
+              {
+                "command": "py -m compileall -q src",
+                "result": "passed"
+              },
+              {
+                "command": "node --check web/app.js",
+                "result": "passed"
+              },
+              {
+                "command": "py -m pytest -q",
+                "result": "32 passed, 1 deprecation warning"
+              },
+              {
+                "command": "Codex fixture import twice",
+                "result": "33 accepted first pass; 33 duplicates second pass"
+              },
+              {
+                "command": "local API smoke",
+                "result": "/v1/health, /v1/graph, / returned 200"
+              }
+            ],
+            "scope_exceptions": []
+          },
+          "owner": "phase2a-implementer",
+          "producer_agent_run_id": "phase2a-implementation-run",
+          "producer_assignment_id": "phase2a-implementation",
+          "producer_home_state": "IMPLEMENT",
+          "recorded_at": "2026-09-04T07:26:51+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 40,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:26:51+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-implementation-run",
+      "assignment_id": "phase2a-implementation",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-implementation-run",
+          "assignment_id": "phase2a-implementation",
+          "attempt": 1,
+          "context_id": "phase2a-local-context",
+          "ended_at": "2026-09-04T07:27:05+00:00",
+          "evidence": [
+            "PatchManifest 9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "ruff, compileall, node syntax, and 32-test suite passed",
+            "33-event authorized history import and local HTTP smoke passed"
+          ],
+          "home_state": "IMPLEMENT",
+          "last_seen_at": "2026-09-04T07:27:05+00:00",
+          "output_artifact_refs": [
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-implementer-runtime",
+          "runtime_kind": "SERIAL_IMPLEMENTATION",
+          "started_at": "2026-09-04T07:26:35+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 41,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-04T07:27:05+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-implementation",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "core-pipeline",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "py -m pytest -q: 32 passed"
+          ],
+          "label": "Implement strict extraction and SQLite candidate pipeline",
+          "milestone_id": "core-pipeline",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:27:06+00:00"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 42,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:27:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-implementation",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "history-ui",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "33-event import and HTTP smoke"
+          ],
+          "label": "Import authorized history and expose graph inspection",
+          "milestone_id": "history-ui",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:27:06+00:00"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 43,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:27:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-implementation",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "regression",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "ruff/compileall/node --check passed"
+          ],
+          "label": "Add tests and run local checks",
+          "milestone_id": "regression",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:27:06+00:00"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 44,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:27:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-implementation",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-implementation",
+          "created_at": "2026-09-04T07:26:26+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-04T07:27:06+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:PatchManifest"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            ".venv/**",
+            "*.sqlite",
+            "*.sqlite3",
+            "*.db",
+            "data/**",
+            "build/**",
+            "dist/**"
+          ],
+          "home_state": "IMPLEMENT",
+          "input_artifact_refs": [
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+                "py -m pytest -q: 32 passed"
+              ],
+              "label": "Implement strict extraction and SQLite candidate pipeline",
+              "milestone_id": "core-pipeline",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-04T07:27:06+00:00"
+            },
+            {
+              "evidence": [
+                "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+                "33-event import and HTTP smoke"
+              ],
+              "label": "Import authorized history and expose graph inspection",
+              "milestone_id": "history-ui",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-04T07:27:06+00:00"
+            },
+            {
+              "evidence": [
+                "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+                "ruff/compileall/node --check passed"
+              ],
+              "label": "Add tests and run local checks",
+              "milestone_id": "regression",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-04T07:27:06+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "implementer",
+          "status": "COMPLETED",
+          "task_slice": "Implement and verify the frozen Phase 2A extraction, authorized Codex history import, outbox worker, HTTP graph API, and local 3D inspector within the approved write scope.",
+          "updated_at": "2026-09-04T07:27:06+00:00",
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ]
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 45,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:27:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "SCOPE_CONFORMANCE"
+      ],
+      "home_state": "IMPLEMENT",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "All Phase 2A changed files are inside the approved allowlist and no runtime database/build artifacts are tracked.",
+        "evidence": [
+          "adaptive_vibe scope-check returned ok=true and violations=[]",
+          "PatchManifest 9c83ff3b-b339-4892-97db-a7f2a20556fb",
+          "git status --short"
+        ],
+        "executor": "phase2a-implementer-runtime",
+        "gate": {
+          "claim_proven": "All Phase 2A changed files are inside the approved allowlist and no runtime database/build artifacts are tracked.",
+          "evidence": [
+            "adaptive_vibe scope-check returned ok=true and violations=[]",
+            "PatchManifest 9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "git status --short"
+          ],
+          "executor": "phase2a-implementer-runtime",
+          "gate_id": "SCOPE_CONFORMANCE",
+          "recorded_at": "2026-09-04T07:27:22+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 46,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-04T07:27:22+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "STATIC_CORRECTNESS"
+      ],
+      "home_state": "IMPLEMENT",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "Python compilation, lint, frontend syntax, and the complete local test suite pass for the Phase 2A boundary.",
+        "evidence": [
+          "ruff check src tests: All checks passed",
+          "py -m compileall -q src: passed",
+          "node --check web/app.js: passed",
+          "py -m pytest -q: 32 passed, 1 warning"
+        ],
+        "executor": "phase2a-implementer-runtime",
+        "gate": {
+          "claim_proven": "Python compilation, lint, frontend syntax, and the complete local test suite pass for the Phase 2A boundary.",
+          "evidence": [
+            "ruff check src tests: All checks passed",
+            "py -m compileall -q src: passed",
+            "node --check web/app.js: passed",
+            "py -m pytest -q: 32 passed, 1 warning"
+          ],
+          "executor": "phase2a-implementer-runtime",
+          "gate_id": "STATIC_CORRECTNESS",
+          "recorded_at": "2026-09-04T07:27:28+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 47,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-04T07:27:28+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "IMPLEMENT",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-04T07:27:33+00:00",
+          "from": "IMPLEMENT",
+          "reason": "Implementation evidence and static checks accepted; perform independent review.",
+          "to": "REVIEW"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 48,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:27:33+00:00",
+      "to_state": "REVIEW"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-review",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-review",
+          "created_at": "2026-09-04T07:27:44+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:ReviewReport"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "REVIEW",
+          "input_artifact_refs": [
+            "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Record independent review verdict and findings",
+              "milestone_id": "review-findings",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:27:44+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "reviewer",
+          "status": "PLANNED",
+          "task_slice": "Review the frozen contract, implementation diff, history provenance, extraction integrity, scope, and UI/API boundary for blocking findings.",
+          "updated_at": "2026-09-04T07:27:44+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 49,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-04T07:27:44+00:00"
+    },
+    {
+      "accepted_at": "2026-09-04T07:27:44+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "INTAKE",
+      "handoff_id": "7858750c-6d1a-4e7e-b33e-53236bc55a4d",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:27:44+00:00",
+          "artifact_id": "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+          "from_assignment_id": null,
+          "from_state": "INTAKE",
+          "handoff_id": "7858750c-6d1a-4e7e-b33e-53236bc55a4d",
+          "to_assignment_id": "phase2a-review",
+          "to_state": "REVIEW"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 50,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:27:44+00:00",
+      "to_assignment_id": "phase2a-review",
+      "to_state": "REVIEW"
+    },
+    {
+      "accepted_at": "2026-09-04T07:27:44+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "phase2a-design",
+      "from_state": "DESIGN",
+      "handoff_id": "aa549c03-c378-43a2-af89-1524c6777f51",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:27:44+00:00",
+          "artifact_id": "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+          "from_assignment_id": "phase2a-design",
+          "from_state": "DESIGN",
+          "handoff_id": "aa549c03-c378-43a2-af89-1524c6777f51",
+          "to_assignment_id": "phase2a-review",
+          "to_state": "REVIEW"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 51,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:27:44+00:00",
+      "to_assignment_id": "phase2a-review",
+      "to_state": "REVIEW"
+    },
+    {
+      "accepted_at": "2026-09-04T07:27:44+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "phase2a-implementation",
+      "from_state": "IMPLEMENT",
+      "handoff_id": "29234db5-ff8d-4a6a-8049-9116e19f5ba7",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:27:44+00:00",
+          "artifact_id": "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+          "from_assignment_id": "phase2a-implementation",
+          "from_state": "IMPLEMENT",
+          "handoff_id": "29234db5-ff8d-4a6a-8049-9116e19f5ba7",
+          "to_assignment_id": "phase2a-review",
+          "to_state": "REVIEW"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 52,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:27:44+00:00",
+      "to_assignment_id": "phase2a-review",
+      "to_state": "REVIEW"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-review",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-review",
+          "created_at": "2026-09-04T07:27:44+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:ReviewReport"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "REVIEW",
+          "input_artifact_refs": [
+            "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Record independent review verdict and findings",
+              "milestone_id": "review-findings",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:27:44+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "reviewer",
+          "status": "ACTIVE",
+          "task_slice": "Review the frozen contract, implementation diff, history provenance, extraction integrity, scope, and UI/API boundary for blocking findings.",
+          "updated_at": "2026-09-04T07:27:52+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 53,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-04T07:27:52+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-review-run",
+      "assignment_id": "phase2a-review",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-review-run",
+          "assignment_id": "phase2a-review",
+          "attempt": 1,
+          "context_id": "phase2a-fresh-review-context",
+          "evidence": [
+            "TaskContract 7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+            "ChangeSpec e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "PatchManifest 9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "git diff --check"
+          ],
+          "home_state": "REVIEW",
+          "last_seen_at": "2026-09-04T07:27:52+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-reviewer-runtime",
+          "runtime_kind": "INDEPENDENT_REVIEW",
+          "started_at": "2026-09-04T07:27:52+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 54,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-04T07:27:52+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-review-run",
+      "artifact_id": "df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+      "assignment_id": "phase2a-review",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+          "artifact_revision": 1,
+          "artifact_type": "ReviewReport",
+          "data": {
+            "contract_violations": [],
+            "findings": [
+              {
+                "area": "provenance",
+                "finding": "The three authorized Codex seed threads are bounded and explicitly marked partial; reasoning/context-compaction records are omitted by policy.",
+                "severity": "info"
+              },
+              {
+                "area": "integrity",
+                "finding": "Extraction candidates are evidence-closed, idempotent by task/input/extractor/prompt/schema key, and forced replacement is transactional.",
+                "severity": "info"
+              },
+              {
+                "area": "projection",
+                "finding": "FTS and graph links are rebuildable SQLite projections; canonical events remain immutable.",
+                "severity": "info"
+              },
+              {
+                "area": "ui",
+                "finding": "The local Three.js inspector is read-only and bounded; CDN loading is documented as a preview limitation.",
+                "severity": "info"
+              },
+              {
+                "area": "independence",
+                "finding": "Reviewer ran in a fresh logical context but the host had no subagent runtime; independence is degraded and recorded explicitly.",
+                "severity": "process"
+              }
+            ],
+            "required_rework": [],
+            "scope_drift": [],
+            "unverified_assumptions": [
+              "Live repository symbol existence and binding validity remain a Phase 4 concern.",
+              "The selected Codex export is not a complete private transcript."
+            ],
+            "verdict": "PASS"
+          },
+          "owner": "phase2a-reviewer",
+          "producer_agent_run_id": "phase2a-review-run",
+          "producer_assignment_id": "phase2a-review",
+          "producer_home_state": "REVIEW",
+          "recorded_at": "2026-09-04T07:28:04+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 55,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:28:04+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-review-run",
+      "assignment_id": "phase2a-review",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-review-run",
+          "assignment_id": "phase2a-review",
+          "attempt": 1,
+          "context_id": "phase2a-fresh-review-context",
+          "ended_at": "2026-09-04T07:28:13+00:00",
+          "evidence": [
+            "ReviewReport df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+            "git diff --check passed",
+            "Fresh-context review found no blocking scope or contract issue; independence degraded is explicitly noted"
+          ],
+          "home_state": "REVIEW",
+          "last_seen_at": "2026-09-04T07:28:13+00:00",
+          "output_artifact_refs": [
+            "df0e1f41-b3e5-4b00-9b85-b0f14e585028"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-reviewer-runtime",
+          "runtime_kind": "INDEPENDENT_REVIEW",
+          "started_at": "2026-09-04T07:27:52+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 56,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-04T07:28:13+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-review",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "review-findings",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+            "phase2a-review-run"
+          ],
+          "label": "Record independent review verdict and findings",
+          "milestone_id": "review-findings",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:28:13+00:00"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 57,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:28:13+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-review",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-review",
+          "created_at": "2026-09-04T07:27:44+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-04T07:28:13+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:ReviewReport"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "REVIEW",
+          "input_artifact_refs": [
+            "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                "df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+                "phase2a-review-run"
+              ],
+              "label": "Record independent review verdict and findings",
+              "milestone_id": "review-findings",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-04T07:28:13+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "df0e1f41-b3e5-4b00-9b85-b0f14e585028"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "reviewer",
+          "status": "COMPLETED",
+          "task_slice": "Review the frozen contract, implementation diff, history provenance, extraction integrity, scope, and UI/API boundary for blocking findings.",
+          "updated_at": "2026-09-04T07:28:13+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 58,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:28:13+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "INDEPENDENT_REVIEW"
+      ],
+      "home_state": "REVIEW",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The fresh review context found no blocking scope, contract, persistence-integrity, provenance, or UI/API findings; host-level independence is degraded and explicitly documented.",
+        "evidence": [
+          "ReviewReport df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+          "phase2a-review-run",
+          "git diff --check passed",
+          "py -m pytest -q: 32 passed"
+        ],
+        "executor": "phase2a-reviewer-runtime",
+        "gate": {
+          "claim_proven": "The fresh review context found no blocking scope, contract, persistence-integrity, provenance, or UI/API findings; host-level independence is degraded and explicitly documented.",
+          "evidence": [
+            "ReviewReport df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+            "phase2a-review-run",
+            "git diff --check passed",
+            "py -m pytest -q: 32 passed"
+          ],
+          "executor": "phase2a-reviewer-runtime",
+          "gate_id": "INDEPENDENT_REVIEW",
+          "recorded_at": "2026-09-04T07:28:22+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 59,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-04T07:28:22+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "REVIEW",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-04T07:28:27+00:00",
+          "from": "REVIEW",
+          "reason": "Review passed; execute behavioral and runtime verification.",
+          "to": "VERIFY"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 60,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:28:27+00:00",
+      "to_state": "VERIFY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-verification",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-verification",
+          "created_at": "2026-09-04T07:28:58+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:VerificationLedger"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "VERIFY",
+          "input_artifact_refs": [
+            "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "df0e1f41-b3e5-4b00-9b85-b0f14e585028"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Verify extraction, idempotency, provenance, and projections",
+              "milestone_id": "behavior-regression",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:28:58+00:00"
+            },
+            {
+              "evidence": [],
+              "label": "Verify localhost health, graph endpoint, and web page",
+              "milestone_id": "runtime-validation",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:28:58+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "verifier",
+          "status": "PLANNED",
+          "task_slice": "Run fresh behavioral, persistence, history replay, graph API, and local UI checks against the Phase 2A delivery and record the evidence ledger.",
+          "updated_at": "2026-09-04T07:28:58+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 61,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-04T07:28:58+00:00"
+    },
+    {
+      "accepted_at": "2026-09-04T07:28:58+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "INTAKE",
+      "handoff_id": "f6834f6a-1c3e-482b-9257-31522e969527",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:28:58+00:00",
+          "artifact_id": "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+          "from_assignment_id": null,
+          "from_state": "INTAKE",
+          "handoff_id": "f6834f6a-1c3e-482b-9257-31522e969527",
+          "to_assignment_id": "phase2a-verification",
+          "to_state": "VERIFY"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 62,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:28:58+00:00",
+      "to_assignment_id": "phase2a-verification",
+      "to_state": "VERIFY"
+    },
+    {
+      "accepted_at": "2026-09-04T07:28:58+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "phase2a-design",
+      "from_state": "DESIGN",
+      "handoff_id": "3a43fb08-4c8c-468e-8bc3-839420d9e06e",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:28:58+00:00",
+          "artifact_id": "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+          "from_assignment_id": "phase2a-design",
+          "from_state": "DESIGN",
+          "handoff_id": "3a43fb08-4c8c-468e-8bc3-839420d9e06e",
+          "to_assignment_id": "phase2a-verification",
+          "to_state": "VERIFY"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 63,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:28:58+00:00",
+      "to_assignment_id": "phase2a-verification",
+      "to_state": "VERIFY"
+    },
+    {
+      "accepted_at": "2026-09-04T07:28:58+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "phase2a-implementation",
+      "from_state": "IMPLEMENT",
+      "handoff_id": "4c45cf15-bbbc-46e4-8db5-5032221aae23",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:28:58+00:00",
+          "artifact_id": "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+          "from_assignment_id": "phase2a-implementation",
+          "from_state": "IMPLEMENT",
+          "handoff_id": "4c45cf15-bbbc-46e4-8db5-5032221aae23",
+          "to_assignment_id": "phase2a-verification",
+          "to_state": "VERIFY"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 64,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:28:58+00:00",
+      "to_assignment_id": "phase2a-verification",
+      "to_state": "VERIFY"
+    },
+    {
+      "accepted_at": "2026-09-04T07:28:58+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "phase2a-review",
+      "from_state": "REVIEW",
+      "handoff_id": "815fc672-97bb-4e32-8c84-ee112a0f17a1",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-04T07:28:58+00:00",
+          "artifact_id": "df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+          "from_assignment_id": "phase2a-review",
+          "from_state": "REVIEW",
+          "handoff_id": "815fc672-97bb-4e32-8c84-ee112a0f17a1",
+          "to_assignment_id": "phase2a-verification",
+          "to_state": "VERIFY"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 65,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:28:58+00:00",
+      "to_assignment_id": "phase2a-verification",
+      "to_state": "VERIFY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-verification",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-verification",
+          "created_at": "2026-09-04T07:28:58+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:VerificationLedger"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "VERIFY",
+          "input_artifact_refs": [
+            "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "df0e1f41-b3e5-4b00-9b85-b0f14e585028"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Verify extraction, idempotency, provenance, and projections",
+              "milestone_id": "behavior-regression",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:28:58+00:00"
+            },
+            {
+              "evidence": [],
+              "label": "Verify localhost health, graph endpoint, and web page",
+              "milestone_id": "runtime-validation",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-04T07:28:58+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "verifier",
+          "status": "ACTIVE",
+          "task_slice": "Run fresh behavioral, persistence, history replay, graph API, and local UI checks against the Phase 2A delivery and record the evidence ledger.",
+          "updated_at": "2026-09-04T07:29:05+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 66,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-04T07:29:05+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-verification-run",
+      "assignment_id": "phase2a-verification",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-verification-run",
+          "assignment_id": "phase2a-verification",
+          "attempt": 1,
+          "context_id": "phase2a-fresh-verification-context",
+          "evidence": [
+            "py -m pytest -q: 32 passed",
+            "local DB health: 33 events, 3 tasks, 3 runs, 6 candidates",
+            "HTTP smoke target 127.0.0.1:8876"
+          ],
+          "home_state": "VERIFY",
+          "last_seen_at": "2026-09-04T07:29:05+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-verifier-runtime",
+          "runtime_kind": "BEHAVIOR_REGRESSION",
+          "started_at": "2026-09-04T07:29:05+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 67,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-04T07:29:05+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-verification-run",
+      "assignment_id": "phase2a-verification",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-verification-run",
+          "assignment_id": "phase2a-verification",
+          "attempt": 1,
+          "context_id": "phase2a-fresh-verification-context",
+          "ended_at": "2026-09-04T07:30:00+00:00",
+          "evidence": [
+            "py -m pytest -q: 32 passed",
+            "Local DB health: 33 events, 3 tasks, 3 extraction runs, 6 candidates, WAL, integrity ok",
+            "Fresh localhost smoke: health 200, graph 200, root 200; selected graph 18 nodes/41 edges with 2 memories and 10 supports edges"
+          ],
+          "home_state": "VERIFY",
+          "last_seen_at": "2026-09-04T07:30:00+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-verifier-runtime",
+          "runtime_kind": "BEHAVIOR_REGRESSION",
+          "started_at": "2026-09-04T07:29:05+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 68,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-04T07:30:00+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "BEHAVIOR_REGRESSION"
+      ],
+      "home_state": "VERIFY",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "Fresh verification confirms the 32-test suite, deterministic history replay, extraction idempotency, evidence links, and SQLite health counts for the authorized seed.",
+        "evidence": [
+          "py -m pytest -q: 32 passed",
+          "CodexHistoryImporter first pass 33 accepted and second pass 33 duplicates",
+          "Local DB health: events=33, tasks=3, extraction_runs=3, memory_candidates=6, integrity_check=ok, journal_mode=wal",
+          "Forced retry preservation and timestamp-free replay tests passed"
+        ],
+        "executor": "phase2a-verifier-runtime",
+        "gate": {
+          "claim_proven": "Fresh verification confirms the 32-test suite, deterministic history replay, extraction idempotency, evidence links, and SQLite health counts for the authorized seed.",
+          "evidence": [
+            "py -m pytest -q: 32 passed",
+            "CodexHistoryImporter first pass 33 accepted and second pass 33 duplicates",
+            "Local DB health: events=33, tasks=3, extraction_runs=3, memory_candidates=6, integrity_check=ok, journal_mode=wal",
+            "Forced retry preservation and timestamp-free replay tests passed"
+          ],
+          "executor": "phase2a-verifier-runtime",
+          "gate_id": "BEHAVIOR_REGRESSION",
+          "recorded_at": "2026-09-04T07:30:11+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 69,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-04T07:30:11+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "RUNTIME_VALIDATION"
+      ],
+      "home_state": "VERIFY",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "A fresh localhost process served the graph API and 3D page successfully, and the selected task graph contained memory nodes and supports edges.",
+        "evidence": [
+          "GET /v1/health returned 200",
+          "GET /v1/graph?task_id=... returned 200 with 18 nodes, 41 edges, 2 memory nodes, 10 supports edges",
+          "GET / returned 200 and page contained the Three.js import map"
+        ],
+        "executor": "phase2a-verifier-runtime",
+        "gate": {
+          "claim_proven": "A fresh localhost process served the graph API and 3D page successfully, and the selected task graph contained memory nodes and supports edges.",
+          "evidence": [
+            "GET /v1/health returned 200",
+            "GET /v1/graph?task_id=... returned 200 with 18 nodes, 41 edges, 2 memory nodes, 10 supports edges",
+            "GET / returned 200 and page contained the Three.js import map"
+          ],
+          "executor": "phase2a-verifier-runtime",
+          "gate_id": "RUNTIME_VALIDATION",
+          "recorded_at": "2026-09-04T07:30:12+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 70,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-04T07:30:12+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-verification-run",
+      "artifact_id": "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+      "assignment_id": "phase2a-verification",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+          "artifact_revision": 1,
+          "artifact_type": "VerificationLedger",
+          "data": {
+            "gate_results": [
+              {
+                "claim_proven": "Phase 2A extraction, authorized history import, and local graph inspection scope is frozen in TaskContract.",
+                "evidence": [
+                  ".omx/state/codememory-phase2a-task-contract.json",
+                  "README.md",
+                  "src/codememory/docs/phase2a-delivery.md"
+                ],
+                "executor": "delivery-lead",
+                "gate_id": "GOAL_AND_SCOPE",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "The repository boundary, authorized history seed, provenance policy, and Phase 3+ falsifiers are recorded.",
+                "evidence": [
+                  "e976f4bf-16b0-436f-8b42-ded07551bae0",
+                  "phase2a-discovery-run",
+                  "py -m pytest -q: 32 passed"
+                ],
+                "executor": "phase2a-investigator-runtime",
+                "gate_id": "DISCOVERY_COMPLETE",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "The Phase 2A implementation boundary, invariants, rollback path, and validation plan are frozen in ChangeSpec.",
+                "evidence": [
+                  "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+                  "phase2a-design-run",
+                  "src/codememory/docs/extraction-contract.md"
+                ],
+                "executor": "phase2a-architect-runtime",
+                "gate_id": "DESIGN_CONTRACT",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "The user explicitly authorized implementing Phase 2A, importing the three selected Codex histories, and adding the local graph inspector within the TaskContract scope.",
+                "evidence": [
+                  "User request to complete Phase 2A and use the three referenced Codex tasks",
+                  "TaskContract 7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+                  "ChangeSpec e0dba6ec-37d9-4380-9325-531eefff6a5d"
+                ],
+                "executor": "delivery-lead",
+                "gate_id": "WRITE_AUTHORIZATION",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "All Phase 2A changed files are inside the approved allowlist and no runtime database/build artifacts are tracked.",
+                "evidence": [
+                  "adaptive_vibe scope-check returned ok=true and violations=[]",
+                  "PatchManifest 9c83ff3b-b339-4892-97db-a7f2a20556fb",
+                  "git status --short"
+                ],
+                "executor": "phase2a-implementer-runtime",
+                "gate_id": "SCOPE_CONFORMANCE",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "Python compilation, lint, frontend syntax, and the complete local test suite pass for the Phase 2A boundary.",
+                "evidence": [
+                  "ruff check src tests: All checks passed",
+                  "py -m compileall -q src: passed",
+                  "node --check web/app.js: passed",
+                  "py -m pytest -q: 32 passed, 1 warning"
+                ],
+                "executor": "phase2a-implementer-runtime",
+                "gate_id": "STATIC_CORRECTNESS",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "The fresh review context found no blocking scope, contract, persistence-integrity, provenance, or UI/API findings; host-level independence is degraded and explicitly documented.",
+                "evidence": [
+                  "ReviewReport df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+                  "phase2a-review-run",
+                  "git diff --check passed",
+                  "py -m pytest -q: 32 passed"
+                ],
+                "executor": "phase2a-reviewer-runtime",
+                "gate_id": "INDEPENDENT_REVIEW",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "Fresh verification confirms the 32-test suite, deterministic history replay, extraction idempotency, evidence links, and SQLite health counts for the authorized seed.",
+                "evidence": [
+                  "py -m pytest -q: 32 passed",
+                  "CodexHistoryImporter first pass 33 accepted and second pass 33 duplicates",
+                  "Local DB health: events=33, tasks=3, extraction_runs=3, memory_candidates=6, integrity_check=ok, journal_mode=wal",
+                  "Forced retry preservation and timestamp-free replay tests passed"
+                ],
+                "executor": "phase2a-verifier-runtime",
+                "gate_id": "BEHAVIOR_REGRESSION",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "A fresh localhost process served the graph API and 3D page successfully, and the selected task graph contained memory nodes and supports edges.",
+                "evidence": [
+                  "GET /v1/health returned 200",
+                  "GET /v1/graph?task_id=... returned 200 with 18 nodes, 41 edges, 2 memory nodes, 10 supports edges",
+                  "GET / returned 200 and page contained the Three.js import map"
+                ],
+                "executor": "phase2a-verifier-runtime",
+                "gate_id": "RUNTIME_VALIDATION",
+                "status": "PASS"
+              }
+            ],
+            "remaining_gaps": [],
+            "required_gates": [
+              "GOAL_AND_SCOPE",
+              "DISCOVERY_COMPLETE",
+              "DESIGN_CONTRACT",
+              "WRITE_AUTHORIZATION",
+              "SCOPE_CONFORMANCE",
+              "STATIC_CORRECTNESS",
+              "INDEPENDENT_REVIEW",
+              "BEHAVIOR_REGRESSION"
+            ]
+          },
+          "owner": "phase2a-verifier",
+          "producer_agent_run_id": "phase2a-verification-run",
+          "producer_assignment_id": "phase2a-verification",
+          "producer_home_state": "VERIFY",
+          "recorded_at": "2026-09-04T07:30:50+00:00",
+          "schema_version": "1.0",
+          "source_gate_count": 9
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 71,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:30:50+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "phase2a-verification-run",
+      "assignment_id": "phase2a-verification",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "phase2a-verification-run",
+          "assignment_id": "phase2a-verification",
+          "attempt": 1,
+          "context_id": "phase2a-fresh-verification-context",
+          "ended_at": "2026-09-04T07:31:05+00:00",
+          "evidence": [
+            "VerificationLedger 2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+            "BEHAVIOR_REGRESSION and RUNTIME_VALIDATION passed"
+          ],
+          "home_state": "VERIFY",
+          "last_seen_at": "2026-09-04T07:31:05+00:00",
+          "output_artifact_refs": [
+            "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "phase2a-verifier-runtime",
+          "runtime_kind": "BEHAVIOR_REGRESSION",
+          "started_at": "2026-09-04T07:29:05+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 72,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-04T07:31:05+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-verification",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "behavior-regression",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+            "BEHAVIOR_REGRESSION"
+          ],
+          "label": "Verify extraction, idempotency, provenance, and projections",
+          "milestone_id": "behavior-regression",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:31:05+00:00"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 73,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:31:05+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-verification",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "runtime-validation",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+            "RUNTIME_VALIDATION"
+          ],
+          "label": "Verify localhost health, graph endpoint, and web page",
+          "milestone_id": "runtime-validation",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-04T07:31:05+00:00"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 74,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:31:05+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "phase2a-verification",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "phase2a-verification",
+          "created_at": "2026-09-04T07:28:58+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-04T07:31:05+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:VerificationLedger"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "*.db"
+          ],
+          "home_state": "VERIFY",
+          "input_artifact_refs": [
+            "7fc69225-c6b6-4590-a6f2-4fb065b3a937",
+            "e0dba6ec-37d9-4380-9325-531eefff6a5d",
+            "9c83ff3b-b339-4892-97db-a7f2a20556fb",
+            "df0e1f41-b3e5-4b00-9b85-b0f14e585028"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+                "BEHAVIOR_REGRESSION"
+              ],
+              "label": "Verify extraction, idempotency, provenance, and projections",
+              "milestone_id": "behavior-regression",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-04T07:31:05+00:00"
+            },
+            {
+              "evidence": [
+                "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+                "RUNTIME_VALIDATION"
+              ],
+              "label": "Verify localhost health, graph endpoint, and web page",
+              "milestone_id": "runtime-validation",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-04T07:31:05+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md"
+          ],
+          "required": true,
+          "role": "verifier",
+          "status": "COMPLETED",
+          "task_slice": "Run fresh behavioral, persistence, history replay, graph API, and local UI checks against the Phase 2A delivery and record the evidence ledger.",
+          "updated_at": "2026-09-04T07:31:05+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 75,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-04T07:31:05+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "VERIFY",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-04T07:31:12+00:00",
+          "from": "VERIFY",
+          "reason": "Behavioral and runtime verification passed; prepare handoff.",
+          "to": "HANDOFF"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 76,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:31:12+00:00",
+      "to_state": "HANDOFF"
+    },
+    {
+      "actor": "workflow-core",
+      "artifact_id": "b5cddbb0-6e0e-46df-aa4a-1ce2a672db2c",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "HANDOFF",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "b5cddbb0-6e0e-46df-aa4a-1ce2a672db2c",
+          "artifact_revision": 1,
+          "artifact_type": "FinalHandoff",
+          "data": {
+            "evidence": [
+              "PatchManifest 9c83ff3b-b339-4892-97db-a7f2a20556fb",
+              "ReviewReport df0e1f41-b3e5-4b00-9b85-b0f14e585028",
+              "VerificationLedger 2a2eb7d5-0ca5-4a19-abb7-fdf2b7f341e7",
+              "Local database health: 33 events, 3 tasks, 3 extraction runs, 6 candidates, WAL, integrity ok",
+              "py -m pytest -q: 32 passed",
+              "HTTP smoke: health, graph, and root all 200"
+            ],
+            "outcome": "Phase 2A delivered: SQLite-first evidence ingestion, strict candidate extraction, authorized Codex history import, outbox worker, and local 3D graph inspection are runnable and verified.",
+            "recovery_entry": "Re-run codememory import-codex-history and codememory extract with the same database; use --force only for an explicit bounded retry, then inspect /v1/graph and /v1/memories/search.",
+            "remaining_actions": [
+              "Implement Phase 3 candidate consolidation and relation lifecycle.",
+              "Add Phase 4 repository snapshot and symbol validity checks.",
+              "Add optional embeddings/vector projection and a native Codex adapter after the core contracts stabilize."
+            ],
+            "remaining_risks": [
+              "Candidate observations are not stable cards and have no supersede/stale/forgetting lifecycle yet.",
+              "Code paths and symbols are not validated against a live repository snapshot.",
+              "The first 3D preview loads Three.js from a pinned CDN and is intended for local inspection."
+            ]
+          },
+          "owner": "delivery-lead",
+          "producer_home_state": "HANDOFF",
+          "recorded_at": "2026-09-04T07:31:28+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 77,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:31:28+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "FINALIZE"
+      ],
+      "home_state": "HANDOFF",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "all required artifacts and gates support the delivery claim",
+        "evidence": [
+          {
+            "ledger_revision": 48
+          },
+          {
+            "required_gates": [
+              "GOAL_AND_SCOPE",
+              "DISCOVERY_COMPLETE",
+              "DESIGN_CONTRACT",
+              "WRITE_AUTHORIZATION",
+              "SCOPE_CONFORMANCE",
+              "STATIC_CORRECTNESS",
+              "INDEPENDENT_REVIEW",
+              "BEHAVIOR_REGRESSION"
+            ]
+          },
+          {
+            "required_artifacts": [
+              "TaskContract",
+              "DiscoveryPacket",
+              "TriagePacket",
+              "ChangeSpec",
+              "PatchManifest",
+              "ReviewReport",
+              "VerificationLedger",
+              "FinalHandoff"
+            ]
+          }
+        ],
+        "executor": "delivery-lead",
+        "gate": {
+          "claim_proven": "all required artifacts and gates support the delivery claim",
+          "evidence": [
+            {
+              "ledger_revision": 48
+            },
+            {
+              "required_gates": [
+                "GOAL_AND_SCOPE",
+                "DISCOVERY_COMPLETE",
+                "DESIGN_CONTRACT",
+                "WRITE_AUTHORIZATION",
+                "SCOPE_CONFORMANCE",
+                "STATIC_CORRECTNESS",
+                "INDEPENDENT_REVIEW",
+                "BEHAVIOR_REGRESSION"
+              ]
+            },
+            {
+              "required_artifacts": [
+                "TaskContract",
+                "DiscoveryPacket",
+                "TriagePacket",
+                "ChangeSpec",
+                "PatchManifest",
+                "ReviewReport",
+                "VerificationLedger",
+                "FinalHandoff"
+              ]
+            }
+          ],
+          "executor": "delivery-lead",
+          "gate_id": "FINALIZE",
+          "recorded_at": "2026-09-04T07:31:39+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 78,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-04T07:31:39+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "HANDOFF",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "gate": {
+          "claim_proven": "all required artifacts and gates support the delivery claim",
+          "evidence": [
+            {
+              "ledger_revision": 48
+            },
+            {
+              "required_gates": [
+                "GOAL_AND_SCOPE",
+                "DISCOVERY_COMPLETE",
+                "DESIGN_CONTRACT",
+                "WRITE_AUTHORIZATION",
+                "SCOPE_CONFORMANCE",
+                "STATIC_CORRECTNESS",
+                "INDEPENDENT_REVIEW",
+                "BEHAVIOR_REGRESSION"
+              ]
+            },
+            {
+              "required_artifacts": [
+                "TaskContract",
+                "DiscoveryPacket",
+                "TriagePacket",
+                "ChangeSpec",
+                "PatchManifest",
+                "ReviewReport",
+                "VerificationLedger",
+                "FinalHandoff"
+              ]
+            }
+          ],
+          "executor": "delivery-lead",
+          "gate_id": "FINALIZE",
+          "recorded_at": "2026-09-04T07:31:39+00:00",
+          "status": "PASS"
+        },
+        "transition": {
+          "at": "2026-09-04T07:31:39+00:00",
+          "from": "HANDOFF",
+          "reason": "FINALIZE passed",
+          "to": "DONE"
+        }
+      },
+      "run_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+      "schema_version": 2,
+      "seq": 79,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-04T07:31:39+00:00",
+      "to_state": "DONE"
+    }
+  ],
+  "orchestration_legacy_gate_count": 0,
+  "resume": null,
+  "revision": 49,
+  "state": "DONE",
+  "task_id": "220cdf79-ab45-4a0d-bbf1-a137ccdc1381",
+  "tier": "T2",
+  "transitions": [
+    {
+      "at": "2026-09-04T07:23:08+00:00",
+      "from": "INTAKE",
+      "reason": "Scope accepted; begin evidence discovery.",
+      "to": "DISCOVERY"
+    },
+    {
+      "at": "2026-09-04T07:24:06+00:00",
+      "from": "DISCOVERY",
+      "reason": "Discovery evidence accepted; define coding-memory domain boundaries.",
+      "to": "TRIAGE"
+    },
+    {
+      "at": "2026-09-04T07:24:58+00:00",
+      "from": "TRIAGE",
+      "reason": "Domain boundary accepted; freeze implementation contract.",
+      "to": "DESIGN"
+    },
+    {
+      "at": "2026-09-04T07:26:07+00:00",
+      "from": "DESIGN",
+      "reason": "Design contract and write authorization accepted; record implementation evidence.",
+      "to": "IMPLEMENT"
+    },
+    {
+      "at": "2026-09-04T07:27:33+00:00",
+      "from": "IMPLEMENT",
+      "reason": "Implementation evidence and static checks accepted; perform independent review.",
+      "to": "REVIEW"
+    },
+    {
+      "at": "2026-09-04T07:28:27+00:00",
+      "from": "REVIEW",
+      "reason": "Review passed; execute behavioral and runtime verification.",
+      "to": "VERIFY"
+    },
+    {
+      "at": "2026-09-04T07:31:12+00:00",
+      "from": "VERIFY",
+      "reason": "Behavioral and runtime verification passed; prepare handoff.",
+      "to": "HANDOFF"
+    },
+    {
+      "at": "2026-09-04T07:31:39+00:00",
+      "from": "HANDOFF",
+      "reason": "FINALIZE passed",
+      "to": "DONE"
+    }
+  ],
+  "updated_at": "2026-09-04T07:31:39+00:00"
+}

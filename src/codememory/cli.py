@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -13,10 +14,18 @@ from pydantic import ValidationError
 from .api.app import create_app
 from .adapters import CliProducer
 from .config import default_db_path, event_schema_path
+from .consolidation.service import ConsolidationService
+from .consolidation.store import CardStore
 from .domain.events import EventEnvelope, EventType
+from .extraction.service import ExtractionService
+from .extraction.store import ExtractionStore
+from .extraction.providers import provider_from_name
+from .history.codex import CodexHistoryImporter
 from .ingest.service import IngestService, replay_jsonl
+from .maintenance import ProjectionMaintenance
 from .storage.database import Database
 from .storage.repository import ConflictError, MemoryRepository
+from .workers.extraction import ExtractionWorker
 
 
 def _db_path(args: argparse.Namespace) -> Path:
@@ -41,6 +50,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     health = sub.add_parser("health", help="show database health")
     health.add_argument("--db", help="database path")
+    health.add_argument(
+        "--deep",
+        action="store_true",
+        help="run the exhaustive SQLite integrity check (slow on large archives)",
+    )
 
     doctor = sub.add_parser("doctor", help="run local installation and schema checks")
     doctor.add_argument("--db", help="database path")
@@ -98,12 +112,122 @@ def build_parser() -> argparse.ArgumentParser:
     rebuild = sub.add_parser("rebuild-search", help="rebuild the optional FTS projection")
     rebuild.add_argument("--db", help="database path")
 
+    rebuild_memory = sub.add_parser(
+        "rebuild-memory",
+        help="clear rebuildable candidate/card projections after a policy upgrade",
+    )
+    rebuild_memory.add_argument("--db", help="database path")
+    rebuild_memory.add_argument(
+        "--yes",
+        action="store_true",
+        help="confirm deleting only extraction/card projections (source events stay intact)",
+    )
+
     outbox = sub.add_parser("outbox", help="inspect or claim outbox jobs")
     outbox.add_argument("--db", help="database path")
     outbox.add_argument("--status")
     outbox.add_argument("--limit", type=int, default=100)
     outbox.add_argument("--claim", action="store_true")
     outbox.add_argument("--lease-seconds", type=int, default=60)
+
+    import_history = sub.add_parser(
+        "import-codex-history", help="ingest a bounded Codex read_thread/history JSON export"
+    )
+    import_history.add_argument("path", type=Path)
+    import_history.add_argument("--db", help="database path")
+    import_history.add_argument("--project-id", help="override the derived project id")
+    import_history.add_argument(
+        "--atomic", action="store_true", help="roll back the complete import on one invalid event"
+    )
+    import_history.add_argument("--batch-size", type=int, default=250)
+    import_history.add_argument("--max-threads", type=int)
+    import_history.add_argument("--since", help="only import threads updated at/after ISO timestamp")
+    import_history.add_argument("--extract", action="store_true", help="run extraction once per imported task")
+    import_history.add_argument("--consolidate", action="store_true", help="consolidate candidates after extraction/import")
+    import_history.add_argument(
+        "--provider",
+        choices=["mock", "openai-compatible", "local"],
+        default="mock",
+        help="provider used with --extract",
+    )
+    import_history.add_argument(
+        "--summary-only",
+        action="store_true",
+        help="omit per-task extraction details from the JSON output",
+    )
+
+    extract = sub.add_parser("extract", help="extract candidate memories for one task")
+    extract.add_argument("task_id")
+    extract.add_argument("--db", help="database path")
+    extract.add_argument("--session-id")
+    extract.add_argument("--provider", choices=["mock", "openai-compatible", "local"], default="mock")
+    extract.add_argument("--force", action="store_true", help="rerun an idempotent input window")
+
+    extract_all = sub.add_parser("extract-all", help="extract each canonical task once")
+    extract_all.add_argument("--db", help="database path")
+    extract_all.add_argument("--project-id")
+    extract_all.add_argument("--limit", type=int, default=100_000)
+    extract_all.add_argument(
+        "--since", help="only extract tasks whose canonical activity is at/after ISO timestamp"
+    )
+    extract_all.add_argument(
+        "--min-events", type=int, default=0, help="skip tasks with fewer canonical events"
+    )
+    extract_all.add_argument("--provider", choices=["mock", "openai-compatible", "local"], default="mock")
+    extract_all.add_argument("--consolidate", action="store_true")
+    extract_all.add_argument("--complete-outbox", action="store_true")
+    extract_all.add_argument(
+        "--summary-only", action="store_true", help="omit per-task extraction details from the JSON output"
+    )
+
+    extract_outbox = sub.add_parser("extract-outbox", help="claim event.ingested jobs and extract once")
+    extract_outbox.add_argument("--db", help="database path")
+    extract_outbox.add_argument("--limit", type=int, default=20)
+    extract_outbox.add_argument("--lease-seconds", type=int, default=120)
+
+    memories = sub.add_parser("memories", help="list candidate memories")
+    memories.add_argument("--db", help="database path")
+    memories.add_argument("--task-id")
+    memories.add_argument("--kind")
+    memories.add_argument("--limit", type=int, default=100)
+
+    graph = sub.add_parser("graph", help="print the graph projection used by the web UI")
+    graph.add_argument("--db", help="database path")
+    graph.add_argument("--task-id")
+    graph.add_argument("--limit", type=int, default=300)
+
+    consolidate = sub.add_parser("consolidate", help="promote candidate memories into versioned cards")
+    consolidate.add_argument("--db", help="database path")
+    consolidate.add_argument("--project-id")
+    consolidate.add_argument("--task-id")
+    consolidate.add_argument("--candidate-id", action="append", dest="candidate_ids")
+    consolidate.add_argument("--limit", type=int, default=1000)
+
+    cards = sub.add_parser("cards", help="list versioned memory cards")
+    cards.add_argument("--db", help="database path")
+    cards.add_argument("--project-id")
+    cards.add_argument("--task-id")
+    cards.add_argument("--status")
+    cards.add_argument("--kind")
+    cards.add_argument("--limit", type=int, default=100)
+
+    card = sub.add_parser("card", help="inspect or transition one memory card")
+    card_sub = card.add_subparsers(dest="card_command", required=True)
+    for name in ("show", "history", "relations"):
+        card_view = card_sub.add_parser(name)
+        card_view.add_argument("card_id")
+        card_view.add_argument("--db", help="database path")
+    card_transition = card_sub.add_parser("transition")
+    card_transition.add_argument("card_id")
+    card_transition.add_argument("status")
+    card_transition.add_argument("--reason", required=True)
+    card_transition.add_argument("--actor", default="cli")
+    card_transition.add_argument("--db", help="database path")
+    card_promote = card_sub.add_parser("promote")
+    card_promote.add_argument("card_id")
+    card_promote.add_argument("--reason", required=True)
+    card_promote.add_argument("--actor", default="cli")
+    card_promote.add_argument("--db", help="database path")
 
     serve = sub.add_parser("serve", help="run the localhost HTTP API")
     serve.add_argument("--db", help="database path")
@@ -127,7 +251,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "health":
             _, repository, _ = _service(path)
-            _print(repository.health())
+            _print(repository.health(check_integrity=args.deep))
             return 0
         if args.command == "doctor":
             _, repository, _ = _service(path)
@@ -235,6 +359,12 @@ def main(argv: list[str] | None = None) -> int:
             _, repository, _ = _service(path)
             _print({"rebuilt_events": repository.rebuild_search_index()})
             return 0
+        if args.command == "rebuild-memory":
+            if not args.yes:
+                raise ValueError("rebuild-memory is destructive to derived projections; pass --yes")
+            database, _, _ = _service(path)
+            _print(ProjectionMaintenance(database).reset())
+            return 0
         if args.command == "outbox":
             _, repository, _ = _service(path)
             jobs = (
@@ -243,6 +373,202 @@ def main(argv: list[str] | None = None) -> int:
                 else repository.list_outbox(status=args.status, limit=args.limit)
             )
             _print({"counts": repository.outbox_count(), "jobs": [job.as_dict() for job in jobs]})
+            return 0
+        if args.command == "import-codex-history":
+            database, repository, service = _service(path)
+            since = None
+            if args.since:
+                since = datetime.fromisoformat(args.since.replace("Z", "+00:00"))
+            summary = CodexHistoryImporter(service, project_id=args.project_id).import_file(
+                args.path,
+                atomic=args.atomic,
+                batch_size=args.batch_size,
+                max_threads=args.max_threads,
+                since=since,
+            )
+            result = summary.as_dict()
+            task_results: list[dict[str, Any]] = []
+            if args.extract or args.consolidate:
+                extraction_provider = provider_from_name(args.provider)
+                extraction = ExtractionService(
+                    repository,
+                    store=ExtractionStore(database),
+                    provider=extraction_provider,
+                )
+                cards = ConsolidationService(repository, store=CardStore(database))
+                for task_id in summary.tasks:
+                    extraction_result = None
+                    consolidation_result = None
+                    if args.extract:
+                        extraction_result = extraction.extract_task(task_id).as_dict()
+                    if args.consolidate:
+                        consolidation_result = cards.consolidate(task_id=task_id).as_dict()
+                    repository.complete_outbox_for_task(task_id)
+                    if not args.summary_only:
+                        task_results.append(
+                            {
+                                "task_id": task_id,
+                                "extraction": extraction_result,
+                                "consolidation": consolidation_result,
+                            }
+                        )
+                result["processed_tasks"] = len(task_results)
+                if args.summary_only:
+                    result["processed_tasks"] = len(summary.tasks)
+                else:
+                    result["task_results"] = task_results
+            _print(result)
+            return 0 if summary.conflicts == 0 else 2
+        if args.command == "extract":
+            _, repository, _ = _service(path)
+            extraction = ExtractionService(
+                repository,
+                store=ExtractionStore(repository.db),
+                provider=provider_from_name(args.provider),
+            )
+            _print(
+                extraction.extract_task(
+                    args.task_id, session_id=args.session_id, force=args.force
+                ).as_dict()
+            )
+            return 0
+        if args.command == "extract-all":
+            database, repository, _ = _service(path)
+            extraction = ExtractionService(
+                repository,
+                store=ExtractionStore(database),
+                provider=provider_from_name(args.provider),
+            )
+            cards = ConsolidationService(repository, store=CardStore(database))
+            task_rows = repository.list_tasks(
+                project_id=args.project_id,
+                limit=args.limit,
+                updated_since=args.since,
+                min_events=args.min_events,
+            )
+            results: list[dict[str, Any]] = []
+            aggregate = {
+                "tasks": 0,
+                "extracted": 0,
+                "duplicates": 0,
+                "failed": 0,
+                "empty": 0,
+                "candidates": 0,
+                "cards_created": 0,
+                "cards_merged": 0,
+                "cards_new_versions": 0,
+                "cards_uncertain": 0,
+                "outbox_completed": 0,
+            }
+            total_tasks = len(task_rows)
+            for index, task in enumerate(task_rows, start=1):
+                task_id = task["task_id"]
+                extracted = extraction.extract_task(task_id).as_dict()
+                consolidated = cards.consolidate(task_id=task_id).as_dict() if args.consolidate else None
+                completed_jobs = (
+                    repository.complete_outbox_for_task(task_id) if args.complete_outbox else 0
+                )
+                aggregate["tasks"] += 1
+                aggregate["extracted"] += int(extracted["status"] == "extracted")
+                aggregate["duplicates"] += int(extracted["status"] == "duplicate")
+                aggregate["failed"] += int(extracted["status"] in {"failed", "dead"})
+                aggregate["empty"] += int(
+                    extracted["status"] == "extracted" and extracted["candidate_count"] == 0
+                )
+                aggregate["candidates"] += int(extracted.get("candidate_count") or 0)
+                aggregate["cards_created"] += int((consolidated or {}).get("created", 0))
+                aggregate["cards_merged"] += int((consolidated or {}).get("merged", 0))
+                aggregate["cards_new_versions"] += int((consolidated or {}).get("new_versions", 0))
+                aggregate["cards_uncertain"] += int((consolidated or {}).get("uncertain", 0))
+                aggregate["outbox_completed"] += completed_jobs
+                if index == 1 or index % 25 == 0 or index == total_tasks:
+                    print(
+                        f"[extract-all] {index}/{total_tasks} tasks; candidates={aggregate['candidates']}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                if not args.summary_only:
+                    results.append(
+                        {
+                            "task_id": task_id,
+                            "extraction": extracted,
+                            "consolidation": consolidated,
+                            "completed_outbox_jobs": completed_jobs,
+                        }
+                    )
+            output = dict(aggregate)
+            if not args.summary_only:
+                output["results"] = results
+            _print(output)
+            return 0
+        if args.command == "extract-outbox":
+            _, repository, _ = _service(path)
+            worker = ExtractionWorker(repository)
+            _print(worker.run_once(limit=args.limit, lease_seconds=args.lease_seconds).as_dict())
+            return 0
+        if args.command == "memories":
+            _, repository, _ = _service(path)
+            store = ExtractionStore(repository.db)
+            _print(
+                {
+                    "task_id": args.task_id,
+                    "memories": store.list_candidates(
+                        task_id=args.task_id, kind=args.kind, limit=args.limit
+                    ),
+                }
+            )
+            return 0
+        if args.command == "consolidate":
+            database, repository, _ = _service(path)
+            result = ConsolidationService(repository, store=CardStore(database)).consolidate(
+                project_id=args.project_id,
+                task_id=args.task_id,
+                candidate_ids=args.candidate_ids,
+                limit=args.limit,
+            )
+            _print(result.as_dict())
+            return 0
+        if args.command == "cards":
+            database, repository, _ = _service(path)
+            _print(
+                {
+                    "cards": CardStore(database).list_cards(
+                        project_id=args.project_id,
+                        task_id=args.task_id,
+                        status=args.status,
+                        kind=args.kind,
+                        limit=args.limit,
+                    )
+                }
+            )
+            return 0
+        if args.command == "card":
+            database, repository, _ = _service(path)
+            card_store = CardStore(database)
+            card_service = ConsolidationService(repository, store=card_store)
+            if args.card_command == "show":
+                _print(card_store.get_card(args.card_id) or {"error": "card_not_found", "card_id": args.card_id})
+                return 0
+            if args.card_command == "history":
+                _print({"card_id": args.card_id, "versions": card_store.card_history(args.card_id)})
+                return 0
+            if args.card_command == "relations":
+                _print({"card_id": args.card_id, "relations": card_store.card_relations(args.card_id)})
+                return 0
+            if args.card_command == "transition":
+                _print(
+                    card_service.transition_card(
+                        args.card_id, args.status, reason=args.reason, actor=args.actor
+                    )
+                )
+                return 0
+            if args.card_command == "promote":
+                _print(card_service.promote_card(args.card_id, reason=args.reason, actor=args.actor))
+                return 0
+        if args.command == "graph":
+            database, repository, _ = _service(path)
+            graph_payload = ExtractionStore(database).graph(task_id=args.task_id, limit=args.limit)
+            _print(CardStore(database).extend_graph(graph_payload, task_id=args.task_id, limit=args.limit))
             return 0
         if args.command == "serve":
             import uvicorn

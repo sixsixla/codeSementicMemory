@@ -17,7 +17,7 @@ def test_migration_is_repeatable_and_wal(tmp_path):
     db.initialize()
     db.initialize()
     assert db.journal_mode() == "wal"
-    assert db.migration_version() == "0003_artifact_content_and_outbox_limits.sql"
+    assert db.migration_version() == "0005_memory_cards.sql"
     assert db.integrity_check() == "ok"
 
 
@@ -42,6 +42,42 @@ def test_ingest_is_idempotent_and_redacts(tmp_path, event_factory):
     changed = event.model_copy(update={"payload": {"text": "different"}})
     with pytest.raises(ConflictError):
         service.ingest(changed)
+
+
+def test_redaction_covers_context_metadata(tmp_path, event_factory):
+    repo = make_repo(tmp_path)
+    raw = event_factory(payload={"text": "context secret"})
+    raw["context"]["debug_token"] = "token=abcdefghijklmnop"
+    event = EventEnvelope.model_validate(raw)
+    service = IngestService(repo)
+    service.ingest(event)
+    stored = repo.get_event(event.event_id)
+    assert stored is not None
+    assert stored["context"]["debug_token"] == "token=[REDACTED]"
+    assert "context.debug_token" in stored["redaction"]["fields"]
+
+
+def test_redaction_covers_opaque_nested_secret_keys(tmp_path, event_factory):
+    repo = make_repo(tmp_path)
+    raw = event_factory(
+        payload={
+            "tool": "http_client",
+            "arguments": {
+                "api_key": "opaque-provider-value",
+                "nested": {"client-secret": "another-opaque-value"},
+                "token_count": 12,
+            },
+        }
+    )
+    event = EventEnvelope.model_validate(raw)
+    IngestService(repo).ingest(event)
+    stored = repo.get_event(event.event_id)
+    assert stored is not None
+    assert stored["payload"]["arguments"]["api_key"] == "[REDACTED]"
+    assert stored["payload"]["arguments"]["nested"]["client-secret"] == "[REDACTED]"
+    assert stored["payload"]["arguments"]["token_count"] == 12
+    assert "payload.arguments.api_key" in stored["redaction"]["fields"]
+    assert "payload.arguments.nested.client-secret" in stored["redaction"]["fields"]
 
 
 def test_outbox_claim_complete_and_retry(tmp_path, event_factory):
@@ -185,3 +221,15 @@ def test_search_projection_can_be_rebuilt(tmp_path, event_factory):
     assert repo.search("rebuild") == []
     assert repo.rebuild_search_index() == 1
     assert repo.search("rebuild")[0]["event_id"] == "fts-event"
+
+
+def test_replay_keeps_entity_recency_at_source_time(tmp_path, event_factory):
+    repo = make_repo(tmp_path)
+    older = EventEnvelope.model_validate(event_factory(event_id="old-event", seq=1))
+    newer = EventEnvelope.model_validate(event_factory(event_id="new-event", seq=20))
+    repo.ingest(older)
+    repo.ingest(newer)
+    task = repo.list_tasks()[0]
+    assert task["updated_at"] == newer.occurred_at.isoformat()
+    assert repo.list_tasks(updated_since="2026-09-02T08:00:20+00:00")[0]["task_id"] == "pytest-task"
+    assert repo.list_tasks(min_events=3) == []

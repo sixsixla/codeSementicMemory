@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from ..domain.events import EventEnvelope, RedactionInfo
+from ..domain.events import ArtifactRef, EventContext, EventEnvelope, RedactionInfo
 
 
 _SECRET_ASSIGNMENT = re.compile(
@@ -13,6 +13,12 @@ _SECRET_ASSIGNMENT = re.compile(
 )
 _BEARER = re.compile(r"(?i)(\bBearer\s+)([A-Za-z0-9._~+/=-]{12,})")
 _OPENAI_STYLE = re.compile(r"\bsk-[A-Za-z0-9_-]{16,}\b")
+_SENSITIVE_KEY = re.compile(
+    r"^(?:api[_-]?key|access[_-]?token|auth(?:orization)?|password|passwd|"
+    r"secret|token|private[_-]?key|client[_-]?secret)$|"
+    r"(?:[_-](?:api[_-]?key|access[_-]?token|password|passwd|secret|token|private[_-]?key|client[_-]?secret))$",
+    re.IGNORECASE,
+)
 
 
 def redact_text(value: str) -> tuple[str, bool]:
@@ -61,6 +67,24 @@ def redact_value(value: Any, path: str = "") -> tuple[Any, bool, list[str]]:
         fields: list[str] = []
         for key, item in value.items():
             child_path = f"{path}.{key}" if path else str(key)
+            # Pattern redaction is not enough for structured tool arguments:
+            # a value such as ``{"api_key": "opaque-value"}`` contains no
+            # assignment syntax and may not have a recognizable provider
+            # prefix.  Redact sensitive-key values before recursively walking
+            # ordinary metadata.  Numeric counters (for example
+            # ``token_count``) are retained because they are not credentials.
+            if _SENSITIVE_KEY.search(str(key)):
+                if isinstance(item, (dict, list)):
+                    output[key] = "[REDACTED]"
+                    changed = True
+                    fields.append(child_path)
+                    continue
+                if isinstance(item, str):
+                    redacted, item_changed = redact_text(item)
+                    output[key] = redacted if item_changed else "[REDACTED]"
+                    changed = True
+                    fields.append(child_path)
+                    continue
             item_value, item_changed, item_fields = redact_value(item, child_path)
             output[key] = item_value
             changed = changed or item_changed
@@ -70,8 +94,11 @@ def redact_value(value: Any, path: str = "") -> tuple[Any, bool, list[str]]:
 
 
 def redact_event(event: EventEnvelope) -> EventEnvelope:
-    """Return a copy with secrets removed from payload and artifact metadata."""
+    """Return a copy with secrets removed from context, payload, and artifacts."""
 
+    context, context_changed, context_fields = redact_value(
+        event.context.model_dump(mode="python"), "context"
+    )
     payload, payload_changed, payload_fields = redact_value(event.payload, "payload")
     artifacts = []
     artifacts_changed = False
@@ -90,10 +117,12 @@ def redact_event(event: EventEnvelope) -> EventEnvelope:
         artifacts_changed = artifacts_changed or changed or content_changed
         artifact_fields.extend(fields)
         artifact_fields.extend(content_fields)
-    changed = payload_changed or artifacts_changed
+    changed = context_changed or payload_changed or artifacts_changed
     existing = event.redaction.model_dump(mode="python")
     existing_fields = list(existing.get("fields", []))
-    all_fields = list(dict.fromkeys(existing_fields + payload_fields + artifact_fields))
+    all_fields = list(
+        dict.fromkeys(existing_fields + context_fields + payload_fields + artifact_fields)
+    )
     redaction = RedactionInfo(
         **{
             **existing,
@@ -103,6 +132,16 @@ def redact_event(event: EventEnvelope) -> EventEnvelope:
     )
     if not changed and redaction == event.redaction:
         return event
+    # ``model_copy(update=...)`` intentionally skips validation in Pydantic;
+    # rebuild the artifact refs so downstream repository code always receives
+    # typed values even after redaction.
+    typed_context = EventContext.model_validate(context)
+    typed_artifacts = [ArtifactRef.model_validate(item) for item in artifacts]
     return event.model_copy(
-        update={"payload": payload, "artifacts": artifacts, "redaction": redaction}
+        update={
+            "context": typed_context,
+            "payload": payload,
+            "artifacts": typed_artifacts,
+            "redaction": redaction,
+        }
     )

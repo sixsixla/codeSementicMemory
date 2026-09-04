@@ -1,0 +1,50 @@
+{
+  "goal": "Deliver the first executable Phase 2A coding-memory extraction slice, ingest three explicitly selected local Codex task histories as provenance-preserving events, and expose the resulting candidate-memory graph through a local 3D web inspection surface.",
+  "success_criteria": [
+    "A bounded task-window ContextAssembler produces a deterministic input hash and evidence id set from immutable events.",
+    "A provider-replaceable extraction service validates strict ExtractionBatch output, persists idempotent extraction runs and candidate memories, and never mutates canonical events or stable cards.",
+    "Malformed or incomplete provider output is rejected with a durable run error and does not create unverifiable candidates.",
+    "The three user-authorized Codex task histories are converted from original message/file evidence into codememory.event.v1 records, ingested through IngestService, and retain thread, source, cwd, and completeness provenance.",
+    "A local HTTP graph endpoint and bundled 3D web page display tasks, sessions, evidence events, candidate memories, bindings, and evidence links from SQLite.",
+    "Existing Phase 0-1 tests remain green and new extraction, history-import, API, and UI smoke tests pass locally."
+  ],
+  "scope_allowlist": [
+    "src/**",
+    "tests/**",
+    "migrations/**",
+    "schemas/**",
+    "fixtures/**",
+    "web/**",
+    "README.md",
+    "pyproject.toml",
+    ".gitignore",
+    ".omx/state/**"
+  ],
+  "scope_forbidden": [
+    ".git/**",
+    ".venv/**",
+    "*.sqlite",
+    "*.sqlite3",
+    "*.db",
+    "data/**",
+    "build/**",
+    "dist/**"
+  ],
+  "constraints": [
+    "SQLite remains the canonical fact store; FTS, candidate search, and graph rows are rebuildable projections.",
+    "LLM and embedding providers are optional replaceable boundaries and are never on the synchronous event-ingest acknowledgement path.",
+    "Every candidate binding and relation must point to evidence event ids from the assembled input; hidden chain-of-thought is not persisted.",
+    "Only the three explicitly supplied Codex task ids may be used as real history input in this delivery.",
+    "Raw history archives containing local paths remain outside the repository; checked-in fixtures must be bounded and intentional.",
+    "The web page is a local inspection preview, not an authentication, cloud, or production deployment surface."
+  ],
+  "non_goals": [
+    "Stable-card merge, supersede, stale, or forgetting lifecycle (Phase 3).",
+    "Code snapshot or symbol resolution against a live repository (Phase 4).",
+    "Embeddings, vector database, MCP adapter, Codex Desktop hook, or remote provider integration.",
+    "Production-grade 3D layout, collaboration, authentication, or hosted frontend."
+  ],
+  "risk_profile": "T2",
+  "human_decisions_required": [],
+  "stop_condition": "Stop after the Phase 2A extraction, authorized history import, graph API/UI slice, regression checks, and artifact/verification ledger are complete; record Phase 3+ gaps instead of expanding scope."
+}
