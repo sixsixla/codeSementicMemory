@@ -904,6 +904,15 @@ class MemoryRepository:
                 "quality_runs": int(
                     conn.execute("SELECT COUNT(*) FROM quality_runs").fetchone()[0]
                 ),
+                "code_snapshots": int(
+                    conn.execute("SELECT COUNT(*) FROM code_snapshots").fetchone()[0]
+                ),
+                "verification_runs": int(
+                    conn.execute("SELECT COUNT(*) FROM verification_runs").fetchone()[0]
+                ),
+                "binding_verifications": int(
+                    conn.execute("SELECT COUNT(*) FROM binding_verifications").fetchone()[0]
+                ),
             }
             unresolved_parents = int(
                 conn.execute(

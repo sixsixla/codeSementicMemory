@@ -26,6 +26,7 @@ from .maintenance import ProjectionMaintenance
 from .quality.service import QualityService
 from .storage.database import Database
 from .storage.repository import ConflictError, MemoryRepository
+from .verification.service import VerificationService
 from .workers.extraction import ExtractionWorker
 
 
@@ -229,6 +230,49 @@ def build_parser() -> argparse.ArgumentParser:
         help="persist evaluations and aliases (default previews them; the replay audit is still recorded)",
     )
 
+    verify = sub.add_parser(
+        "verify-bindings",
+        aliases=["verify-project-j"],
+        help="verify current Project_J card bindings against P4/CodeBaseMemory manifests",
+    )
+    verify.add_argument("--db", help="database path")
+    verify.add_argument("--logical-project-id")
+    verify.add_argument("--task-id", action="append", help="limit verification to one or more task ids")
+    verify.add_argument(
+        "--manifest",
+        action="append",
+        type=Path,
+        help="portable verification manifest (repeatable; provider is read from JSON)",
+    )
+    verify.add_argument("--p4-manifest", type=Path)
+    verify.add_argument("--codebase-memory-manifest", type=Path)
+    verify.add_argument(
+        "--p4-path",
+        action="append",
+        help="explicit depot/client path for a read-only p4 fstat collection",
+    )
+    verify.add_argument("--p4-root")
+    verify.add_argument("--p4-port")
+    verify.add_argument("--p4-user")
+    verify.add_argument("--p4-client")
+    verify.add_argument("--p4-executable", default="p4")
+    verify.add_argument("--p4-timeout", type=int, default=30)
+    verify.add_argument("--limit", type=int, default=100_000)
+    verify.add_argument("--write", action="store_true")
+    verify.add_argument("--include-quarantine", action="store_true")
+
+    verification_report = sub.add_parser(
+        "verification-report", help="show Project_J binding-verification coverage and runs"
+    )
+    verification_report.add_argument("--db", help="database path")
+    verification_report.add_argument("--logical-project-id")
+    verification_report.add_argument("--limit", type=int, default=20)
+    verification_report.add_argument(
+        "--include-manifest",
+        action="store_true",
+        help="include complete normalized snapshot manifests (keep the limit small)",
+    )
+
     quality_projects = sub.add_parser(
         "quality-projects", help="list logical projects and auditable raw-id aliases"
     )
@@ -299,7 +343,25 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _print(value: Any) -> None:
-    print(json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2))
+    rendered = json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2)
+    # Windows Codex terminals may expose a GBK stdout stream.  Verification
+    # results can contain Unicode symbols from source paths or card text; make
+    # the fallback explicit so a successful run is never reported as failed
+    # merely while serializing its result.
+    encoding = getattr(sys.stdout, "encoding", None)
+    if encoding:
+        try:
+            rendered.encode(encoding)
+        except UnicodeEncodeError:
+            rendered = json.dumps(value, ensure_ascii=True, sort_keys=True, indent=2)
+    print(rendered)
+
+
+def _load_json_object(path: Path) -> Any:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, (dict, list)):
+        raise ValueError(f"manifest must be a JSON object or list: {path}")
+    return value
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -667,6 +729,47 @@ def main(argv: list[str] | None = None) -> int:
                 write=args.write,
             )
             _print(result.as_dict())
+            return 0
+        if args.command in {"verify-bindings", "verify-project-j"}:
+            _, repository, _ = _service(path)
+            manifests = [_load_json_object(item) for item in (args.manifest or [])]
+            p4_manifest = _load_json_object(args.p4_manifest) if args.p4_manifest else None
+            codebase_manifest = (
+                _load_json_object(args.codebase_memory_manifest)
+                if args.codebase_memory_manifest
+                else None
+            )
+            p4_options = {
+                "root_path": args.p4_root,
+                "port": args.p4_port,
+                "user": args.p4_user,
+                "client": args.p4_client,
+                "executable": args.p4_executable,
+                "timeout_seconds": args.p4_timeout,
+            }
+            result = VerificationService(repository).verify(
+                logical_project_id=args.logical_project_id,
+                manifests=manifests,
+                p4_manifest=p4_manifest,
+                codebase_memory_manifest=codebase_manifest,
+                p4_paths=args.p4_path,
+                p4_options=p4_options,
+                task_ids=args.task_id or [],
+                write=args.write,
+                limit=args.limit,
+                include_quarantine=args.include_quarantine,
+            )
+            _print(result.as_dict())
+            return 0 if result.status in {"succeeded", "not_applicable"} else 2
+        if args.command == "verification-report":
+            _, repository, _ = _service(path)
+            _print(
+                VerificationService(repository).report(
+                    logical_project_id=args.logical_project_id,
+                    limit=args.limit,
+                    include_manifest=args.include_manifest,
+                )
+            )
             return 0
         if args.command == "quality-projects":
             _, repository, _ = _service(path)

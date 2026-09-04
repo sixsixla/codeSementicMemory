@@ -3,13 +3,13 @@
 CodeSementicMemory is a local, SQLite-first long-term memory core specialized for coding agents and vibe-coding workflows. The repository name keeps the original `codeSementicMemory` spelling; the Python package and CLI are named `codememory`.
 
 The canonical store remains below the LLM layer, while the repository now also
-contains an offline-first Phase 2A/3 extraction and consolidation slice plus a
-Phase 4A continuous quality gate. It captures trustworthy coding evidence
-through a stable event contract, persists it idempotently, extracts auditable
-candidate memories, validates their evidence deterministically, and exposes
-their evidence graph locally.
+contains an offline-first Phase 2A/3 extraction and consolidation slice plus
+Phase 4A quality gating and Phase 4B Project_J code-binding verification. It
+captures trustworthy coding evidence through a stable event contract, persists
+it idempotently, extracts auditable candidate memories, validates their
+evidence deterministically, and exposes their evidence graph locally.
 
-## Current status (Phase 0–1 + Phase 2A + Phase 3 + Phase 4A)
+## Current status (Phase 0–1 + Phase 2A + Phase 3 + Phase 4A + Phase 4B)
 
 Implemented:
 
@@ -34,6 +34,14 @@ Implemented:
 - Idempotent dry-run/write quality replay with bounded transactions, input hashes, and stale-run recovery after interrupted processes.
 - Conservative default retrieval: quarantine-backed cards and candidates are hidden from cards/search/3D graph, with an explicit debug opt-in.
 - Quality reports and API/CLI surfaces for project scope, candidate review, replay, and operational diagnosis.
+- Versioned Phase 4B snapshot manifests and append-only binding verification runs.
+- Exact normalized manifests are retained in SQLite (`code_snapshots.manifest_json`) for
+  replay/audit; capture timestamps do not perturb content-addressed identities.
+- Project_J-only P4 `fstat` and CodeBaseMemory graph/index manifest adapters with safe
+  `verified`, `missing`, `renamed`, `stale`, `unverified`, and `rejected` states.
+- Dry-run/write verification CLI and REST endpoints; provider failures never demote an
+  existing authoritative binding, and bounded snapshots cannot imply repository-wide absence.
+- 3D graph/file/symbol nodes display the current binding verification state.
 
 The local replay database is an external runtime artifact, not a checked-in
 fixture. The 2026-09-04 delivery replayed 2,573 indexed visible threads into
@@ -53,9 +61,21 @@ Phase 4A delivery note for deterministic follow-up checks.
 The detailed rules, reports, and verification boundary are recorded in
 [`src/codememory/docs/phase4a-quality-gate.md`](src/codememory/docs/phase4a-quality-gate.md).
 
+Phase 4B real validation uses a small, sanitized Project_J baseline at
+[`fixtures/verification/project-j-baseline.json`](fixtures/verification/project-j-baseline.json).
+It contains only paths, symbols, revisions, and provider metadata—not source code,
+credentials, or the local runtime database. Against the three authorized seed tasks,
+the baseline produced 38 checked bindings: 4 `verified`, 33 `unverified` (the
+manifest is intentionally bounded to selected paths), and 1 `rejected`. A
+follow-up Project_J-wide projection check covered 6,412 current bindings; it
+kept 6 verified / 4 renamed states, left 6,376 outside the bounded evidence as
+`unverified`, and rejected 26 non-concrete targets without treating omissions as
+repository-wide `missing`.
+
 Not in this round:
 
-- AST/LSP or live CodebaseMemory code-snapshot validation of paths and symbols.
+- Full-repository (`coverage=complete`) snapshot generation and automatic snapshot refresh.
+- AST/LSP method-level validation beyond the manifest bridge.
 - Embedding/vector projection.
 - Codex Desktop or other agent adapters.
 - Production web hosting, authentication, and a production-grade graph layout.
@@ -76,7 +96,8 @@ flowchart LR
     H --> I[Phase 4A quality gate]
     I --> J[Phase 3 deterministic consolidator]
     J --> K[(Versioned cards + lifecycle audit)]
-    K --> L[Local 3D graph inspector]
+    K --> V[Phase 4B Project_J snapshot verification]
+    V --> L[Local 3D graph inspector]
 ```
 
 HTTP, CLI replay, and future adapters all enter through the same `IngestService`. Ingestion never waits for an LLM, embedding model, or downstream worker.
@@ -126,6 +147,24 @@ Open `http://127.0.0.1:8765/` for the local 3D graph inspector. Interactive API 
 
 If `--db` is omitted, the path is resolved from `CODEMEMORY_DB`, then `CODEMEMORY_DATA_DIR`, then the platform-local application data directory.
 
+Verify the Project_J seed bindings against a provider snapshot (dry-run first):
+
+```powershell
+.venv\Scripts\codememory verify-bindings --db $db `
+  --logical-project-id logical-319e6e98c97340e7807d6bb7 `
+  --manifest fixtures/verification/project-j-baseline.json `
+  --task-id codex-thread:01a04cae-4577-7f22-b29f-80ffb07afcbc
+.venv\Scripts\codememory verification-report --db $db
+```
+
+需要审计快照原文时可加 `--include-manifest`（建议把 `--limit` 保持较小）；默认报告
+只返回快照摘要，完整规范化内容可通过 `/v1/verification/snapshots/{snapshot_id}`
+读取。
+
+Add `--write` only after reviewing the report. A manifest with
+`metadata.coverage=selected_paths` can verify included files, but cannot assert
+that every omitted file is missing.
+
 ## HTTP surface
 
 | Method | Route | Purpose |
@@ -150,6 +189,11 @@ If `--db` is omitted, the path is resolved from `CODEMEMORY_DB`, then `CODEMEMOR
 | `GET` | `/v1/tasks/{task_id}/quality` | Inspect task-level event/candidate quality coverage |
 | `GET` | `/v1/quality/report` | Inspect global or logical-project quality statistics and replay audit |
 | `POST` | `/v1/quality/replay` | Dry-run or write the deterministic quality projection |
+| `POST` | `/v1/verification/bindings` (or `/v1/quality/verify-bindings`) | Verify current Project_J bindings against supplied snapshots |
+| `GET` | `/v1/verification/report` | Show binding statuses, snapshot coverage, and verification runs |
+| `GET` | `/v1/verification/report?include_manifest=true` | Include normalized manifests for bounded audit responses |
+| `GET` | `/v1/verification/snapshots/{snapshot_id}` | Read one complete persisted provider/composite manifest |
+| `GET` | `/v1/verification/bindings` | List current Project_J bindings and their latest status |
 | `GET` | `/v1/quality/projects` | List logical projects and effective raw-project aliases |
 | `POST` | `/v1/quality/projects/aliases` | Register a reviewed raw-project alias |
 | `GET` | `/v1/quality/candidates/{candidate_id}` | Inspect candidate quality reasons, dimensions, and evidence |
@@ -225,7 +269,7 @@ py -m pytest -q
 
 The fixture `fixtures/route-success.jsonl` models a successful request-to-code route: user intent, searches, source reads, edits, validation, VCS revision, final answer, and session completion. Replaying it twice must produce 12 accepted events followed by 12 duplicates without adding rows or outbox jobs. The other streams in [`fixtures/index.json`](fixtures/index.json) cover partial input, failed validation, refactoring, feedback correction, and the smallest complete session; each has a checked-in expected result under `fixtures/expected/`.
 
-## Phase 2A/3/4A boundary and next slices
+## Phase 2A/3/4A/4B boundary and next slices
 
 Phase 2A consumes a task window (directly or through `event.ingested` jobs) and adds the coding-specific candidate pipeline:
 
@@ -236,12 +280,14 @@ Phase 2A consumes a task window (directly or through `event.ingested` jobs) and 
 5. Versioned card consolidation, evidence/binding relations, and guarded lifecycle transitions.
 6. Continuous event/candidate quality evaluation, logical project aliases, replay audit, and quarantine-aware retrieval.
 
-The next planned slice is Phase 4B: resolve paths and symbols against a selected
-Git/P4 snapshot (AST/LSP or CodebaseMemory) and automatically mark bindings
-verified, missing, renamed, or stale. Embeddings/vector projections, MCP, and a
+Phase 4B now resolves current paths and symbols against explicit P4 and
+CodeBaseMemory manifests for Project_J and marks bindings verified, missing,
+renamed, stale, unverified, or rejected. Full-repository snapshots, AST/LSP
+method-level checks, periodic refresh, embeddings/vector projections, MCP, and a
 native Codex adapter remain separate replaceable layers; none is required by the
 SQLite core or by the quality gate.
 
 The complete implementation records are in
-[`src/codememory/docs/phase3-delivery.md`](src/codememory/docs/phase3-delivery.md)
-and [`src/codememory/docs/phase4a-quality-gate.md`](src/codememory/docs/phase4a-quality-gate.md).
+[`src/codememory/docs/phase3-delivery.md`](src/codememory/docs/phase3-delivery.md),
+[`src/codememory/docs/phase4a-quality-gate.md`](src/codememory/docs/phase4a-quality-gate.md),
+and [`src/codememory/docs/phase4b-project-j-verification.md`](src/codememory/docs/phase4b-project-j-verification.md).

@@ -1,0 +1,90 @@
+{
+  "schema_version": "codememory.verification_bundle.v1",
+  "project": "Project_J",
+  "captured_at": "2026-09-04T21:44:36+08:00",
+  "providers": [
+    {
+      "provider": "p4",
+      "source_ref": "p4:fstat (read-only, explicit Project_J seed paths)",
+      "root_path": "D:/P4Workspace/client/mainline",
+      "revision": "392462+388633+385397+387141",
+      "status": "ready",
+      "metadata": {"coverage": "selected_paths"},
+      "files": [
+        {
+          "path": "game_client/Project_J/Assets/Script/UI/Panel/MainHUDPanel/MainPanelTaskGroup/YeQuEscort/YeQuEscortHudTabPresenter.cs",
+          "head_rev": "5",
+          "have_rev": "5",
+          "head_change": "392462",
+          "head_time": "1788493002"
+        },
+        {
+          "path": "game_client/Project_J/Assets/Script/Game/Common/Modules/YeQuEscort/Server/WorldYeQuEscortServerComponent_Contribution.cs",
+          "head_rev": "7",
+          "have_rev": "7",
+          "head_change": "388633",
+          "head_time": "1788244536"
+        },
+        {
+          "path": "game_client/Project_J/Assets/Script/Game/Common/Modules/YeQuPlay/WorldYeQuPlayServerComponent_TransformSoulFieldSkill.cs",
+          "head_rev": "10",
+          "have_rev": "10",
+          "head_change": "385397",
+          "head_time": "1787900049"
+        },
+        {
+          "path": "game_client/Project_J/Assets/Script/Game/Common/ServerLogicEntity/Components/Character/Base/HitPointServerComponent.cs",
+          "head_rev": "123",
+          "have_rev": "123",
+          "head_change": "387141",
+          "head_time": "1788086650"
+        }
+      ]
+    },
+    {
+      "provider": "codebase_memory",
+      "source_ref": "CodeBaseMemory MCP search_graph + index_status",
+      "project": "C-Users-Administrator-AppData-Local-Temp-codebase-memory-views-Project_J",
+      "revision": "index-ready-817030-nodes-2022384-edges",
+      "status": "ready",
+      "metadata": {"coverage": "selected_paths"},
+      "files": [
+        {"path": "Assets/Script/UI/Panel/MainHUDPanel/MainPanelTaskGroup/YeQuEscort/YeQuEscortHudTabPresenter.cs"},
+        {"path": "Assets/Script/Game/Common/Modules/YeQuEscort/Server/WorldYeQuEscortServerComponent_Contribution.cs"},
+        {"path": "Assets/Script/Game/Common/Modules/YeQuPlay/WorldYeQuPlayServerComponent_TransformSoulFieldSkill.cs"},
+        {"path": "Assets/Script/Game/Common/ServerLogicEntity/Components/Character/Base/HitPointServerComponent.cs"}
+      ],
+      "symbols": [
+        {
+          "name": "YeQuEscortHudTabPresenter",
+          "qualified_name": "C-Users-Administrator-AppData-Local-Temp-codebase-memory-views-Project_J.Assets.Script.UI.Panel.MainHUDPanel.MainPanelTaskGroup.YeQuEscort.YeQuEscortHudTabPresenter.YeQuEscortHudTabPresenter",
+          "file_path": "Assets/Script/UI/Panel/MainHUDPanel/MainPanelTaskGroup/YeQuEscort/YeQuEscortHudTabPresenter.cs",
+          "kind": "Class"
+        },
+        {
+          "name": "WorldYeQuEscortServerComponent_Contribution",
+          "qualified_name": "C-Users-Administrator-AppData-Local-Temp-codebase-memory-views-Project_J.Assets.Script.Game.Common.Modules.YeQuEscort.Server.WorldYeQuEscortServerComponent_Contribution",
+          "file_path": "Assets/Script/Game/Common/Modules/YeQuEscort/Server/WorldYeQuEscortServerComponent_Contribution.cs",
+          "kind": "Module"
+        },
+        {
+          "name": "WorldYeQuPlayServerComponent_TransformSoulFieldSkill",
+          "qualified_name": "C-Users-Administrator-AppData-Local-Temp-codebase-memory-views-Project_J.Assets.Script.Game.Common.Modules.YeQuPlay.WorldYeQuPlayServerComponent_TransformSoulFieldSkill",
+          "file_path": "Assets/Script/Game/Common/Modules/YeQuPlay/WorldYeQuPlayServerComponent_TransformSoulFieldSkill.cs",
+          "kind": "Module"
+        },
+        {
+          "name": "HitPointServerComponent",
+          "qualified_name": "C-Users-Administrator-AppData-Local-Temp-codebase-memory-views-Project_J.Assets.Script.Game.Common.ServerLogicEntity.Components.Character.Base.HitPointServerComponent.HitPointServerComponent",
+          "file_path": "Assets/Script/Game/Common/ServerLogicEntity/Components/Character/Base/HitPointServerComponent.cs",
+          "kind": "Class"
+        }
+      ],
+      "metadata": {
+        "index_status": "ready",
+        "nodes": 817030,
+        "edges": 2022384
+      }
+    }
+  ]
+}

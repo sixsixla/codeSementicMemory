@@ -22,6 +22,7 @@ from ..ingest.service import IngestService
 from ..quality.service import QualityService
 from ..storage.database import Database
 from ..storage.repository import ConflictError, MemoryRepository
+from ..verification.service import VerificationService
 
 
 class BatchRequest(BaseModel):
@@ -82,6 +83,20 @@ class ProjectAliasRequest(BaseModel):
     display_name: str | None = Field(default=None, max_length=500)
 
 
+class BindingVerificationRequest(BaseModel):
+    """Provider snapshots supplied by an adapter (P4/CodeBaseMemory/MCP)."""
+
+    logical_project_id: str | None = Field(default=None, max_length=300)
+    manifests: list[dict[str, Any]] = Field(default_factory=list, max_length=8)
+    p4_manifest: dict[str, Any] | None = None
+    codebase_memory_manifest: dict[str, Any] | None = None
+    task_id: str | None = Field(default=None, max_length=300)
+    task_ids: list[str] = Field(default_factory=list, max_length=1000)
+    write: bool = False
+    limit: int = Field(default=100_000, ge=1, le=100_000)
+    include_quarantine: bool = False
+
+
 def create_app(db_path: str | Path | None = None) -> FastAPI:
     """Create an app instance; initialization is deterministic and testable."""
 
@@ -97,6 +112,9 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     consolidation_service = ConsolidationService(
         repository, store=card_store, quality_service=quality_service
     )
+    verification_service = VerificationService(
+        repository, quality_service=quality_service
+    )
     app = FastAPI(
         title="CodeSementicMemory",
         version="0.1.0",
@@ -110,6 +128,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     app.state.card_store = card_store
     app.state.consolidation_service = consolidation_service
     app.state.quality_service = quality_service
+    app.state.verification_service = verification_service
 
     web_candidates = (
         Path(__file__).resolve().parents[3] / "web",
@@ -334,6 +353,65 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
             limit=request.limit,
             write=request.write,
         ).as_dict()
+
+    @app.post("/v1/verification/bindings")
+    @app.post("/v1/quality/verify-bindings")
+    async def verify_bindings(
+        request: BindingVerificationRequest | None = None,
+    ) -> dict[str, Any]:
+        request = request or BindingVerificationRequest()
+        try:
+            result = verification_service.verify(
+                logical_project_id=request.logical_project_id,
+                manifests=request.manifests,
+                p4_manifest=request.p4_manifest,
+                codebase_memory_manifest=request.codebase_memory_manifest,
+                task_id=request.task_id,
+                task_ids=request.task_ids,
+                write=request.write,
+                limit=request.limit,
+                include_quarantine=request.include_quarantine,
+            )
+            return result.as_dict()
+        except ValueError as exc:
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={"error": "invalid_verification_request", "message": str(exc)},
+            )
+
+    @app.get("/v1/verification/report")
+    async def verification_report(
+        logical_project_id: str | None = Query(default=None),
+        limit: int = Query(default=20, ge=1, le=1000),
+        include_manifest: bool = Query(default=False),
+    ) -> dict[str, Any]:
+        return verification_service.report(
+            logical_project_id=logical_project_id,
+            limit=limit,
+            include_manifest=include_manifest,
+        )
+
+    @app.get("/v1/verification/snapshots/{snapshot_id}")
+    async def verification_snapshot(
+        snapshot_id: str,
+        logical_project_id: str | None = Query(default=None),
+    ) -> dict[str, Any]:
+        return verification_service.snapshot(
+            snapshot_id,
+            logical_project_id=logical_project_id,
+        )
+
+    @app.get("/v1/verification/bindings")
+    async def verification_bindings(
+        logical_project_id: str | None = Query(default=None),
+        status_filter: str | None = Query(default=None, alias="status"),
+        limit: int = Query(default=1000, ge=1, le=10_000),
+    ) -> dict[str, Any]:
+        return verification_service.list_bindings(
+            logical_project_id=logical_project_id,
+            status=status_filter,
+            limit=limit,
+        )
 
     @app.get("/v1/quality/projects")
     async def quality_projects(limit: int = Query(default=1000, ge=1, le=10_000)) -> dict[str, Any]:

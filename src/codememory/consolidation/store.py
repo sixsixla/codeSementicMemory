@@ -129,8 +129,10 @@ class CardStore:
             return [self._candidate_from_row(row, conn) for row in rows]
 
     @staticmethod
-    def _binding_from_row(row: sqlite3.Row) -> dict[str, Any]:
-        return {
+    def _binding_from_row(
+        row: sqlite3.Row, conn: sqlite3.Connection | None = None
+    ) -> dict[str, Any]:
+        result = {
             "binding_id": str(row["binding_id"]),
             "role": str(row["role"]),
             "path": row["path"],
@@ -144,11 +146,31 @@ class CardStore:
             "created_at": str(row["created_at"]),
             "updated_at": str(row["updated_at"]),
         }
+        if conn is not None:
+            verification = conn.execute(
+                "SELECT run_id,snapshot_id,status,score,resolved_path,resolved_symbol,evidence_json,reasons_json,applied,checked_at "
+                "FROM binding_verifications WHERE binding_id=? ORDER BY checked_at DESC,verification_id DESC LIMIT 1",
+                (str(row["binding_id"]),),
+            ).fetchone()
+            if verification is not None:
+                result["verification"] = {
+                    "run_id": str(verification["run_id"]),
+                    "snapshot_id": str(verification["snapshot_id"]),
+                    "status": str(verification["status"]),
+                    "score": float(verification["score"]),
+                    "resolved_path": verification["resolved_path"],
+                    "resolved_symbol": verification["resolved_symbol"],
+                    "evidence": _value(verification["evidence_json"], {}),
+                    "reasons": _value(verification["reasons_json"], []),
+                    "applied": bool(verification["applied"]),
+                    "checked_at": str(verification["checked_at"]),
+                }
+        return result
 
     def _version_from_row(self, row: sqlite3.Row, conn: sqlite3.Connection) -> dict[str, Any]:
         version_id = str(row["card_version_id"])
         bindings = [
-            self._binding_from_row(binding)
+            self._binding_from_row(binding, conn)
             for binding in conn.execute(
                 "SELECT * FROM memory_card_bindings WHERE card_version_id=? "
                 "ORDER BY role, normalized_target",
@@ -869,9 +891,36 @@ class CardStore:
             if isinstance(edge, dict) and edge.get("source") and edge.get("target") and edge.get("relation")
         }
 
+        binding_status_priority = {
+            "verified": 0,
+            "unverified": 1,
+            "rejected": 2,
+            "renamed": 3,
+            "stale": 4,
+            "missing": 5,
+        }
+
         def add_node(node_id: str, kind: str, label: str, **metadata: Any) -> None:
             if node_id not in nodes:
                 nodes[node_id] = {"id": node_id, "kind": kind, "label": label, **metadata}
+                return
+            # Candidate graphs can already contain a file/symbol node before
+            # the card-binding projection is extended.  Merge verification
+            # metadata instead of silently keeping the stale pre-existing
+            # node; when several bindings share a target, retain the most
+            # conservative (highest-severity) status for the 3D inspector.
+            existing = nodes[node_id]
+            incoming_status = str(metadata.get("binding_status") or "")
+            current_status = str(existing.get("binding_status") or "")
+            if incoming_status and (
+                not current_status
+                or binding_status_priority.get(incoming_status, -1)
+                > binding_status_priority.get(current_status, -1)
+            ):
+                existing["binding_status"] = incoming_status
+            for key, value in metadata.items():
+                if key not in existing and value is not None:
+                    existing[key] = value
 
         def add_edge(source: str, target: str, relation: str, **metadata: Any) -> None:
             key = (source, target, relation)
@@ -945,7 +994,13 @@ class CardStore:
                 for binding in bindings:
                     if binding["path"]:
                         target = f"file:{binding['path']}"
-                        add_node(target, "file", str(binding["path"]), path=str(binding["path"]))
+                        add_node(
+                            target,
+                            "file",
+                            str(binding["path"]),
+                            path=str(binding["path"]),
+                            binding_status=str(binding["status"]),
+                        )
                         add_edge(node_id, target, str(binding["role"]))
                     symbol = binding["qualified_symbol"] or binding["symbol"]
                     if symbol:

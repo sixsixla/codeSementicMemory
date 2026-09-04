@@ -1,0 +1,47 @@
+{
+  "goal": "Implement Project_J-scoped code-binding verification against explicit P4 and CodeBaseMemory snapshots while keeping the SQLite core provider-neutral.",
+  "success_criteria": [
+    "A versioned manifest contract accepts P4 fstat and CodeBaseMemory MCP graph/index evidence without a provider SDK dependency.",
+    "Current card bindings receive deterministic verified, missing, renamed, stale, unverified, or rejected decisions with reasons and evidence.",
+    "Dry-run/write verification is idempotent, bounded, auditable, and never rewrites canonical events, candidates, card versions, or relations.",
+    "P4/CodeBaseMemory execution is guarded to the Project_J logical scope; bounded snapshots cannot create false missing decisions.",
+    "CLI, HTTP API, card detail, and 3D graph expose verification status; Project_J real-snapshot validation and full regression checks pass."
+  ],
+  "scope_allowlist": [
+    "src/**",
+    "tests/**",
+    "migrations/**",
+    "fixtures/verification/**",
+    "web/**",
+    "README.md",
+    ".omx/plans/**",
+    ".omx/state/**"
+  ],
+  "scope_forbidden": [
+    ".git/**",
+    "*.sqlite",
+    "*.sqlite3",
+    "*.db",
+    "data/**",
+    "build/**",
+    "dist/**",
+    "Project_J source contents",
+    "P4 credentials"
+  ],
+  "constraints": [
+    "SQLite remains the canonical local store; verification tables are additive projections.",
+    "Only the Project_J logical scope may use P4/CodeBaseMemory evidence in this phase.",
+    "A selected-path manifest must declare bounded coverage and may not imply repository-wide absence.",
+    "Provider failures remain unverified and must not demote an existing authoritative binding status.",
+    "Use read-only P4 operations and do not commit source code, secrets, or raw local database files."
+  ],
+  "non_goals": [
+    "Embedding/vector database integration",
+    "Automatic checkout or source mutation",
+    "AST/LSP implementation for every language",
+    "Verification of non-Project_J repositories"
+  ],
+  "risk_profile": "T2",
+  "human_decisions_required": [],
+  "stop_condition": "Stop after migration, provider-neutral verification service, Project_J adapter boundary, API/CLI/UI, real seed validation, full tests/lint/health checks, and documentation are complete."
+}

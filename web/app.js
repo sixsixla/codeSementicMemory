@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-const state = { graph: null, quality: null, tasks: [], selectedTask: "", selectedNode: null, nodeObjects: new Map(), scene: null, camera: null, renderer: null, controls: null, frame: 0 };
+const state = { graph: null, quality: null, verification: null, tasks: [], selectedTask: "", selectedNode: null, nodeObjects: new Map(), scene: null, camera: null, renderer: null, controls: null, frame: 0 };
 const $ = (id) => document.getElementById(id);
 const colors = { card: 0xd8c9ff, memory: 0xa98cff, card_version: 0x8d7bbd, event: 0x55d6e7, file: 0xffb86b, symbol: 0x6ee7ad, task: 0xf3f4f6, session: 0x91a7ff };
 
@@ -31,11 +31,35 @@ async function loadGraph() {
   state.graph = graph;
   renderStats(graph);
   await loadQuality();
+  await loadVerification();
   renderCards(state.selectedTask);
   renderCandidates(state.selectedTask);
   renderGraph(graph);
   $("connection-status").textContent = "SQLite API 已连接";
   $("connection-status").previousElementSibling.classList.add("ok");
+}
+
+async function loadVerification() {
+  try {
+    const report = await requestJson("/v1/verification/report?limit=3");
+    state.verification = report;
+    const statuses = report.bindings?.statuses || {};
+    const verified = statuses.verified || 0;
+    const stale = statuses.stale || 0;
+    const renamed = statuses.renamed || 0;
+    const missing = statuses.missing || 0;
+    const unverified = statuses.unverified || 0;
+    $("verification-version").textContent = report.verification_version || "—";
+    if (!report.applicable) {
+      $("verification-summary").innerHTML = '<div class="empty">仅 Project_J 启用 P4 / CodeBaseMemory</div>';
+      return;
+    }
+    $("verification-summary").innerHTML = `<div class="quality-row"><span>当前绑定</span><b>${report.bindings?.total || 0}</b></div><div class="quality-row"><span>已验证</span><b class="verification-verified">${verified}</b></div><div class="quality-row"><span>需复核</span><b class="verification-review">${stale + renamed}</b></div><div class="quality-row"><span>未覆盖 / 未验证</span><b class="verification-unverified">${unverified + missing}</b></div>`;
+  } catch (error) {
+    state.verification = null;
+    $("verification-version").textContent = "—";
+    $("verification-summary").innerHTML = `<div class="empty">绑定验证读取失败：${escapeHtml(error.message)}</div>`;
+  }
 }
 
 async function loadQuality() {
@@ -138,7 +162,9 @@ function renderGraph(graph) {
   for (const node of nodes) {
     const radius = node.kind === "card" ? .23 : node.kind === "memory" ? .19 : node.kind === "task" ? .22 : .13;
     const geometry = new THREE.SphereGeometry(radius, 18, 12);
-    const material = new THREE.MeshStandardMaterial({ color: colors[node.kind] || 0x94a3b8, emissive: colors[node.kind] || 0x94a3b8, emissiveIntensity: .18, roughness: .52, metalness: .12 });
+    const statusColor = { verified: 0x6ee7ad, stale: 0xffb86b, renamed: 0xf7a8ff, missing: 0xff718b, rejected: 0x64748b, unverified: 0x94a3b8 }[node.binding_status];
+    const nodeColor = statusColor || colors[node.kind] || 0x94a3b8;
+    const material = new THREE.MeshStandardMaterial({ color: nodeColor, emissive: nodeColor, emissiveIntensity: .18, roughness: .52, metalness: .12 });
     const mesh = new THREE.Mesh(geometry, material); mesh.position.copy(positions.get(node.id)); mesh.userData.node = node; mesh.userData.graphLayer = true; layer.add(mesh); state.nodeObjects.set(node.id, mesh);
   }
   $("graph-container").dataset.ready = "true";

@@ -30,6 +30,7 @@ select:focus, input:focus { border-color: rgba(85, 214, 231, .75); box-shadow: 0
 .search-row button:hover, .ghost:hover { border-color: rgba(85,214,231,.5); background: rgba(85,214,231,.08); }
 .candidate-section { min-height: 0; flex: 1; }
 .quality-section { border-top: 1px solid var(--line); padding-top: 14px; }
+.verification-section { border-top: 1px solid var(--line); padding-top: 14px; }
 .quality-summary { display: flex; flex-direction: column; gap: 5px; }
 .quality-row { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
 .quality-row b { color: var(--text); font-weight: 600; }
@@ -37,6 +38,9 @@ select:focus, input:focus { border-color: rgba(85, 214, 231, .75); box-shadow: 0
 .quality-review, .quality-legacy_unreviewed { color: var(--orange) !important; }
 .quality-quarantine { color: #ff718b !important; }
 .quality-mismatch { color: #f7a8ff !important; }
+.verification-verified { color: var(--green) !important; }
+.verification-review { color: var(--orange) !important; }
+.verification-unverified { color: #aebbd0 !important; }
 .card-list { overflow: auto; display: flex; flex-direction: column; gap: 7px; max-height: 260px; padding-right: 2px; margin-bottom: 8px; }
 .card-item { border: 1px solid rgba(169,140,255,.35); border-radius: 9px; padding: 9px 10px; background: rgba(169,140,255,.09); cursor: pointer; }
 .card-item:hover, .card-item.selected { border-color: rgba(169,140,255,.9); background: rgba(169,140,255,.2); }
