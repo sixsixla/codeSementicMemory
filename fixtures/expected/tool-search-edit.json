@@ -1,0 +1,1 @@
+{"fixture":"tool-search-edit.jsonl","expected_events":7,"event_types":["session_started","user_message","tool_call","tool_result","file_edit","validation_run","session_ended"],"expected_outcome":"completed"}

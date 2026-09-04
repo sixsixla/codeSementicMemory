@@ -1,0 +1,12 @@
+{
+  "schema_version": "fixture-index.v1",
+  "fixtures": [
+    {"path":"minimal-session.jsonl","expected_path":"expected/minimal-session.json","purpose":"smallest complete session","expected_events":3},
+    {"path":"tool-search-edit.jsonl","expected_path":"expected/tool-search-edit.json","purpose":"search, tool, edit and validation loop","expected_events":7},
+    {"path":"failed-validation.jsonl","expected_path":"expected/failed-validation.json","purpose":"failed check and user feedback","expected_events":5},
+    {"path":"refactor-route.jsonl","expected_path":"expected/refactor-route.json","purpose":"rename/refactor with VCS evidence","expected_events":6},
+    {"path":"user-correction.jsonl","expected_path":"expected/user-correction.json","purpose":"assistant correction after feedback","expected_events":5},
+    {"path":"partial-session.jsonl","expected_path":"expected/partial-session.json","purpose":"partial adapter stream and late completion","expected_events":2},
+    {"path":"route-success.jsonl","expected_path":"expected/route-success.json","purpose":"full coding route demonstration","expected_events":12}
+  ]
+}

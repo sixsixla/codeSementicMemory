@@ -1,0 +1,38 @@
+{
+  "changed_artifacts": [
+    ".gitignore",
+    "pyproject.toml",
+    "README.md",
+    "src/codememory/**",
+    "migrations/0001_core.sql",
+    "migrations/0002_event_artifact_links.sql",
+    "migrations/0003_artifact_content_and_outbox_limits.sql",
+    "schemas/codememory.event.v1.json",
+    "schemas/extraction_batch.v1.json",
+    "fixtures/**",
+    "tests/**"
+  ],
+  "behavior_changed": [
+    "Adds a versioned coding-event ingestion contract and local SQLite WAL persistence.",
+    "Adds idempotent HTTP, CLI, and JSONL replay ingestion with redaction and durable outbox jobs.",
+    "Adds timeline, FTS search, backup/restore, export, and outbox lease inspection surfaces."
+  ],
+  "contracts_satisfied": [
+    "Phase 0 event/schema/fixture/CLI boundary",
+    "Phase 1 SQLite migration, transaction, replay, artifact, backup, and outbox boundary",
+    "TaskContract success criteria"
+  ],
+  "local_checks": [
+    {"command":"py -m pytest -q","result":"20 passed"},
+    {"command":"ruff check src tests","result":"All checks passed"},
+    {"command":"py -m compileall -q src","result":"passed"},
+    {"command":"codememory schema validate fixtures/route-success.jsonl","result":"12 valid"},
+    {"command":"py tests/benchmark_ingest.py","result":"p95 approximately 6.28ms on the local host"}
+  ],
+  "known_gaps": [
+    "LLM extraction/consolidation and card lifecycle are Phase 2-3 work.",
+    "Code snapshot/symbol verification and stale bindings are Phase 4 work.",
+    "MCP, Web graph UI, and Codex Desktop adapter are Phase 5-7 work."
+  ],
+  "scope_exceptions": []
+}

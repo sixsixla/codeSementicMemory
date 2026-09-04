@@ -1,0 +1,1 @@
+{"fixture":"user-correction.jsonl","expected_events":5,"event_types":["session_started","user_message","assistant_message","user_feedback","assistant_message"],"expected_outcome":"corrected"}

@@ -1,0 +1,37 @@
+{
+  "current_behavior": "The repository is a newly initialized empty Git worktree with no application source, schema, migration, or test files. The canonical implementation plan is maintained in D:/Tool/AI_Project_J/tmpMd/20260902-1524-codememory-implementation-plan.md.",
+  "runtime_or_system_owner": "CodeSementicMemory local process owned by the delivery lead; no external project adapter or runtime service is present yet.",
+  "entry_points": [
+    "A Python module entry point (python -m codememory)",
+    "A localhost HTTP application factory (codememory.api.create_app)",
+    "A shared IngestService used by HTTP and JSONL replay"
+  ],
+  "evidence": [
+    "git rev-parse --is-inside-work-tree returned true",
+    "git show-toplevel resolved to D:/Tool/codeSementicMemory",
+    "git status reported no commits and no tracked application files",
+    "The implementation plan explicitly scopes Phase 0–1 to event protocol, SQLite, ingest, replay, outbox, and health"
+  ],
+  "reuse_decision": "NEW",
+  "affected_consumers": [
+    "Future Codex Desktop adapter",
+    "Future LLM extraction/consolidation worker",
+    "Future FTS/vector/graph projections",
+    "Local CLI and HTTP clients"
+  ],
+  "unknowns": [
+    "Which Codex Desktop hook or app-server surface will provide the richest event stream",
+    "Which local LLM and embedding runtime will be selected for Phase 2",
+    "Whether a future code snapshot provider should use Git, Perforce, or both"
+  ],
+  "falsifiers": [
+    "A required first-round acceptance criterion cannot be proven with deterministic local tests",
+    "SQLite portability or locking behavior fails under the supported Python runtime",
+    "The shared HTTP and replay paths produce divergent persisted event records"
+  ],
+  "recommended_knowledge_routes": [
+    "Read the canonical implementation plan before expanding beyond Phase 1",
+    "Treat SQLite rows and event envelopes as the first stable internal contract",
+    "Keep adapter, extraction, and projection concerns behind explicit interfaces"
+  ]
+}

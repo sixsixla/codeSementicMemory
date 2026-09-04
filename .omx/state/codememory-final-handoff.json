@@ -1,0 +1,28 @@
+{
+  "outcome": "CodeSementicMemory Phase 0-1 first-round coding-memory core is implemented and verified.",
+  "evidence": [
+    ".omx/state/codememory-patch-manifest.json",
+    ".omx/state/codememory-review-report.json",
+    ".omx/state/codememory-verification-ledger.json",
+    "py -m pytest -q: 24 passed",
+    "ruff check src tests: All checks passed",
+    "py -m compileall -q src: passed",
+    "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+    "Fresh SQLite health: journal_mode=wal and integrity_check=ok",
+    "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+  ],
+  "remaining_risks": [
+    "The first round stores immutable coding evidence but does not yet infer or consolidate LLM memory cards.",
+    "Search is currently deterministic FTS; embeddings and graph projections remain rebuildable future projections.",
+    "Symbol and snapshot validation is not yet connected, so historical paths still require later code-state verification.",
+    "The measured latency is local-host evidence and is not a production SLO."
+  ],
+  "remaining_actions": [
+    "Phase 2: consume event.ingested jobs and add a strict, provider-replaceable LLM extraction boundary.",
+    "Phase 3: implement card, relation, provenance, confidence, merge, supersede, and lifecycle policies.",
+    "Phase 4: resolve code symbols and snapshots, then mark stale or superseded routes safely.",
+    "Phase 5-6: add hybrid retrieval, MCP endpoints, and the local graph/web inspection surface.",
+    "Phase 7: add a thin Codex Desktop adapter after the core event contract is exercised by fixtures."
+  ],
+  "recovery_entry": "Restore a SQLite backup with `codememory restore <backup.sqlite3> --db <target.sqlite3> --force`, then replay a canonical export with `codememory-replay <events.jsonl> --db <target.sqlite3>`; rebuild the FTS projection with `codememory rebuild-search --db <target.sqlite3>`."
+}

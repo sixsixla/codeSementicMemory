@@ -1,0 +1,87 @@
+{
+  "required_gates": [
+    "GOAL_AND_SCOPE",
+    "DISCOVERY_COMPLETE",
+    "WRITE_AUTHORIZATION",
+    "SCOPE_CONFORMANCE",
+    "STATIC_CORRECTNESS",
+    "INDEPENDENT_REVIEW",
+    "BEHAVIOR_REGRESSION"
+  ],
+  "gate_results": [
+    {
+      "gate_id": "GOAL_AND_SCOPE",
+      "status": "PASS",
+      "claim_proven": "The first-round delivery scope and non-goals are frozen in the TaskContract.",
+      "evidence": [
+        ".omx/state/codememory-task-contract.json validated by adaptive_vibe contract"
+      ],
+      "executor": "delivery-lead"
+    },
+    {
+      "gate_id": "DISCOVERY_COMPLETE",
+      "status": "PASS",
+      "claim_proven": "Repository shape, first-round boundary, and falsifiers are recorded in the DiscoveryPacket.",
+      "evidence": [
+        ".omx/state/codememory-discovery-packet.json",
+        "git status --short --branch"
+      ],
+      "executor": "bd5150ca-c435-448b-b82c-438b51d92027"
+    },
+    {
+      "gate_id": "WRITE_AUTHORIZATION",
+      "status": "PASS",
+      "claim_proven": "The user explicitly authorized implementation of the first-round CodeSementicMemory product in this repository.",
+      "evidence": [
+        "User request: 按最终计划进行开发。完成codeSementicmemory的第一轮产物",
+        "TaskContract scope allowlist and non-goals"
+      ],
+      "executor": "delivery-lead"
+    },
+    {
+      "gate_id": "SCOPE_CONFORMANCE",
+      "status": "PASS",
+      "claim_proven": "All first-round files are inside the frozen repository allowlist and no forbidden runtime database files are tracked.",
+      "evidence": [
+        "adaptive_vibe scope-check --paths-json returned violations=[]",
+        "git status --short --ignored"
+      ],
+      "executor": "codex-root-implementation"
+    },
+    {
+      "gate_id": "STATIC_CORRECTNESS",
+      "status": "PASS",
+      "claim_proven": "The Python package compiles and static lint/tests pass for the first-round boundary.",
+      "evidence": [
+        "py -m compileall -q src",
+        "ruff check src tests: All checks passed",
+        "py -m pytest -q: 20 passed"
+      ],
+      "executor": "codex-root-implementation"
+    },
+    {
+      "gate_id": "INDEPENDENT_REVIEW",
+      "status": "PASS",
+      "claim_proven": "An independent reviewer found no blocking contract, integrity, scope, or regression findings for the Phase 0-1 boundary.",
+      "evidence": [
+        ".omx/state/codememory-review-report.json",
+        "py -m pytest -q: 24 passed",
+        "ruff check src tests: All checks passed"
+      ],
+      "executor": "codex-independent-review"
+    },
+    {
+      "gate_id": "BEHAVIOR_REGRESSION",
+      "status": "PASS",
+      "claim_proven": "Fresh deterministic verification confirms migration, replay, idempotency, artifact bounds, outbox lifecycle, backup/restore, FTS rebuild, HTTP API, and 10,000-event integrity behavior.",
+      "evidence": [
+        "py -m pytest -q: 24 passed",
+        "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+        "Fresh SQLite health: journal_mode=wal and integrity_check=ok",
+        "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+      ],
+      "executor": "codex-independent-verifier"
+    }
+  ],
+  "remaining_gaps": []
+}

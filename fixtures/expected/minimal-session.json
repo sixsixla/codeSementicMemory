@@ -1,0 +1,1 @@
+{"fixture":"minimal-session.jsonl","expected_events":3,"event_types":["session_started","user_message","session_ended"],"expected_outcome":"completed"}

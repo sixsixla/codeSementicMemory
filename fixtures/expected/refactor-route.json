@@ -1,0 +1,1 @@
+{"fixture":"refactor-route.jsonl","expected_events":6,"event_types":["session_started","user_message","file_read","file_edit","vcs_change","session_ended"],"expected_outcome":"completed","expected_rename":true}

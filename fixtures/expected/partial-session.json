@@ -1,0 +1,1 @@
+{"fixture":"partial-session.jsonl","expected_events":2,"event_types":["user_message","tool_result"],"expected_outcome":"partial","expected_completeness":"partial"}

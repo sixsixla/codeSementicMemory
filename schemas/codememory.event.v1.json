@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codememory.local/schemas/codememory.event.v1.json",
+  "title": "CodeSementicMemory coding event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "producer",
+    "project_id",
+    "task_id",
+    "seq",
+    "context",
+    "payload",
+    "artifacts",
+    "redaction",
+    "source",
+    "completeness"
+  ],
+  "properties": {
+    "schema_version": { "const": "codememory.event.v1" },
+    "event_id": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "external_event_id": { "type": ["string", "null"], "maxLength": 500 },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "session_started",
+        "user_message",
+        "assistant_message",
+        "tool_call",
+        "tool_result",
+        "file_read",
+        "file_edit",
+        "command_run",
+        "validation_run",
+        "vcs_change",
+        "user_feedback",
+        "session_ended"
+      ]
+    },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "producer": { "$ref": "#/$defs/producer" },
+    "project_id": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "task_id": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "session_id": { "type": ["string", "null"], "maxLength": 300 },
+    "seq": { "type": "integer", "minimum": 0 },
+    "parent_event_id": { "type": ["string", "null"], "maxLength": 300 },
+    "context": { "$ref": "#/$defs/context" },
+    "payload": { "type": "object" },
+    "artifacts": { "type": "array", "items": { "$ref": "#/$defs/artifact" } },
+    "redaction": { "$ref": "#/$defs/redaction" },
+    "source": { "type": "string", "enum": ["agent", "api", "hook", "replay", "unknown"] },
+    "completeness": { "type": "string", "enum": ["full", "partial", "summary"] }
+  },
+  "$defs": {
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agent_id", "adapter", "adapter_version"],
+      "properties": {
+        "agent_id": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "adapter": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "adapter_version": { "type": "string", "minLength": 1, "maxLength": 100 }
+      }
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "repo_id": { "type": ["string", "null"], "maxLength": 300 },
+        "root_path": { "type": ["string", "null"], "maxLength": 2000 },
+        "branch": { "type": ["string", "null"], "maxLength": 500 },
+        "commit_id": { "type": ["string", "null"], "maxLength": 200 },
+        "p4_changelist": { "type": ["string", "null"], "maxLength": 100 },
+        "cwd": { "type": ["string", "null"], "maxLength": 2000 }
+      },
+      "additionalProperties": true
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "uri": { "type": ["string", "null"], "maxLength": 4000 },
+        "path": { "type": ["string", "null"], "maxLength": 4000 },
+        "sha256": { "type": ["string", "null"], "minLength": 64, "maxLength": 64 },
+        "mime_type": { "type": ["string", "null"], "maxLength": 200 },
+        "size_bytes": { "type": ["integer", "null"], "minimum": 0 },
+        "content": { "type": ["string", "null"], "maxLength": 20000000 },
+        "content_encoding": { "type": "string", "enum": ["utf-8", "base64"] },
+        "truncated": { "type": "boolean" },
+        "metadata": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "redaction": {
+      "type": "object",
+      "properties": {
+        "applied": { "type": "boolean" },
+        "ruleset_version": { "type": "string" },
+        "fields": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    }
+  }
+}

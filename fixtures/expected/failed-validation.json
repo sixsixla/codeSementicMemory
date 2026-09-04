@@ -1,0 +1,1 @@
+{"fixture":"failed-validation.jsonl","expected_events":5,"event_types":["session_started","file_edit","validation_run","user_feedback","session_ended"],"expected_outcome":"abandoned","expected_failure":true}

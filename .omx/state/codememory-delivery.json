@@ -1,0 +1,3206 @@
+{
+  "agent_runs": [
+    {
+      "agent_run_id": "bd5150ca-c435-448b-b82c-438b51d92027",
+      "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "attempt": 1,
+      "context_id": null,
+      "ended_at": "2026-09-02T09:13:50+00:00",
+      "evidence": [
+        "Repository inspection and plan-boundary review completed"
+      ],
+      "home_state": "DISCOVERY",
+      "last_seen_at": "2026-09-02T09:13:50+00:00",
+      "output_artifact_refs": [
+        "3c7e268e-ce1b-4ff9-889a-031960e7e788"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "codex-root-delivery-lead",
+      "runtime_kind": "local-codex",
+      "started_at": "2026-09-02T09:12:49+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "657fbb86-4b84-4988-853b-fa01dccaec84",
+      "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "attempt": 1,
+      "context_id": null,
+      "ended_at": "2026-09-02T09:51:22+00:00",
+      "evidence": [
+        "PatchManifest checks completed",
+        "20 automated tests passed",
+        "10,000-event integrity check passed"
+      ],
+      "home_state": "IMPLEMENT",
+      "last_seen_at": "2026-09-02T09:51:22+00:00",
+      "output_artifact_refs": [
+        "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "codex-root-implementation",
+      "runtime_kind": "local-codex",
+      "started_at": "2026-09-02T09:35:32+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "40f90a42-92ec-448a-be4e-1c6a2d666cdf",
+      "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "attempt": 1,
+      "context_id": null,
+      "ended_at": "2026-09-02T10:03:34+00:00",
+      "evidence": [
+        "Independent review completed with PASS verdict",
+        "24 tests, lint, compile, fresh database health, and localhost smoke verified"
+      ],
+      "home_state": "REVIEW",
+      "last_seen_at": "2026-09-02T10:03:34+00:00",
+      "output_artifact_refs": [
+        "2e8b81db-205a-4282-a07d-ebbf65f04652"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "codex-independent-review",
+      "runtime_kind": "local-codex",
+      "started_at": "2026-09-02T10:02:24+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "334ec754-2de9-485c-8ec4-7b52520f2825",
+      "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "attempt": 1,
+      "context_id": null,
+      "ended_at": "2026-09-02T10:06:04+00:00",
+      "evidence": [
+        "VerificationLedger recorded as a faithful snapshot of all seven required gates"
+      ],
+      "home_state": "VERIFY",
+      "last_seen_at": "2026-09-02T10:06:04+00:00",
+      "output_artifact_refs": [
+        "597d4918-afbe-4072-b684-73884b734870"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "codex-independent-verifier",
+      "runtime_kind": "local-codex",
+      "started_at": "2026-09-02T10:04:11+00:00",
+      "status": "SUCCEEDED"
+    }
+  ],
+  "artifacts": {
+    "DiscoveryPacket": [
+      {
+        "artifact_id": "3c7e268e-ce1b-4ff9-889a-031960e7e788",
+        "artifact_revision": 1,
+        "artifact_type": "DiscoveryPacket",
+        "data": {
+          "affected_consumers": [
+            "Future Codex Desktop adapter",
+            "Future LLM extraction/consolidation worker",
+            "Future FTS/vector/graph projections",
+            "Local CLI and HTTP clients"
+          ],
+          "current_behavior": "The repository is a newly initialized empty Git worktree with no application source, schema, migration, or test files. The canonical implementation plan is maintained in D:/Tool/AI_Project_J/tmpMd/20260902-1524-codememory-implementation-plan.md.",
+          "entry_points": [
+            "A Python module entry point (python -m codememory)",
+            "A localhost HTTP application factory (codememory.api.create_app)",
+            "A shared IngestService used by HTTP and JSONL replay"
+          ],
+          "evidence": [
+            "git rev-parse --is-inside-work-tree returned true",
+            "git show-toplevel resolved to D:/Tool/codeSementicMemory",
+            "git status reported no commits and no tracked application files",
+            "The implementation plan explicitly scopes Phase 0–1 to event protocol, SQLite, ingest, replay, outbox, and health"
+          ],
+          "falsifiers": [
+            "A required first-round acceptance criterion cannot be proven with deterministic local tests",
+            "SQLite portability or locking behavior fails under the supported Python runtime",
+            "The shared HTTP and replay paths produce divergent persisted event records"
+          ],
+          "recommended_knowledge_routes": [
+            "Read the canonical implementation plan before expanding beyond Phase 1",
+            "Treat SQLite rows and event envelopes as the first stable internal contract",
+            "Keep adapter, extraction, and projection concerns behind explicit interfaces"
+          ],
+          "reuse_decision": "NEW",
+          "runtime_or_system_owner": "CodeSementicMemory local process owned by the delivery lead; no external project adapter or runtime service is present yet.",
+          "unknowns": [
+            "Which Codex Desktop hook or app-server surface will provide the richest event stream",
+            "Which local LLM and embedding runtime will be selected for Phase 2",
+            "Whether a future code snapshot provider should use Git, Perforce, or both"
+          ]
+        },
+        "owner": "investigator",
+        "producer_agent_run_id": "bd5150ca-c435-448b-b82c-438b51d92027",
+        "producer_assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+        "producer_home_state": "DISCOVERY",
+        "recorded_at": "2026-09-02T09:13:17+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "FinalHandoff": [
+      {
+        "artifact_id": "7fafb1c1-d0a9-478e-b528-bb8ce9820fd7",
+        "artifact_revision": 1,
+        "artifact_type": "FinalHandoff",
+        "data": {
+          "evidence": [
+            ".omx/state/codememory-patch-manifest.json",
+            ".omx/state/codememory-review-report.json",
+            ".omx/state/codememory-verification-ledger.json",
+            "py -m pytest -q: 24 passed",
+            "ruff check src tests: All checks passed",
+            "py -m compileall -q src: passed",
+            "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+            "Fresh SQLite health: journal_mode=wal and integrity_check=ok",
+            "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+          ],
+          "outcome": "CodeSementicMemory Phase 0-1 first-round coding-memory core is implemented and verified.",
+          "recovery_entry": "Restore a SQLite backup with `codememory restore <backup.sqlite3> --db <target.sqlite3> --force`, then replay a canonical export with `codememory-replay <events.jsonl> --db <target.sqlite3>`; rebuild the FTS projection with `codememory rebuild-search --db <target.sqlite3>`.",
+          "remaining_actions": [
+            "Phase 2: consume event.ingested jobs and add a strict, provider-replaceable LLM extraction boundary.",
+            "Phase 3: implement card, relation, provenance, confidence, merge, supersede, and lifecycle policies.",
+            "Phase 4: resolve code symbols and snapshots, then mark stale or superseded routes safely.",
+            "Phase 5-6: add hybrid retrieval, MCP endpoints, and the local graph/web inspection surface.",
+            "Phase 7: add a thin Codex Desktop adapter after the core event contract is exercised by fixtures."
+          ],
+          "remaining_risks": [
+            "The first round stores immutable coding evidence but does not yet infer or consolidate LLM memory cards.",
+            "Search is currently deterministic FTS; embeddings and graph projections remain rebuildable future projections.",
+            "Symbol and snapshot validation is not yet connected, so historical paths still require later code-state verification.",
+            "The measured latency is local-host evidence and is not a production SLO."
+          ]
+        },
+        "owner": "delivery-lead",
+        "producer_home_state": "HANDOFF",
+        "recorded_at": "2026-09-02T10:06:34+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "PatchManifest": [
+      {
+        "artifact_id": "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+        "artifact_revision": 1,
+        "artifact_type": "PatchManifest",
+        "data": {
+          "behavior_changed": [
+            "Adds a versioned coding-event ingestion contract and local SQLite WAL persistence.",
+            "Adds idempotent HTTP, CLI, and JSONL replay ingestion with redaction and durable outbox jobs.",
+            "Adds timeline, FTS search, backup/restore, export, and outbox lease inspection surfaces."
+          ],
+          "changed_artifacts": [
+            ".gitignore",
+            "pyproject.toml",
+            "README.md",
+            "src/codememory/**",
+            "migrations/0001_core.sql",
+            "migrations/0002_event_artifact_links.sql",
+            "migrations/0003_artifact_content_and_outbox_limits.sql",
+            "schemas/codememory.event.v1.json",
+            "schemas/extraction_batch.v1.json",
+            "fixtures/**",
+            "tests/**"
+          ],
+          "contracts_satisfied": [
+            "Phase 0 event/schema/fixture/CLI boundary",
+            "Phase 1 SQLite migration, transaction, replay, artifact, backup, and outbox boundary",
+            "TaskContract success criteria"
+          ],
+          "known_gaps": [
+            "LLM extraction/consolidation and card lifecycle are Phase 2-3 work.",
+            "Code snapshot/symbol verification and stale bindings are Phase 4 work.",
+            "MCP, Web graph UI, and Codex Desktop adapter are Phase 5-7 work."
+          ],
+          "local_checks": [
+            {
+              "command": "py -m pytest -q",
+              "result": "20 passed"
+            },
+            {
+              "command": "ruff check src tests",
+              "result": "All checks passed"
+            },
+            {
+              "command": "py -m compileall -q src",
+              "result": "passed"
+            },
+            {
+              "command": "codememory schema validate fixtures/route-success.jsonl",
+              "result": "12 valid"
+            },
+            {
+              "command": "py tests/benchmark_ingest.py",
+              "result": "p95 approximately 6.28ms on the local host"
+            }
+          ],
+          "scope_exceptions": []
+        },
+        "owner": "implementer",
+        "producer_agent_run_id": "657fbb86-4b84-4988-853b-fa01dccaec84",
+        "producer_assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+        "producer_home_state": "IMPLEMENT",
+        "recorded_at": "2026-09-02T09:51:16+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "ReviewReport": [
+      {
+        "artifact_id": "2e8b81db-205a-4282-a07d-ebbf65f04652",
+        "artifact_revision": 1,
+        "artifact_type": "ReviewReport",
+        "data": {
+          "contract_violations": [],
+          "evidence": [
+            "py -m pytest -q: 24 passed",
+            "ruff check src tests: All checks passed",
+            "py -m compileall -q src: passed",
+            "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+            "Fresh SQLite health: WAL, schema 0003, integrity_check=ok",
+            "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+          ],
+          "findings": [],
+          "required_rework": [],
+          "scope_drift": [],
+          "unverified_assumptions": [
+            "Codex Desktop adapter and LLM/provider behavior are intentionally deferred to later phases.",
+            "The measured replay latency is evidence from this local host, not a universal service-level objective.",
+            "The Starlette/httpx deprecation warning is an environment dependency warning and does not affect the tested API behavior."
+          ],
+          "verdict": "PASS"
+        },
+        "owner": "reviewer",
+        "producer_agent_run_id": "40f90a42-92ec-448a-be4e-1c6a2d666cdf",
+        "producer_assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+        "producer_home_state": "REVIEW",
+        "recorded_at": "2026-09-02T10:03:18+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "TaskContract": [
+      {
+        "artifact_id": "3b8623a8-8a12-468f-9e1f-1c72334ead15",
+        "artifact_revision": 1,
+        "artifact_type": "TaskContract",
+        "data": {
+          "constraints": [
+            "Keep SQLite as the canonical local store; do not add a hosted memory backend.",
+            "Keep the first round independent of Codex Desktop hooks and any LLM or embedding provider.",
+            "Use only deterministic local fixtures and tests for verification.",
+            "Use the repository's existing empty Git worktree; do not modify external repositories or Git history."
+          ],
+          "goal": "Deliver the first usable CodeSementicMemory coding-memory core: a local SQLite event store with a versioned coding-event contract, idempotent localhost HTTP ingestion, JSONL fixture replay, durable outbox records, and health/timeline inspection commands.",
+          "human_decisions_required": [],
+          "non_goals": [
+            "LLM extraction and consolidation worker",
+            "Embedding/vector index and graph projection",
+            "Codex Desktop adapter",
+            "Web UI and three-dimensional graph visualization",
+            "Cloud deployment, authentication, and production operations"
+          ],
+          "risk_profile": "T1",
+          "scope_allowlist": [
+            "pyproject.toml",
+            "README.md",
+            ".gitignore",
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            ".omx/state/**"
+          ],
+          "scope_forbidden": [
+            ".git/**",
+            ".venv/**",
+            "data/**",
+            "*.db",
+            "*.sqlite",
+            "**/__pycache__/**"
+          ],
+          "stop_condition": "The first-round artifacts are implemented, tests and local smoke checks pass, and remaining Phase 2+ work is recorded without being silently folded into this change.",
+          "success_criteria": [
+            "A fresh database can be initialized by a repeatable migration and opens in WAL mode with integrity checks.",
+            "Valid coding event envelopes are accepted through the shared service and localhost HTTP API; duplicate delivery is idempotent and conflicting identities are rejected.",
+            "JSONL fixtures can be replayed through the same ingestion path with deterministic summaries and timeline queries.",
+            "Every accepted event creates a durable, deduplicated outbox job and outbox jobs expose claim, retry, and completion behavior.",
+            "Automated tests cover schema validation, migrations, ingestion, idempotency, replay, API responses, and outbox behavior."
+          ]
+        },
+        "owner": "delivery-lead",
+        "producer_home_state": "INTAKE",
+        "recorded_at": "2026-09-02T09:11:06+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "VerificationLedger": [
+      {
+        "artifact_id": "597d4918-afbe-4072-b684-73884b734870",
+        "artifact_revision": 1,
+        "artifact_type": "VerificationLedger",
+        "data": {
+          "gate_results": [
+            {
+              "claim_proven": "The first-round delivery scope and non-goals are frozen in the TaskContract.",
+              "evidence": [
+                ".omx/state/codememory-task-contract.json validated by adaptive_vibe contract"
+              ],
+              "executor": "delivery-lead",
+              "gate_id": "GOAL_AND_SCOPE",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "Repository shape, first-round boundary, and falsifiers are recorded in the DiscoveryPacket.",
+              "evidence": [
+                ".omx/state/codememory-discovery-packet.json",
+                "git status --short --branch"
+              ],
+              "executor": "bd5150ca-c435-448b-b82c-438b51d92027",
+              "gate_id": "DISCOVERY_COMPLETE",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "The user explicitly authorized implementation of the first-round CodeSementicMemory product in this repository.",
+              "evidence": [
+                "User request: 按最终计划进行开发。完成codeSementicmemory的第一轮产物",
+                "TaskContract scope allowlist and non-goals"
+              ],
+              "executor": "delivery-lead",
+              "gate_id": "WRITE_AUTHORIZATION",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "All first-round files are inside the frozen repository allowlist and no forbidden runtime database files are tracked.",
+              "evidence": [
+                "adaptive_vibe scope-check --paths-json returned violations=[]",
+                "git status --short --ignored"
+              ],
+              "executor": "codex-root-implementation",
+              "gate_id": "SCOPE_CONFORMANCE",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "The Python package compiles and static lint/tests pass for the first-round boundary.",
+              "evidence": [
+                "py -m compileall -q src",
+                "ruff check src tests: All checks passed",
+                "py -m pytest -q: 20 passed"
+              ],
+              "executor": "codex-root-implementation",
+              "gate_id": "STATIC_CORRECTNESS",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "An independent reviewer found no blocking contract, integrity, scope, or regression findings for the Phase 0-1 boundary.",
+              "evidence": [
+                ".omx/state/codememory-review-report.json",
+                "py -m pytest -q: 24 passed",
+                "ruff check src tests: All checks passed"
+              ],
+              "executor": "codex-independent-review",
+              "gate_id": "INDEPENDENT_REVIEW",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "Fresh deterministic verification confirms migration, replay, idempotency, artifact bounds, outbox lifecycle, backup/restore, FTS rebuild, HTTP API, and 10,000-event integrity behavior.",
+              "evidence": [
+                "py -m pytest -q: 24 passed",
+                "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+                "Fresh SQLite health: journal_mode=wal and integrity_check=ok",
+                "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+              ],
+              "executor": "codex-independent-verifier",
+              "gate_id": "BEHAVIOR_REGRESSION",
+              "status": "PASS"
+            }
+          ],
+          "remaining_gaps": [],
+          "required_gates": [
+            "GOAL_AND_SCOPE",
+            "DISCOVERY_COMPLETE",
+            "WRITE_AUTHORIZATION",
+            "SCOPE_CONFORMANCE",
+            "STATIC_CORRECTNESS",
+            "INDEPENDENT_REVIEW",
+            "BEHAVIOR_REGRESSION"
+          ]
+        },
+        "owner": "verifier",
+        "producer_agent_run_id": "334ec754-2de9-485c-8ec4-7b52520f2825",
+        "producer_assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+        "producer_home_state": "VERIFY",
+        "recorded_at": "2026-09-02T10:05:58+00:00",
+        "schema_version": "1.0",
+        "source_gate_count": 7
+      }
+    ]
+  },
+  "assignments": [
+    {
+      "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "created_at": "2026-09-02T09:12:41+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-02T09:14:00+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:DiscoveryPacket"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "data/**"
+      ],
+      "home_state": "DISCOVERY",
+      "input_artifact_refs": [
+        "3b8623a8-8a12-468f-9e1f-1c72334ead15"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            ".omx/state/codememory-discovery-packet.json"
+          ],
+          "label": "Implementation shape and evidence boundary recorded",
+          "milestone_id": "discovery-shape",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-02T09:14:00+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "3c7e268e-ce1b-4ff9-889a-031960e7e788"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        ".omx/state/**",
+        "../AI_Project_J/tmpMd/**"
+      ],
+      "required": true,
+      "role": "investigator",
+      "status": "COMPLETED",
+      "task_slice": "Inspect the empty repository and freeze the minimal first-round implementation shape and verification boundary.",
+      "updated_at": "2026-09-02T09:14:00+00:00",
+      "write_scope": []
+    },
+    {
+      "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "created_at": "2026-09-02T09:35:23+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-02T09:51:31+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:PatchManifest"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "data/**",
+        "*.db",
+        "*.sqlite"
+      ],
+      "home_state": "IMPLEMENT",
+      "input_artifact_refs": [
+        "3c7e268e-ce1b-4ff9-889a-031960e7e788"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            ".omx/state/codememory-patch-manifest.json",
+            "py -m pytest -q",
+            "ruff check src tests"
+          ],
+          "label": "Phase 0-1 core implementation and tests are complete",
+          "milestone_id": "core-implementation",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-02T09:51:31+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        ".omx/state/**",
+        "src/**",
+        "tests/**",
+        "migrations/**",
+        "schemas/**",
+        "fixtures/**",
+        "README.md",
+        "pyproject.toml"
+      ],
+      "required": true,
+      "role": "implementer",
+      "status": "COMPLETED",
+      "task_slice": "Implement the first-round SQLite event protocol, shared ingest/replay service, HTTP API, CLI, fixtures, and tests within the frozen scope.",
+      "updated_at": "2026-09-02T09:51:31+00:00",
+      "write_scope": [
+        "src/**",
+        "tests/**",
+        "migrations/**",
+        "schemas/**",
+        "fixtures/**",
+        "pyproject.toml",
+        "README.md",
+        ".gitignore"
+      ]
+    },
+    {
+      "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "created_at": "2026-09-02T10:02:19+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-02T10:03:40+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:ReviewReport"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "data/**"
+      ],
+      "home_state": "REVIEW",
+      "input_artifact_refs": [
+        "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            ".omx/state/codememory-review-report.json",
+            "py -m pytest -q",
+            "ruff check src tests"
+          ],
+          "label": "Independent review report recorded",
+          "milestone_id": "review-complete",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-02T10:03:40+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "2e8b81db-205a-4282-a07d-ebbf65f04652"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "migrations/**",
+        "schemas/**",
+        "fixtures/**",
+        "README.md",
+        "pyproject.toml"
+      ],
+      "required": true,
+      "role": "reviewer",
+      "status": "COMPLETED",
+      "task_slice": "Independently review the Phase 0-1 implementation for contract, data-integrity, scope, and test gaps.",
+      "updated_at": "2026-09-02T10:03:40+00:00",
+      "write_scope": []
+    },
+    {
+      "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "created_at": "2026-09-02T10:04:06+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-02T10:06:10+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:VerificationLedger"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "data/**"
+      ],
+      "home_state": "VERIFY",
+      "input_artifact_refs": [
+        "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+        "2e8b81db-205a-4282-a07d-ebbf65f04652"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            ".omx/state/codememory-verification-ledger.json",
+            "py -m pytest -q",
+            "py tests/benchmark_ingest.py"
+          ],
+          "label": "Verification ledger records all required gates",
+          "milestone_id": "verification-complete",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-02T10:06:10+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "597d4918-afbe-4072-b684-73884b734870"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "migrations/**",
+        "schemas/**",
+        "fixtures/**",
+        "README.md",
+        "pyproject.toml",
+        ".omx/state/**"
+      ],
+      "required": true,
+      "role": "verifier",
+      "status": "COMPLETED",
+      "task_slice": "Run the final deterministic verification ledger for the Phase 0-1 CodeSementicMemory delivery and confirm every required gate has evidence.",
+      "updated_at": "2026-09-02T10:06:10+00:00",
+      "write_scope": []
+    }
+  ],
+  "created_at": "2026-09-02T09:11:06+00:00",
+  "entry_mode": "DELIVER",
+  "entry_provenance": {
+    "kind": "DIRECT_DELIVERY",
+    "owner": "delivery-lead",
+    "started_at": "2026-09-02T09:11:06+00:00"
+  },
+  "finalized_at": "2026-09-02T10:06:44+00:00",
+  "gate_ledger": [
+    {
+      "claim_proven": "The first-round delivery scope and non-goals are frozen in the TaskContract.",
+      "evidence": [
+        ".omx/state/codememory-task-contract.json validated by adaptive_vibe contract"
+      ],
+      "executor": "delivery-lead",
+      "gate_id": "GOAL_AND_SCOPE",
+      "recorded_at": "2026-09-02T09:12:10+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "Repository shape, first-round boundary, and falsifiers are recorded in the DiscoveryPacket.",
+      "evidence": [
+        ".omx/state/codememory-discovery-packet.json",
+        "git status --short --branch"
+      ],
+      "executor": "bd5150ca-c435-448b-b82c-438b51d92027",
+      "gate_id": "DISCOVERY_COMPLETE",
+      "recorded_at": "2026-09-02T09:14:11+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The user explicitly authorized implementation of the first-round CodeSementicMemory product in this repository.",
+      "evidence": [
+        "User request: 按最终计划进行开发。完成codeSementicmemory的第一轮产物",
+        "TaskContract scope allowlist and non-goals"
+      ],
+      "executor": "delivery-lead",
+      "gate_id": "WRITE_AUTHORIZATION",
+      "recorded_at": "2026-09-02T09:14:27+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "All first-round files are inside the frozen repository allowlist and no forbidden runtime database files are tracked.",
+      "evidence": [
+        "adaptive_vibe scope-check --paths-json returned violations=[]",
+        "git status --short --ignored"
+      ],
+      "executor": "codex-root-implementation",
+      "gate_id": "SCOPE_CONFORMANCE",
+      "recorded_at": "2026-09-02T09:51:59+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The Python package compiles and static lint/tests pass for the first-round boundary.",
+      "evidence": [
+        "py -m compileall -q src",
+        "ruff check src tests: All checks passed",
+        "py -m pytest -q: 20 passed"
+      ],
+      "executor": "codex-root-implementation",
+      "gate_id": "STATIC_CORRECTNESS",
+      "recorded_at": "2026-09-02T09:52:06+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "An independent reviewer found no blocking contract, integrity, scope, or regression findings for the Phase 0-1 boundary.",
+      "evidence": [
+        ".omx/state/codememory-review-report.json",
+        "py -m pytest -q: 24 passed",
+        "ruff check src tests: All checks passed"
+      ],
+      "executor": "codex-independent-review",
+      "gate_id": "INDEPENDENT_REVIEW",
+      "recorded_at": "2026-09-02T10:03:53+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "Fresh deterministic verification confirms migration, replay, idempotency, artifact bounds, outbox lifecycle, backup/restore, FTS rebuild, HTTP API, and 10,000-event integrity behavior.",
+      "evidence": [
+        "py -m pytest -q: 24 passed",
+        "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+        "Fresh SQLite health: journal_mode=wal and integrity_check=ok",
+        "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+      ],
+      "executor": "codex-independent-verifier",
+      "gate_id": "BEHAVIOR_REGRESSION",
+      "recorded_at": "2026-09-02T10:05:46+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "all required artifacts and gates support the delivery claim",
+      "evidence": [
+        {
+          "ledger_revision": 34
+        },
+        {
+          "required_gates": [
+            "GOAL_AND_SCOPE",
+            "DISCOVERY_COMPLETE",
+            "WRITE_AUTHORIZATION",
+            "SCOPE_CONFORMANCE",
+            "STATIC_CORRECTNESS",
+            "INDEPENDENT_REVIEW",
+            "BEHAVIOR_REGRESSION"
+          ]
+        },
+        {
+          "required_artifacts": [
+            "TaskContract",
+            "DiscoveryPacket",
+            "PatchManifest",
+            "ReviewReport",
+            "VerificationLedger",
+            "FinalHandoff"
+          ]
+        }
+      ],
+      "executor": "delivery-lead",
+      "gate_id": "FINALIZE",
+      "recorded_at": "2026-09-02T10:06:44+00:00",
+      "status": "PASS"
+    }
+  ],
+  "lead": "delivery-lead",
+  "ledger_version": "1.0",
+  "orchestration_activation_state": "INTAKE",
+  "orchestration_contract_version": "2.0",
+  "orchestration_events": [
+    {
+      "actor": "workflow-core",
+      "artifact_id": "3b8623a8-8a12-468f-9e1f-1c72334ead15",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "INTAKE",
+      "kind": "workflow.contract.registered",
+      "observed": {
+        "artifact": {
+          "artifact_id": "3b8623a8-8a12-468f-9e1f-1c72334ead15",
+          "artifact_revision": 1,
+          "artifact_type": "TaskContract",
+          "data": {
+            "constraints": [
+              "Keep SQLite as the canonical local store; do not add a hosted memory backend.",
+              "Keep the first round independent of Codex Desktop hooks and any LLM or embedding provider.",
+              "Use only deterministic local fixtures and tests for verification.",
+              "Use the repository's existing empty Git worktree; do not modify external repositories or Git history."
+            ],
+            "goal": "Deliver the first usable CodeSementicMemory coding-memory core: a local SQLite event store with a versioned coding-event contract, idempotent localhost HTTP ingestion, JSONL fixture replay, durable outbox records, and health/timeline inspection commands.",
+            "human_decisions_required": [],
+            "non_goals": [
+              "LLM extraction and consolidation worker",
+              "Embedding/vector index and graph projection",
+              "Codex Desktop adapter",
+              "Web UI and three-dimensional graph visualization",
+              "Cloud deployment, authentication, and production operations"
+            ],
+            "risk_profile": "T1",
+            "scope_allowlist": [
+              "pyproject.toml",
+              "README.md",
+              ".gitignore",
+              "src/**",
+              "tests/**",
+              "migrations/**",
+              "schemas/**",
+              "fixtures/**",
+              ".omx/state/**"
+            ],
+            "scope_forbidden": [
+              ".git/**",
+              ".venv/**",
+              "data/**",
+              "*.db",
+              "*.sqlite",
+              "**/__pycache__/**"
+            ],
+            "stop_condition": "The first-round artifacts are implemented, tests and local smoke checks pass, and remaining Phase 2+ work is recorded without being silently folded into this change.",
+            "success_criteria": [
+              "A fresh database can be initialized by a repeatable migration and opens in WAL mode with integrity checks.",
+              "Valid coding event envelopes are accepted through the shared service and localhost HTTP API; duplicate delivery is idempotent and conflicting identities are rejected.",
+              "JSONL fixtures can be replayed through the same ingestion path with deterministic summaries and timeline queries.",
+              "Every accepted event creates a durable, deduplicated outbox job and outbox jobs expose claim, retry, and completion behavior.",
+              "Automated tests cover schema validation, migrations, ingestion, idempotency, replay, API responses, and outbox behavior."
+            ]
+          },
+          "owner": "delivery-lead",
+          "producer_home_state": "INTAKE",
+          "recorded_at": "2026-09-02T09:11:06+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 1,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T09:11:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "INTAKE",
+      "kind": "workflow.mode.selected",
+      "observed": {
+        "entry_mode": "DELIVER",
+        "entry_provenance": {
+          "kind": "DIRECT_DELIVERY",
+          "owner": "delivery-lead",
+          "started_at": "2026-09-02T09:11:06+00:00"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 2,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T09:11:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "GOAL_AND_SCOPE"
+      ],
+      "home_state": "INTAKE",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The first-round delivery scope and non-goals are frozen in the TaskContract.",
+        "evidence": [
+          ".omx/state/codememory-task-contract.json validated by adaptive_vibe contract"
+        ],
+        "executor": "delivery-lead",
+        "gate": {
+          "claim_proven": "The first-round delivery scope and non-goals are frozen in the TaskContract.",
+          "evidence": [
+            ".omx/state/codememory-task-contract.json validated by adaptive_vibe contract"
+          ],
+          "executor": "delivery-lead",
+          "gate_id": "GOAL_AND_SCOPE",
+          "recorded_at": "2026-09-02T09:12:10+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 3,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-02T09:12:10+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "INTAKE",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-02T09:12:17+00:00",
+          "from": "INTAKE",
+          "reason": "Scope is frozen; begin repository and implementation-shape discovery.",
+          "to": "DISCOVERY"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 4,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T09:12:17+00:00",
+      "to_state": "DISCOVERY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+          "created_at": "2026-09-02T09:12:41+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:DiscoveryPacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**"
+          ],
+          "home_state": "DISCOVERY",
+          "input_artifact_refs": [
+            "3b8623a8-8a12-468f-9e1f-1c72334ead15"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Implementation shape and evidence boundary recorded",
+              "milestone_id": "discovery-shape",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-02T09:12:41+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            ".omx/state/**",
+            "../AI_Project_J/tmpMd/**"
+          ],
+          "required": true,
+          "role": "investigator",
+          "status": "PLANNED",
+          "task_slice": "Inspect the empty repository and freeze the minimal first-round implementation shape and verification boundary.",
+          "updated_at": "2026-09-02T09:12:41+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 5,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-02T09:12:41+00:00"
+    },
+    {
+      "accepted_at": "2026-09-02T09:12:41+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "3b8623a8-8a12-468f-9e1f-1c72334ead15",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "INTAKE",
+      "handoff_id": "7e1e8557-197a-4aae-b958-0c08d874cbcd",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-02T09:12:41+00:00",
+          "artifact_id": "3b8623a8-8a12-468f-9e1f-1c72334ead15",
+          "from_assignment_id": null,
+          "from_state": "INTAKE",
+          "handoff_id": "7e1e8557-197a-4aae-b958-0c08d874cbcd",
+          "to_assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+          "to_state": "DISCOVERY"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 6,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T09:12:41+00:00",
+      "to_assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "to_state": "DISCOVERY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+          "created_at": "2026-09-02T09:12:41+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:DiscoveryPacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**"
+          ],
+          "home_state": "DISCOVERY",
+          "input_artifact_refs": [
+            "3b8623a8-8a12-468f-9e1f-1c72334ead15"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Implementation shape and evidence boundary recorded",
+              "milestone_id": "discovery-shape",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-02T09:12:41+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            ".omx/state/**",
+            "../AI_Project_J/tmpMd/**"
+          ],
+          "required": true,
+          "role": "investigator",
+          "status": "ACTIVE",
+          "task_slice": "Inspect the empty repository and freeze the minimal first-round implementation shape and verification boundary.",
+          "updated_at": "2026-09-02T09:12:49+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 7,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-02T09:12:49+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "bd5150ca-c435-448b-b82c-438b51d92027",
+      "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "bd5150ca-c435-448b-b82c-438b51d92027",
+          "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+          "attempt": 1,
+          "context_id": null,
+          "evidence": [],
+          "home_state": "DISCOVERY",
+          "last_seen_at": "2026-09-02T09:12:49+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-delivery-lead",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-02T09:12:49+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 8,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-02T09:12:49+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "bd5150ca-c435-448b-b82c-438b51d92027",
+      "artifact_id": "3c7e268e-ce1b-4ff9-889a-031960e7e788",
+      "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "3c7e268e-ce1b-4ff9-889a-031960e7e788",
+          "artifact_revision": 1,
+          "artifact_type": "DiscoveryPacket",
+          "data": {
+            "affected_consumers": [
+              "Future Codex Desktop adapter",
+              "Future LLM extraction/consolidation worker",
+              "Future FTS/vector/graph projections",
+              "Local CLI and HTTP clients"
+            ],
+            "current_behavior": "The repository is a newly initialized empty Git worktree with no application source, schema, migration, or test files. The canonical implementation plan is maintained in D:/Tool/AI_Project_J/tmpMd/20260902-1524-codememory-implementation-plan.md.",
+            "entry_points": [
+              "A Python module entry point (python -m codememory)",
+              "A localhost HTTP application factory (codememory.api.create_app)",
+              "A shared IngestService used by HTTP and JSONL replay"
+            ],
+            "evidence": [
+              "git rev-parse --is-inside-work-tree returned true",
+              "git show-toplevel resolved to D:/Tool/codeSementicMemory",
+              "git status reported no commits and no tracked application files",
+              "The implementation plan explicitly scopes Phase 0–1 to event protocol, SQLite, ingest, replay, outbox, and health"
+            ],
+            "falsifiers": [
+              "A required first-round acceptance criterion cannot be proven with deterministic local tests",
+              "SQLite portability or locking behavior fails under the supported Python runtime",
+              "The shared HTTP and replay paths produce divergent persisted event records"
+            ],
+            "recommended_knowledge_routes": [
+              "Read the canonical implementation plan before expanding beyond Phase 1",
+              "Treat SQLite rows and event envelopes as the first stable internal contract",
+              "Keep adapter, extraction, and projection concerns behind explicit interfaces"
+            ],
+            "reuse_decision": "NEW",
+            "runtime_or_system_owner": "CodeSementicMemory local process owned by the delivery lead; no external project adapter or runtime service is present yet.",
+            "unknowns": [
+              "Which Codex Desktop hook or app-server surface will provide the richest event stream",
+              "Which local LLM and embedding runtime will be selected for Phase 2",
+              "Whether a future code snapshot provider should use Git, Perforce, or both"
+            ]
+          },
+          "owner": "investigator",
+          "producer_agent_run_id": "bd5150ca-c435-448b-b82c-438b51d92027",
+          "producer_assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+          "producer_home_state": "DISCOVERY",
+          "recorded_at": "2026-09-02T09:13:17+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 9,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T09:13:17+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "bd5150ca-c435-448b-b82c-438b51d92027",
+      "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "bd5150ca-c435-448b-b82c-438b51d92027",
+          "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-02T09:13:50+00:00",
+          "evidence": [
+            "Repository inspection and plan-boundary review completed"
+          ],
+          "home_state": "DISCOVERY",
+          "last_seen_at": "2026-09-02T09:13:50+00:00",
+          "output_artifact_refs": [
+            "3c7e268e-ce1b-4ff9-889a-031960e7e788"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-delivery-lead",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-02T09:12:49+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 10,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-02T09:13:50+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "discovery-shape",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            ".omx/state/codememory-discovery-packet.json"
+          ],
+          "label": "Implementation shape and evidence boundary recorded",
+          "milestone_id": "discovery-shape",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-02T09:14:00+00:00"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 11,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-02T09:14:00+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+          "created_at": "2026-09-02T09:12:41+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-02T09:14:00+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:DiscoveryPacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**"
+          ],
+          "home_state": "DISCOVERY",
+          "input_artifact_refs": [
+            "3b8623a8-8a12-468f-9e1f-1c72334ead15"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-discovery-packet.json"
+              ],
+              "label": "Implementation shape and evidence boundary recorded",
+              "milestone_id": "discovery-shape",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-02T09:14:00+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "3c7e268e-ce1b-4ff9-889a-031960e7e788"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            ".omx/state/**",
+            "../AI_Project_J/tmpMd/**"
+          ],
+          "required": true,
+          "role": "investigator",
+          "status": "COMPLETED",
+          "task_slice": "Inspect the empty repository and freeze the minimal first-round implementation shape and verification boundary.",
+          "updated_at": "2026-09-02T09:14:00+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 12,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-02T09:14:00+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "DISCOVERY_COMPLETE"
+      ],
+      "home_state": "DISCOVERY",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "Repository shape, first-round boundary, and falsifiers are recorded in the DiscoveryPacket.",
+        "evidence": [
+          ".omx/state/codememory-discovery-packet.json",
+          "git status --short --branch"
+        ],
+        "executor": "bd5150ca-c435-448b-b82c-438b51d92027",
+        "gate": {
+          "claim_proven": "Repository shape, first-round boundary, and falsifiers are recorded in the DiscoveryPacket.",
+          "evidence": [
+            ".omx/state/codememory-discovery-packet.json",
+            "git status --short --branch"
+          ],
+          "executor": "bd5150ca-c435-448b-b82c-438b51d92027",
+          "gate_id": "DISCOVERY_COMPLETE",
+          "recorded_at": "2026-09-02T09:14:11+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 13,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-02T09:14:11+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "WRITE_AUTHORIZATION"
+      ],
+      "home_state": "DISCOVERY",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The user explicitly authorized implementation of the first-round CodeSementicMemory product in this repository.",
+        "evidence": [
+          "User request: 按最终计划进行开发。完成codeSementicmemory的第一轮产物",
+          "TaskContract scope allowlist and non-goals"
+        ],
+        "executor": "delivery-lead",
+        "gate": {
+          "claim_proven": "The user explicitly authorized implementation of the first-round CodeSementicMemory product in this repository.",
+          "evidence": [
+            "User request: 按最终计划进行开发。完成codeSementicmemory的第一轮产物",
+            "TaskContract scope allowlist and non-goals"
+          ],
+          "executor": "delivery-lead",
+          "gate_id": "WRITE_AUTHORIZATION",
+          "recorded_at": "2026-09-02T09:14:27+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 14,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-02T09:14:27+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "DISCOVERY",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-02T09:14:35+00:00",
+          "from": "DISCOVERY",
+          "reason": "Discovery and write authorization are complete; implement the bounded Phase 0–1 core.",
+          "to": "IMPLEMENT"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 15,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T09:14:35+00:00",
+      "to_state": "IMPLEMENT"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+          "created_at": "2026-09-02T09:35:23+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:PatchManifest"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**",
+            "*.db",
+            "*.sqlite"
+          ],
+          "home_state": "IMPLEMENT",
+          "input_artifact_refs": [
+            "3c7e268e-ce1b-4ff9-889a-031960e7e788"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Phase 0-1 core implementation and tests are complete",
+              "milestone_id": "core-implementation",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-02T09:35:23+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            ".omx/state/**",
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "README.md",
+            "pyproject.toml"
+          ],
+          "required": true,
+          "role": "implementer",
+          "status": "PLANNED",
+          "task_slice": "Implement the first-round SQLite event protocol, shared ingest/replay service, HTTP API, CLI, fixtures, and tests within the frozen scope.",
+          "updated_at": "2026-09-02T09:35:23+00:00",
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "pyproject.toml",
+            "README.md",
+            ".gitignore"
+          ]
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 16,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-02T09:35:23+00:00"
+    },
+    {
+      "accepted_at": "2026-09-02T09:35:23+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "3c7e268e-ce1b-4ff9-889a-031960e7e788",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+      "from_state": "DISCOVERY",
+      "handoff_id": "bcf9aa51-caf7-4714-a537-e717a6744b71",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-02T09:35:23+00:00",
+          "artifact_id": "3c7e268e-ce1b-4ff9-889a-031960e7e788",
+          "from_assignment_id": "253e512b-4ea9-4c80-ac94-6e0ce123bb58",
+          "from_state": "DISCOVERY",
+          "handoff_id": "bcf9aa51-caf7-4714-a537-e717a6744b71",
+          "to_assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+          "to_state": "IMPLEMENT"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 17,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T09:35:23+00:00",
+      "to_assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "to_state": "IMPLEMENT"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+          "created_at": "2026-09-02T09:35:23+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:PatchManifest"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**",
+            "*.db",
+            "*.sqlite"
+          ],
+          "home_state": "IMPLEMENT",
+          "input_artifact_refs": [
+            "3c7e268e-ce1b-4ff9-889a-031960e7e788"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Phase 0-1 core implementation and tests are complete",
+              "milestone_id": "core-implementation",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-02T09:35:23+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            ".omx/state/**",
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "README.md",
+            "pyproject.toml"
+          ],
+          "required": true,
+          "role": "implementer",
+          "status": "ACTIVE",
+          "task_slice": "Implement the first-round SQLite event protocol, shared ingest/replay service, HTTP API, CLI, fixtures, and tests within the frozen scope.",
+          "updated_at": "2026-09-02T09:35:32+00:00",
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "pyproject.toml",
+            "README.md",
+            ".gitignore"
+          ]
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 18,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-02T09:35:32+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "657fbb86-4b84-4988-853b-fa01dccaec84",
+      "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "657fbb86-4b84-4988-853b-fa01dccaec84",
+          "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+          "attempt": 1,
+          "context_id": null,
+          "evidence": [],
+          "home_state": "IMPLEMENT",
+          "last_seen_at": "2026-09-02T09:35:32+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-implementation",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-02T09:35:32+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 19,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-02T09:35:32+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "657fbb86-4b84-4988-853b-fa01dccaec84",
+      "artifact_id": "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+      "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+          "artifact_revision": 1,
+          "artifact_type": "PatchManifest",
+          "data": {
+            "behavior_changed": [
+              "Adds a versioned coding-event ingestion contract and local SQLite WAL persistence.",
+              "Adds idempotent HTTP, CLI, and JSONL replay ingestion with redaction and durable outbox jobs.",
+              "Adds timeline, FTS search, backup/restore, export, and outbox lease inspection surfaces."
+            ],
+            "changed_artifacts": [
+              ".gitignore",
+              "pyproject.toml",
+              "README.md",
+              "src/codememory/**",
+              "migrations/0001_core.sql",
+              "migrations/0002_event_artifact_links.sql",
+              "migrations/0003_artifact_content_and_outbox_limits.sql",
+              "schemas/codememory.event.v1.json",
+              "schemas/extraction_batch.v1.json",
+              "fixtures/**",
+              "tests/**"
+            ],
+            "contracts_satisfied": [
+              "Phase 0 event/schema/fixture/CLI boundary",
+              "Phase 1 SQLite migration, transaction, replay, artifact, backup, and outbox boundary",
+              "TaskContract success criteria"
+            ],
+            "known_gaps": [
+              "LLM extraction/consolidation and card lifecycle are Phase 2-3 work.",
+              "Code snapshot/symbol verification and stale bindings are Phase 4 work.",
+              "MCP, Web graph UI, and Codex Desktop adapter are Phase 5-7 work."
+            ],
+            "local_checks": [
+              {
+                "command": "py -m pytest -q",
+                "result": "20 passed"
+              },
+              {
+                "command": "ruff check src tests",
+                "result": "All checks passed"
+              },
+              {
+                "command": "py -m compileall -q src",
+                "result": "passed"
+              },
+              {
+                "command": "codememory schema validate fixtures/route-success.jsonl",
+                "result": "12 valid"
+              },
+              {
+                "command": "py tests/benchmark_ingest.py",
+                "result": "p95 approximately 6.28ms on the local host"
+              }
+            ],
+            "scope_exceptions": []
+          },
+          "owner": "implementer",
+          "producer_agent_run_id": "657fbb86-4b84-4988-853b-fa01dccaec84",
+          "producer_assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+          "producer_home_state": "IMPLEMENT",
+          "recorded_at": "2026-09-02T09:51:16+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 20,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T09:51:16+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "657fbb86-4b84-4988-853b-fa01dccaec84",
+      "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "657fbb86-4b84-4988-853b-fa01dccaec84",
+          "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-02T09:51:22+00:00",
+          "evidence": [
+            "PatchManifest checks completed",
+            "20 automated tests passed",
+            "10,000-event integrity check passed"
+          ],
+          "home_state": "IMPLEMENT",
+          "last_seen_at": "2026-09-02T09:51:22+00:00",
+          "output_artifact_refs": [
+            "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-implementation",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-02T09:35:32+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 21,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-02T09:51:22+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "core-implementation",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            ".omx/state/codememory-patch-manifest.json",
+            "py -m pytest -q",
+            "ruff check src tests"
+          ],
+          "label": "Phase 0-1 core implementation and tests are complete",
+          "milestone_id": "core-implementation",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-02T09:51:31+00:00"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 22,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-02T09:51:31+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+          "created_at": "2026-09-02T09:35:23+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-02T09:51:31+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:PatchManifest"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**",
+            "*.db",
+            "*.sqlite"
+          ],
+          "home_state": "IMPLEMENT",
+          "input_artifact_refs": [
+            "3c7e268e-ce1b-4ff9-889a-031960e7e788"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-patch-manifest.json",
+                "py -m pytest -q",
+                "ruff check src tests"
+              ],
+              "label": "Phase 0-1 core implementation and tests are complete",
+              "milestone_id": "core-implementation",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-02T09:51:31+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            ".omx/state/**",
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "README.md",
+            "pyproject.toml"
+          ],
+          "required": true,
+          "role": "implementer",
+          "status": "COMPLETED",
+          "task_slice": "Implement the first-round SQLite event protocol, shared ingest/replay service, HTTP API, CLI, fixtures, and tests within the frozen scope.",
+          "updated_at": "2026-09-02T09:51:31+00:00",
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "pyproject.toml",
+            "README.md",
+            ".gitignore"
+          ]
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 23,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-02T09:51:31+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "SCOPE_CONFORMANCE"
+      ],
+      "home_state": "IMPLEMENT",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "All first-round files are inside the frozen repository allowlist and no forbidden runtime database files are tracked.",
+        "evidence": [
+          "adaptive_vibe scope-check --paths-json returned violations=[]",
+          "git status --short --ignored"
+        ],
+        "executor": "codex-root-implementation",
+        "gate": {
+          "claim_proven": "All first-round files are inside the frozen repository allowlist and no forbidden runtime database files are tracked.",
+          "evidence": [
+            "adaptive_vibe scope-check --paths-json returned violations=[]",
+            "git status --short --ignored"
+          ],
+          "executor": "codex-root-implementation",
+          "gate_id": "SCOPE_CONFORMANCE",
+          "recorded_at": "2026-09-02T09:51:59+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 24,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-02T09:51:59+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "STATIC_CORRECTNESS"
+      ],
+      "home_state": "IMPLEMENT",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The Python package compiles and static lint/tests pass for the first-round boundary.",
+        "evidence": [
+          "py -m compileall -q src",
+          "ruff check src tests: All checks passed",
+          "py -m pytest -q: 20 passed"
+        ],
+        "executor": "codex-root-implementation",
+        "gate": {
+          "claim_proven": "The Python package compiles and static lint/tests pass for the first-round boundary.",
+          "evidence": [
+            "py -m compileall -q src",
+            "ruff check src tests: All checks passed",
+            "py -m pytest -q: 20 passed"
+          ],
+          "executor": "codex-root-implementation",
+          "gate_id": "STATIC_CORRECTNESS",
+          "recorded_at": "2026-09-02T09:52:06+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 25,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-02T09:52:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "IMPLEMENT",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-02T09:52:13+00:00",
+          "from": "IMPLEMENT",
+          "reason": "Implementation artifact and static/scope gates are complete; perform an independent review.",
+          "to": "REVIEW"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 26,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T09:52:13+00:00",
+      "to_state": "REVIEW"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+          "created_at": "2026-09-02T10:02:19+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:ReviewReport"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**"
+          ],
+          "home_state": "REVIEW",
+          "input_artifact_refs": [
+            "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Independent review report recorded",
+              "milestone_id": "review-complete",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-02T10:02:19+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "README.md",
+            "pyproject.toml"
+          ],
+          "required": true,
+          "role": "reviewer",
+          "status": "PLANNED",
+          "task_slice": "Independently review the Phase 0-1 implementation for contract, data-integrity, scope, and test gaps.",
+          "updated_at": "2026-09-02T10:02:19+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 27,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-02T10:02:19+00:00"
+    },
+    {
+      "accepted_at": "2026-09-02T10:02:19+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "from_state": "IMPLEMENT",
+      "handoff_id": "bec43c7e-ede0-487e-a69f-1134b73dda72",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-02T10:02:19+00:00",
+          "artifact_id": "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+          "from_assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+          "from_state": "IMPLEMENT",
+          "handoff_id": "bec43c7e-ede0-487e-a69f-1134b73dda72",
+          "to_assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+          "to_state": "REVIEW"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 28,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T10:02:19+00:00",
+      "to_assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "to_state": "REVIEW"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+          "created_at": "2026-09-02T10:02:19+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:ReviewReport"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**"
+          ],
+          "home_state": "REVIEW",
+          "input_artifact_refs": [
+            "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Independent review report recorded",
+              "milestone_id": "review-complete",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-02T10:02:19+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "README.md",
+            "pyproject.toml"
+          ],
+          "required": true,
+          "role": "reviewer",
+          "status": "ACTIVE",
+          "task_slice": "Independently review the Phase 0-1 implementation for contract, data-integrity, scope, and test gaps.",
+          "updated_at": "2026-09-02T10:02:24+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 29,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-02T10:02:24+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "40f90a42-92ec-448a-be4e-1c6a2d666cdf",
+      "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "40f90a42-92ec-448a-be4e-1c6a2d666cdf",
+          "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+          "attempt": 1,
+          "context_id": null,
+          "evidence": [],
+          "home_state": "REVIEW",
+          "last_seen_at": "2026-09-02T10:02:24+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-independent-review",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-02T10:02:24+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 30,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-02T10:02:24+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "40f90a42-92ec-448a-be4e-1c6a2d666cdf",
+      "artifact_id": "2e8b81db-205a-4282-a07d-ebbf65f04652",
+      "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "2e8b81db-205a-4282-a07d-ebbf65f04652",
+          "artifact_revision": 1,
+          "artifact_type": "ReviewReport",
+          "data": {
+            "contract_violations": [],
+            "evidence": [
+              "py -m pytest -q: 24 passed",
+              "ruff check src tests: All checks passed",
+              "py -m compileall -q src: passed",
+              "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+              "Fresh SQLite health: WAL, schema 0003, integrity_check=ok",
+              "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+            ],
+            "findings": [],
+            "required_rework": [],
+            "scope_drift": [],
+            "unverified_assumptions": [
+              "Codex Desktop adapter and LLM/provider behavior are intentionally deferred to later phases.",
+              "The measured replay latency is evidence from this local host, not a universal service-level objective.",
+              "The Starlette/httpx deprecation warning is an environment dependency warning and does not affect the tested API behavior."
+            ],
+            "verdict": "PASS"
+          },
+          "owner": "reviewer",
+          "producer_agent_run_id": "40f90a42-92ec-448a-be4e-1c6a2d666cdf",
+          "producer_assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+          "producer_home_state": "REVIEW",
+          "recorded_at": "2026-09-02T10:03:18+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 31,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T10:03:18+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "40f90a42-92ec-448a-be4e-1c6a2d666cdf",
+      "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "40f90a42-92ec-448a-be4e-1c6a2d666cdf",
+          "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-02T10:03:34+00:00",
+          "evidence": [
+            "Independent review completed with PASS verdict",
+            "24 tests, lint, compile, fresh database health, and localhost smoke verified"
+          ],
+          "home_state": "REVIEW",
+          "last_seen_at": "2026-09-02T10:03:34+00:00",
+          "output_artifact_refs": [
+            "2e8b81db-205a-4282-a07d-ebbf65f04652"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-independent-review",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-02T10:02:24+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 32,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-02T10:03:34+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "review-complete",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            ".omx/state/codememory-review-report.json",
+            "py -m pytest -q",
+            "ruff check src tests"
+          ],
+          "label": "Independent review report recorded",
+          "milestone_id": "review-complete",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-02T10:03:40+00:00"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 33,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-02T10:03:40+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+          "created_at": "2026-09-02T10:02:19+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-02T10:03:40+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:ReviewReport"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**"
+          ],
+          "home_state": "REVIEW",
+          "input_artifact_refs": [
+            "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-review-report.json",
+                "py -m pytest -q",
+                "ruff check src tests"
+              ],
+              "label": "Independent review report recorded",
+              "milestone_id": "review-complete",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-02T10:03:40+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "2e8b81db-205a-4282-a07d-ebbf65f04652"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "README.md",
+            "pyproject.toml"
+          ],
+          "required": true,
+          "role": "reviewer",
+          "status": "COMPLETED",
+          "task_slice": "Independently review the Phase 0-1 implementation for contract, data-integrity, scope, and test gaps.",
+          "updated_at": "2026-09-02T10:03:40+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 34,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-02T10:03:40+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "INDEPENDENT_REVIEW"
+      ],
+      "home_state": "REVIEW",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "An independent reviewer found no blocking contract, integrity, scope, or regression findings for the Phase 0-1 boundary.",
+        "evidence": [
+          ".omx/state/codememory-review-report.json",
+          "py -m pytest -q: 24 passed",
+          "ruff check src tests: All checks passed"
+        ],
+        "executor": "codex-independent-review",
+        "gate": {
+          "claim_proven": "An independent reviewer found no blocking contract, integrity, scope, or regression findings for the Phase 0-1 boundary.",
+          "evidence": [
+            ".omx/state/codememory-review-report.json",
+            "py -m pytest -q: 24 passed",
+            "ruff check src tests: All checks passed"
+          ],
+          "executor": "codex-independent-review",
+          "gate_id": "INDEPENDENT_REVIEW",
+          "recorded_at": "2026-09-02T10:03:53+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 35,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-02T10:03:53+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "REVIEW",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-02T10:03:58+00:00",
+          "from": "REVIEW",
+          "reason": "Independent review passed; run fresh verification against every required gate and acceptance path.",
+          "to": "VERIFY"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 36,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T10:03:58+00:00",
+      "to_state": "VERIFY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+          "created_at": "2026-09-02T10:04:06+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:VerificationLedger"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**"
+          ],
+          "home_state": "VERIFY",
+          "input_artifact_refs": [
+            "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+            "2e8b81db-205a-4282-a07d-ebbf65f04652"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Verification ledger records all required gates",
+              "milestone_id": "verification-complete",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-02T10:04:06+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "README.md",
+            "pyproject.toml",
+            ".omx/state/**"
+          ],
+          "required": true,
+          "role": "verifier",
+          "status": "PLANNED",
+          "task_slice": "Run the final deterministic verification ledger for the Phase 0-1 CodeSementicMemory delivery and confirm every required gate has evidence.",
+          "updated_at": "2026-09-02T10:04:06+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 37,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-02T10:04:06+00:00"
+    },
+    {
+      "accepted_at": "2026-09-02T10:04:06+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+      "from_state": "IMPLEMENT",
+      "handoff_id": "a61c329c-599a-4f48-a996-323ddc972c5f",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-02T10:04:06+00:00",
+          "artifact_id": "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+          "from_assignment_id": "79ab2223-37b0-4f3f-b734-5214c4d74cb7",
+          "from_state": "IMPLEMENT",
+          "handoff_id": "a61c329c-599a-4f48-a996-323ddc972c5f",
+          "to_assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+          "to_state": "VERIFY"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 38,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T10:04:06+00:00",
+      "to_assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "to_state": "VERIFY"
+    },
+    {
+      "accepted_at": "2026-09-02T10:04:06+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "2e8b81db-205a-4282-a07d-ebbf65f04652",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+      "from_state": "REVIEW",
+      "handoff_id": "5f635ab4-33bd-4bb0-8e49-4769d47a97af",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-02T10:04:06+00:00",
+          "artifact_id": "2e8b81db-205a-4282-a07d-ebbf65f04652",
+          "from_assignment_id": "106ccfcf-79b3-46d1-b1d5-f5f289a69d58",
+          "from_state": "REVIEW",
+          "handoff_id": "5f635ab4-33bd-4bb0-8e49-4769d47a97af",
+          "to_assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+          "to_state": "VERIFY"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 39,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T10:04:06+00:00",
+      "to_assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "to_state": "VERIFY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+          "created_at": "2026-09-02T10:04:06+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:VerificationLedger"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**"
+          ],
+          "home_state": "VERIFY",
+          "input_artifact_refs": [
+            "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+            "2e8b81db-205a-4282-a07d-ebbf65f04652"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Verification ledger records all required gates",
+              "milestone_id": "verification-complete",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-02T10:04:06+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "README.md",
+            "pyproject.toml",
+            ".omx/state/**"
+          ],
+          "required": true,
+          "role": "verifier",
+          "status": "ACTIVE",
+          "task_slice": "Run the final deterministic verification ledger for the Phase 0-1 CodeSementicMemory delivery and confirm every required gate has evidence.",
+          "updated_at": "2026-09-02T10:04:11+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 40,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-02T10:04:11+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "334ec754-2de9-485c-8ec4-7b52520f2825",
+      "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "334ec754-2de9-485c-8ec4-7b52520f2825",
+          "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+          "attempt": 1,
+          "context_id": null,
+          "evidence": [],
+          "home_state": "VERIFY",
+          "last_seen_at": "2026-09-02T10:04:11+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-independent-verifier",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-02T10:04:11+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 41,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-02T10:04:11+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "334ec754-2de9-485c-8ec4-7b52520f2825",
+      "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "334ec754-2de9-485c-8ec4-7b52520f2825",
+          "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-02T10:05:38+00:00",
+          "evidence": [
+            "Fresh deterministic verification completed",
+            "24 tests, lint, compile, health, HTTP smoke, replay, and benchmark verified"
+          ],
+          "home_state": "VERIFY",
+          "last_seen_at": "2026-09-02T10:05:38+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-independent-verifier",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-02T10:04:11+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 42,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-02T10:05:38+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "BEHAVIOR_REGRESSION"
+      ],
+      "home_state": "VERIFY",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "Fresh deterministic verification confirms migration, replay, idempotency, artifact bounds, outbox lifecycle, backup/restore, FTS rebuild, HTTP API, and 10,000-event integrity behavior.",
+        "evidence": [
+          "py -m pytest -q: 24 passed",
+          "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+          "Fresh SQLite health: journal_mode=wal and integrity_check=ok",
+          "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+        ],
+        "executor": "codex-independent-verifier",
+        "gate": {
+          "claim_proven": "Fresh deterministic verification confirms migration, replay, idempotency, artifact bounds, outbox lifecycle, backup/restore, FTS rebuild, HTTP API, and 10,000-event integrity behavior.",
+          "evidence": [
+            "py -m pytest -q: 24 passed",
+            "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+            "Fresh SQLite health: journal_mode=wal and integrity_check=ok",
+            "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+          ],
+          "executor": "codex-independent-verifier",
+          "gate_id": "BEHAVIOR_REGRESSION",
+          "recorded_at": "2026-09-02T10:05:46+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 43,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-02T10:05:46+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "334ec754-2de9-485c-8ec4-7b52520f2825",
+      "artifact_id": "597d4918-afbe-4072-b684-73884b734870",
+      "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "597d4918-afbe-4072-b684-73884b734870",
+          "artifact_revision": 1,
+          "artifact_type": "VerificationLedger",
+          "data": {
+            "gate_results": [
+              {
+                "claim_proven": "The first-round delivery scope and non-goals are frozen in the TaskContract.",
+                "evidence": [
+                  ".omx/state/codememory-task-contract.json validated by adaptive_vibe contract"
+                ],
+                "executor": "delivery-lead",
+                "gate_id": "GOAL_AND_SCOPE",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "Repository shape, first-round boundary, and falsifiers are recorded in the DiscoveryPacket.",
+                "evidence": [
+                  ".omx/state/codememory-discovery-packet.json",
+                  "git status --short --branch"
+                ],
+                "executor": "bd5150ca-c435-448b-b82c-438b51d92027",
+                "gate_id": "DISCOVERY_COMPLETE",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "The user explicitly authorized implementation of the first-round CodeSementicMemory product in this repository.",
+                "evidence": [
+                  "User request: 按最终计划进行开发。完成codeSementicmemory的第一轮产物",
+                  "TaskContract scope allowlist and non-goals"
+                ],
+                "executor": "delivery-lead",
+                "gate_id": "WRITE_AUTHORIZATION",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "All first-round files are inside the frozen repository allowlist and no forbidden runtime database files are tracked.",
+                "evidence": [
+                  "adaptive_vibe scope-check --paths-json returned violations=[]",
+                  "git status --short --ignored"
+                ],
+                "executor": "codex-root-implementation",
+                "gate_id": "SCOPE_CONFORMANCE",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "The Python package compiles and static lint/tests pass for the first-round boundary.",
+                "evidence": [
+                  "py -m compileall -q src",
+                  "ruff check src tests: All checks passed",
+                  "py -m pytest -q: 20 passed"
+                ],
+                "executor": "codex-root-implementation",
+                "gate_id": "STATIC_CORRECTNESS",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "An independent reviewer found no blocking contract, integrity, scope, or regression findings for the Phase 0-1 boundary.",
+                "evidence": [
+                  ".omx/state/codememory-review-report.json",
+                  "py -m pytest -q: 24 passed",
+                  "ruff check src tests: All checks passed"
+                ],
+                "executor": "codex-independent-review",
+                "gate_id": "INDEPENDENT_REVIEW",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "Fresh deterministic verification confirms migration, replay, idempotency, artifact bounds, outbox lifecycle, backup/restore, FTS rebuild, HTTP API, and 10,000-event integrity behavior.",
+                "evidence": [
+                  "py -m pytest -q: 24 passed",
+                  "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+                  "Fresh SQLite health: journal_mode=wal and integrity_check=ok",
+                  "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+                ],
+                "executor": "codex-independent-verifier",
+                "gate_id": "BEHAVIOR_REGRESSION",
+                "status": "PASS"
+              }
+            ],
+            "remaining_gaps": [],
+            "required_gates": [
+              "GOAL_AND_SCOPE",
+              "DISCOVERY_COMPLETE",
+              "WRITE_AUTHORIZATION",
+              "SCOPE_CONFORMANCE",
+              "STATIC_CORRECTNESS",
+              "INDEPENDENT_REVIEW",
+              "BEHAVIOR_REGRESSION"
+            ]
+          },
+          "owner": "verifier",
+          "producer_agent_run_id": "334ec754-2de9-485c-8ec4-7b52520f2825",
+          "producer_assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+          "producer_home_state": "VERIFY",
+          "recorded_at": "2026-09-02T10:05:58+00:00",
+          "schema_version": "1.0",
+          "source_gate_count": 7
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 44,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T10:05:58+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "334ec754-2de9-485c-8ec4-7b52520f2825",
+      "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "334ec754-2de9-485c-8ec4-7b52520f2825",
+          "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-02T10:06:04+00:00",
+          "evidence": [
+            "VerificationLedger recorded as a faithful snapshot of all seven required gates"
+          ],
+          "home_state": "VERIFY",
+          "last_seen_at": "2026-09-02T10:06:04+00:00",
+          "output_artifact_refs": [
+            "597d4918-afbe-4072-b684-73884b734870"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-independent-verifier",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-02T10:04:11+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 45,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-02T10:06:04+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "verification-complete",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            ".omx/state/codememory-verification-ledger.json",
+            "py -m pytest -q",
+            "py tests/benchmark_ingest.py"
+          ],
+          "label": "Verification ledger records all required gates",
+          "milestone_id": "verification-complete",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-02T10:06:10+00:00"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 46,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-02T10:06:10+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "88f1f3ee-8c3c-4199-9b9a-45014033dbef",
+          "created_at": "2026-09-02T10:04:06+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-02T10:06:10+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:VerificationLedger"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "data/**"
+          ],
+          "home_state": "VERIFY",
+          "input_artifact_refs": [
+            "1a998ff6-ad83-40f2-b47f-6e9f8eb67dff",
+            "2e8b81db-205a-4282-a07d-ebbf65f04652"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-verification-ledger.json",
+                "py -m pytest -q",
+                "py tests/benchmark_ingest.py"
+              ],
+              "label": "Verification ledger records all required gates",
+              "milestone_id": "verification-complete",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-02T10:06:10+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "597d4918-afbe-4072-b684-73884b734870"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "migrations/**",
+            "schemas/**",
+            "fixtures/**",
+            "README.md",
+            "pyproject.toml",
+            ".omx/state/**"
+          ],
+          "required": true,
+          "role": "verifier",
+          "status": "COMPLETED",
+          "task_slice": "Run the final deterministic verification ledger for the Phase 0-1 CodeSementicMemory delivery and confirm every required gate has evidence.",
+          "updated_at": "2026-09-02T10:06:10+00:00",
+          "write_scope": []
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 47,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-02T10:06:10+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "VERIFY",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-02T10:06:15+00:00",
+          "from": "VERIFY",
+          "reason": "Verification ledger is complete; prepare the first-round handoff with explicit Phase 2+ follow-up actions.",
+          "to": "HANDOFF"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 48,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T10:06:15+00:00",
+      "to_state": "HANDOFF"
+    },
+    {
+      "actor": "workflow-core",
+      "artifact_id": "7fafb1c1-d0a9-478e-b528-bb8ce9820fd7",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "HANDOFF",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "7fafb1c1-d0a9-478e-b528-bb8ce9820fd7",
+          "artifact_revision": 1,
+          "artifact_type": "FinalHandoff",
+          "data": {
+            "evidence": [
+              ".omx/state/codememory-patch-manifest.json",
+              ".omx/state/codememory-review-report.json",
+              ".omx/state/codememory-verification-ledger.json",
+              "py -m pytest -q: 24 passed",
+              "ruff check src tests: All checks passed",
+              "py -m compileall -q src: passed",
+              "py tests/benchmark_ingest.py: p95_ms=5.38 on the review host",
+              "Fresh SQLite health: journal_mode=wal and integrity_check=ok",
+              "Uvicorn localhost smoke: GET /v1/health 200 and POST /v1/events 201"
+            ],
+            "outcome": "CodeSementicMemory Phase 0-1 first-round coding-memory core is implemented and verified.",
+            "recovery_entry": "Restore a SQLite backup with `codememory restore <backup.sqlite3> --db <target.sqlite3> --force`, then replay a canonical export with `codememory-replay <events.jsonl> --db <target.sqlite3>`; rebuild the FTS projection with `codememory rebuild-search --db <target.sqlite3>`.",
+            "remaining_actions": [
+              "Phase 2: consume event.ingested jobs and add a strict, provider-replaceable LLM extraction boundary.",
+              "Phase 3: implement card, relation, provenance, confidence, merge, supersede, and lifecycle policies.",
+              "Phase 4: resolve code symbols and snapshots, then mark stale or superseded routes safely.",
+              "Phase 5-6: add hybrid retrieval, MCP endpoints, and the local graph/web inspection surface.",
+              "Phase 7: add a thin Codex Desktop adapter after the core event contract is exercised by fixtures."
+            ],
+            "remaining_risks": [
+              "The first round stores immutable coding evidence but does not yet infer or consolidate LLM memory cards.",
+              "Search is currently deterministic FTS; embeddings and graph projections remain rebuildable future projections.",
+              "Symbol and snapshot validation is not yet connected, so historical paths still require later code-state verification.",
+              "The measured latency is local-host evidence and is not a production SLO."
+            ]
+          },
+          "owner": "delivery-lead",
+          "producer_home_state": "HANDOFF",
+          "recorded_at": "2026-09-02T10:06:34+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 49,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T10:06:34+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "FINALIZE"
+      ],
+      "home_state": "HANDOFF",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "all required artifacts and gates support the delivery claim",
+        "evidence": [
+          {
+            "ledger_revision": 34
+          },
+          {
+            "required_gates": [
+              "GOAL_AND_SCOPE",
+              "DISCOVERY_COMPLETE",
+              "WRITE_AUTHORIZATION",
+              "SCOPE_CONFORMANCE",
+              "STATIC_CORRECTNESS",
+              "INDEPENDENT_REVIEW",
+              "BEHAVIOR_REGRESSION"
+            ]
+          },
+          {
+            "required_artifacts": [
+              "TaskContract",
+              "DiscoveryPacket",
+              "PatchManifest",
+              "ReviewReport",
+              "VerificationLedger",
+              "FinalHandoff"
+            ]
+          }
+        ],
+        "executor": "delivery-lead",
+        "gate": {
+          "claim_proven": "all required artifacts and gates support the delivery claim",
+          "evidence": [
+            {
+              "ledger_revision": 34
+            },
+            {
+              "required_gates": [
+                "GOAL_AND_SCOPE",
+                "DISCOVERY_COMPLETE",
+                "WRITE_AUTHORIZATION",
+                "SCOPE_CONFORMANCE",
+                "STATIC_CORRECTNESS",
+                "INDEPENDENT_REVIEW",
+                "BEHAVIOR_REGRESSION"
+              ]
+            },
+            {
+              "required_artifacts": [
+                "TaskContract",
+                "DiscoveryPacket",
+                "PatchManifest",
+                "ReviewReport",
+                "VerificationLedger",
+                "FinalHandoff"
+              ]
+            }
+          ],
+          "executor": "delivery-lead",
+          "gate_id": "FINALIZE",
+          "recorded_at": "2026-09-02T10:06:44+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 50,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-02T10:06:44+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "HANDOFF",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "gate": {
+          "claim_proven": "all required artifacts and gates support the delivery claim",
+          "evidence": [
+            {
+              "ledger_revision": 34
+            },
+            {
+              "required_gates": [
+                "GOAL_AND_SCOPE",
+                "DISCOVERY_COMPLETE",
+                "WRITE_AUTHORIZATION",
+                "SCOPE_CONFORMANCE",
+                "STATIC_CORRECTNESS",
+                "INDEPENDENT_REVIEW",
+                "BEHAVIOR_REGRESSION"
+              ]
+            },
+            {
+              "required_artifacts": [
+                "TaskContract",
+                "DiscoveryPacket",
+                "PatchManifest",
+                "ReviewReport",
+                "VerificationLedger",
+                "FinalHandoff"
+              ]
+            }
+          ],
+          "executor": "delivery-lead",
+          "gate_id": "FINALIZE",
+          "recorded_at": "2026-09-02T10:06:44+00:00",
+          "status": "PASS"
+        },
+        "transition": {
+          "at": "2026-09-02T10:06:44+00:00",
+          "from": "HANDOFF",
+          "reason": "FINALIZE passed",
+          "to": "DONE"
+        }
+      },
+      "run_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+      "schema_version": 2,
+      "seq": 51,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-02T10:06:44+00:00",
+      "to_state": "DONE"
+    }
+  ],
+  "orchestration_legacy_gate_count": 0,
+  "resume": null,
+  "revision": 35,
+  "state": "DONE",
+  "task_id": "b04d6957-4a26-4477-98b4-729bc1db4c02",
+  "tier": "T1",
+  "transitions": [
+    {
+      "at": "2026-09-02T09:12:17+00:00",
+      "from": "INTAKE",
+      "reason": "Scope is frozen; begin repository and implementation-shape discovery.",
+      "to": "DISCOVERY"
+    },
+    {
+      "at": "2026-09-02T09:14:35+00:00",
+      "from": "DISCOVERY",
+      "reason": "Discovery and write authorization are complete; implement the bounded Phase 0–1 core.",
+      "to": "IMPLEMENT"
+    },
+    {
+      "at": "2026-09-02T09:52:13+00:00",
+      "from": "IMPLEMENT",
+      "reason": "Implementation artifact and static/scope gates are complete; perform an independent review.",
+      "to": "REVIEW"
+    },
+    {
+      "at": "2026-09-02T10:03:58+00:00",
+      "from": "REVIEW",
+      "reason": "Independent review passed; run fresh verification against every required gate and acceptance path.",
+      "to": "VERIFY"
+    },
+    {
+      "at": "2026-09-02T10:06:15+00:00",
+      "from": "VERIFY",
+      "reason": "Verification ledger is complete; prepare the first-round handoff with explicit Phase 2+ follow-up actions.",
+      "to": "HANDOFF"
+    },
+    {
+      "at": "2026-09-02T10:06:44+00:00",
+      "from": "HANDOFF",
+      "reason": "FINALIZE passed",
+      "to": "DONE"
+    }
+  ],
+  "updated_at": "2026-09-02T10:06:44+00:00"
+}

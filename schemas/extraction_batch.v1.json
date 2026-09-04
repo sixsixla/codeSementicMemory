@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codememory.local/schemas/extraction_batch.v1.json",
+  "title": "CodeSementicMemory coding-memory extraction batch",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "extraction_run_id",
+    "project_id",
+    "task_id",
+    "source_event_ids",
+    "candidates"
+  ],
+  "properties": {
+    "schema_version": { "const": "codememory.extraction_batch.v1" },
+    "extraction_run_id": { "type": "string", "minLength": 1 },
+    "project_id": { "type": "string", "minLength": 1 },
+    "task_id": { "type": "string", "minLength": 1 },
+    "session_id": { "type": ["string", "null"] },
+    "source_event_ids": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+    "extractor": { "$ref": "#/$defs/extractor" },
+    "candidates": { "type": "array", "items": { "$ref": "#/$defs/candidate" } }
+  },
+  "$defs": {
+    "extractor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model", "prompt_version"],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "prompt_version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role"],
+      "properties": {
+        "role": { "type": "string", "enum": ["public_entry", "feature_integration", "supporting_symbol", "modified_file", "rejected_candidate"] },
+        "path": { "type": ["string", "null"] },
+        "symbol": { "type": ["string", "null"] },
+        "qualified_symbol": { "type": ["string", "null"] },
+        "snapshot_id": { "type": ["string", "null"] },
+        "evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "kind", "statement", "evidence_event_ids", "confidence", "uncertainty"],
+      "properties": {
+        "candidate_id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "enum": ["route_observation", "decision", "convention", "failure", "validation", "preference", "anti_binding"] },
+        "statement": { "type": "string", "minLength": 1 },
+        "aliases": { "type": "array", "items": { "type": "string" } },
+        "bindings": { "type": "array", "items": { "$ref": "#/$defs/binding" } },
+        "evidence_event_ids": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "uncertainty": { "type": "string", "minLength": 1 },
+        "lifecycle_hint": { "type": "string", "enum": ["observed", "candidate", "verified", "stable", "stale", "superseded", "rejected"] },
+        "relation_hints": { "type": "array", "items": { "type": "object" } }
+      }
+    }
+  }
+}

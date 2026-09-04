@@ -1,0 +1,45 @@
+{
+  "goal": "Deliver the first usable CodeSementicMemory coding-memory core: a local SQLite event store with a versioned coding-event contract, idempotent localhost HTTP ingestion, JSONL fixture replay, durable outbox records, and health/timeline inspection commands.",
+  "success_criteria": [
+    "A fresh database can be initialized by a repeatable migration and opens in WAL mode with integrity checks.",
+    "Valid coding event envelopes are accepted through the shared service and localhost HTTP API; duplicate delivery is idempotent and conflicting identities are rejected.",
+    "JSONL fixtures can be replayed through the same ingestion path with deterministic summaries and timeline queries.",
+    "Every accepted event creates a durable, deduplicated outbox job and outbox jobs expose claim, retry, and completion behavior.",
+    "Automated tests cover schema validation, migrations, ingestion, idempotency, replay, API responses, and outbox behavior."
+  ],
+  "scope_allowlist": [
+    "pyproject.toml",
+    "README.md",
+    ".gitignore",
+    "src/**",
+    "tests/**",
+    "migrations/**",
+    "schemas/**",
+    "fixtures/**",
+    ".omx/state/**"
+  ],
+  "scope_forbidden": [
+    ".git/**",
+    ".venv/**",
+    "data/**",
+    "*.db",
+    "*.sqlite",
+    "**/__pycache__/**"
+  ],
+  "constraints": [
+    "Keep SQLite as the canonical local store; do not add a hosted memory backend.",
+    "Keep the first round independent of Codex Desktop hooks and any LLM or embedding provider.",
+    "Use only deterministic local fixtures and tests for verification.",
+    "Use the repository's existing empty Git worktree; do not modify external repositories or Git history."
+  ],
+  "non_goals": [
+    "LLM extraction and consolidation worker",
+    "Embedding/vector index and graph projection",
+    "Codex Desktop adapter",
+    "Web UI and three-dimensional graph visualization",
+    "Cloud deployment, authentication, and production operations"
+  ],
+  "risk_profile": "T1",
+  "human_decisions_required": [],
+  "stop_condition": "The first-round artifacts are implemented, tests and local smoke checks pass, and remaining Phase 2+ work is recorded without being silently folded into this change."
+}
