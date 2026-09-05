@@ -109,6 +109,20 @@ py -m codememory agent cycle checkpoint cycle-checkpoint.json --db $db
 py -m codememory agent cycle close cycle-close.json --db $db
 ```
 
+For the current Codex LLM's structured extraction, first request a bounded
+packet and then submit the resulting notes:
+
+```powershell
+py -m codememory agent cycle prepare --project-id $project `
+  --source-thread-id $thread --session-id $session --db $db
+py -m codememory agent cycle learn cycle-learn.json --db $db
+```
+
+`cycle-learn.json` contains `input_hash` from `prepare` and at most eight
+`notes`; every note must reference exact `evidence_event_ids`, and every binding
+must reference evidence belonging to that note. The service runs the normal
+quality gate and consolidator after validating the current-agent output.
+
 The JSON payloads use `project_id`, `source_thread_id`, optional `task_id` and
 `session_id`, and the operation-specific fields. `turn_id` makes prompt and
 checkpoint retries idempotent. The API equivalents are

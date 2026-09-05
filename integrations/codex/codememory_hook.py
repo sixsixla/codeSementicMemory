@@ -108,9 +108,28 @@ def _tool_paths(value: Any, *, limit: int = 30) -> list[str]:
                 visit(child, key)
         elif key in path_keys and isinstance(item, str) and item.strip():
             paths.append(item.strip()[:1000])
+        elif key == "command" and isinstance(item, str):
+            for line in item.splitlines():
+                if "*** " in line and " File:" in line:
+                    paths.append(line.split(" File:", 1)[1].strip()[:1000])
 
     visit(value)
     return list(dict.fromkeys(paths))
+
+
+def _memory_operation(payload: dict[str, Any]) -> bool:
+    raw = json.dumps(payload.get("tool_input"), ensure_ascii=False).casefold()
+    return (
+        "-m codememory" in raw
+        or "codememory_hook.py" in raw
+        or "agent cycle" in raw
+        or "codememory-cycle" in raw
+        or "cycle-learn" in raw
+    )
+
+
+def _powershell_quote(value: str) -> str:
+    return "'" + str(value).replace("'", "''") + "'"
 
 
 def _log_error(exc: BaseException) -> None:
@@ -138,7 +157,7 @@ def handle(payload: dict[str, Any]) -> dict[str, Any]:
         return {}
     if event == "UserPromptSubmit":
         prompt = str(payload.get("prompt") or "").strip()
-        if not prompt:
+        if not prompt or prompt.startswith("[CODEMEMORY_MAINTENANCE]"):
             return {}
         result = cycle.open(
             CycleOpenRequest(
@@ -161,19 +180,52 @@ def handle(payload: dict[str, Any]) -> dict[str, Any]:
         message = str(payload.get("last_assistant_message") or "").strip()
         if not message:
             return {}
+        provider = os.environ.get("CODEMEMORY_HOOK_PROVIDER", "agent")
         cycle.checkpoint(
             CycleCheckpointRequest(
                 **base,
                 turn_id=str(payload.get("turn_id") or "stop"),
                 summary=message,
                 outcome="unknown",
-                provider=os.environ.get("CODEMEMORY_HOOK_PROVIDER", "mock"),
-                extract=True,
-                consolidate=True,
+                provider=provider if provider != "agent" else "mock",
+                extract=provider != "agent",
+                consolidate=provider != "agent",
             )
         )
+        if provider == "agent":
+            prepared = cycle.prepare(CycleOpenRequest(**base))
+            coding_events = {
+                "file_read", "file_edit", "tool_result", "validation_run", "command_run", "vcs_change"
+            }
+            has_code_evidence = any(
+                str(item.get("event_type")) in coding_events for item in prepared.get("events", [])
+            ) or any(
+                token in message.casefold()
+                for token in (".cs", ".py", "compile", "test", "implemented", "修改", "修复", "代码")
+            )
+            if has_code_evidence:
+                db = os.environ.get("CODEMEMORY_DB")
+                db_arg = f" --db {_powershell_quote(db)}" if db else ""
+                command = (
+                    f"Set-Location {_powershell_quote(str(REPO_ROOT))}; "
+                    f"py -3 -m codememory agent cycle prepare --project-id {_powershell_quote(base['project_id'])} "
+                    f"--source-thread-id {_powershell_quote(base['source_thread_id'])} "
+                    f"--session-id {_powershell_quote(base['session_id'])}{db_arg}"
+                )
+                reason = (
+                    "[CODEMEMORY_MAINTENANCE] This is one bounded memory-maintenance continuation, not a new coding task. "
+                    "Run the following command, inspect its JSON event packet, and submit only useful coding notes "
+                    "with exact evidence_event_ids and binding.evidence. Do not invent verification. "
+                    f"{command}\n"
+                    "Then create a temporary JSON payload with project_id, source_thread_id, session_id, turn_id, "
+                    "input_hash, model, and notes, and run `py -3 -m codememory agent cycle learn <payload.json>`. "
+                    "Use at most 8 notes; an empty notes array is valid. Finish this maintenance pass without editing source code."
+                )
+                return {"decision": "block", "reason": reason}
         return {}
     if event == "PostToolUse":
+        if _memory_operation(payload):
+            return {}
         tool_name = str(payload.get("tool_name") or payload.get("tool") or "tool")
         tool_input = payload.get("tool_input")
         tool_response = payload.get("tool_response")

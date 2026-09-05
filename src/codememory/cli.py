@@ -20,8 +20,10 @@ from .agent_bridge import (
 )
 from .cycle import (
     AgentMemoryCycleService,
+    CycleBaseRequest,
     CycleCheckpointRequest,
     CycleCloseRequest,
+    CycleLearnRequest,
     CycleOpenRequest,
     CyclePromptRequest,
 )
@@ -429,11 +431,19 @@ def build_parser() -> argparse.ArgumentParser:
 
     agent_cycle = agent_sub.add_parser("cycle", help="incremental automatic agent-memory cycle")
     cycle_sub = agent_cycle.add_subparsers(dest="cycle_command", required=True)
+    cycle_prepare = cycle_sub.add_parser("prepare", help="print a bounded packet for the current LLM to structure")
+    cycle_prepare.add_argument("--project-id", required=True)
+    cycle_prepare.add_argument("--source-thread-id", required=True)
+    cycle_prepare.add_argument("--task-id")
+    cycle_prepare.add_argument("--session-id")
+    cycle_prepare.add_argument("--context-json", default="{}")
+    cycle_prepare.add_argument("--db", help="database path")
     for cycle_name, help_text in (
         ("open", "open or resume a cycle"),
         ("prompt", "record one user prompt and return route hints"),
         ("checkpoint", "record stop-time evidence and update memory"),
         ("close", "close a cycle and optionally run extraction"),
+        ("learn", "persist current-agent structured memory notes"),
     ):
         cycle_parser = cycle_sub.add_parser(cycle_name, help=help_text)
         cycle_parser.add_argument("path", type=Path, help="JSON cycle request payload")
@@ -953,6 +963,22 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             if args.agent_command == "cycle":
                 cycle = _agent_cycle(path)
+                if args.cycle_command == "prepare":
+                    context = json.loads(args.context_json)
+                    if not isinstance(context, dict):
+                        raise ValueError("--context-json must be a JSON object")
+                    _print(
+                        cycle.prepare(
+                            CycleBaseRequest(
+                                project_id=args.project_id,
+                                source_thread_id=args.source_thread_id,
+                                task_id=args.task_id,
+                                session_id=args.session_id,
+                                context=context,
+                            )
+                        )
+                    )
+                    return 0
                 payload = _load_json_object(args.path)
                 if not isinstance(payload, dict):
                     raise ValueError("cycle JSON must be an object")
@@ -961,6 +987,7 @@ def main(argv: list[str] | None = None) -> int:
                     "prompt": CyclePromptRequest,
                     "checkpoint": CycleCheckpointRequest,
                     "close": CycleCloseRequest,
+                    "learn": CycleLearnRequest,
                 }
                 request_type = request_types[args.cycle_command]
                 request = request_type.model_validate(payload)
@@ -969,6 +996,7 @@ def main(argv: list[str] | None = None) -> int:
                     "prompt": cycle.prompt,
                     "checkpoint": cycle.checkpoint,
                     "close": cycle.close,
+                    "learn": cycle.learn,
                 }[args.cycle_command](request)
                 _print(result)
                 return 0

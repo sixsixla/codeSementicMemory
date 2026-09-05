@@ -57,8 +57,9 @@ Implemented:
   CLI payload commands for adapters that do not have native hooks.
 - Codex lifecycle hook adapter in [`integrations/codex/codememory_hook.py`](integrations/codex/codememory_hook.py):
   route hints on prompt submit, bounded visible file evidence after tools, and
-  automatic extraction/consolidation at stop. It fails open and never reads hidden
-  reasoning or private Codex databases.
+  one bounded current-LLM maintenance continuation at stop, followed by validated
+  extraction/consolidation. It fails open and never reads hidden reasoning or
+  private Codex databases.
 - A Codex manual Skill guide and sanitized Project_J evidence fixtures at
   [`src/codememory/docs/codex-manual-agent-skill.md`](src/codememory/docs/codex-manual-agent-skill.md)
   and [`fixtures/agent-bridge/`](fixtures/agent-bridge/).
@@ -234,6 +235,8 @@ that every omitted file is missing.
 | `POST` | `/v1/agent/cycle/prompt` | Record a visible prompt and return route hints |
 | `POST` | `/v1/agent/cycle/checkpoint` | Record stop/tool evidence and optionally extract/consolidate |
 | `POST` | `/v1/agent/cycle/close` | Close a cycle and persist final outcome |
+| `POST` | `/v1/agent/cycle/prepare` | Return a bounded evidence packet for current-agent LLM extraction |
+| `POST` | `/v1/agent/cycle/learn` | Validate and persist current-agent structured memory notes |
 | `GET` | `/v1/tasks/{task_id}/timeline` | Inspect the ordered evidence timeline |
 | `GET` | `/v1/search?q=...` | Query the rebuildable FTS5 projection |
 | `GET` | `/v1/outbox` | Inspect durable downstream jobs |

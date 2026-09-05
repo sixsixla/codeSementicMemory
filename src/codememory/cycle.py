@@ -24,6 +24,9 @@ from .agent_bridge import (
     _BridgeModel,
 )
 from .extraction.providers import provider_from_name
+from .extraction.context import ContextAssembler
+from .extraction.models import Binding, Candidate, CandidateKind, ExtractionBatch, ExtractorInfo
+from .extraction.service import ExtractionService
 from .storage.repository import MemoryRepository
 
 
@@ -107,6 +110,57 @@ class CycleCloseRequest(CycleBaseRequest):
     consolidate: bool = True
     provider: str = Field(default="mock", min_length=1, max_length=100)
     force: bool = False
+
+
+class AgentMemoryNote(_BridgeModel):
+    kind: CandidateKind = CandidateKind.ROUTE_OBSERVATION
+    statement: str = Field(min_length=1, max_length=4000)
+    aliases: list[str] = Field(default_factory=list, max_length=100)
+    bindings: list[Binding] = Field(default_factory=list, max_length=200)
+    evidence_event_ids: list[str] = Field(min_length=1, max_length=500)
+    confidence: float = Field(default=0.65, ge=0, le=1)
+    uncertainty: str = Field(default="Historical coding observation; verify current source.", min_length=1, max_length=2000)
+    relation_hints: list[dict[str, Any]] = Field(default_factory=list, max_length=200)
+
+
+class CycleLearnRequest(CycleBaseRequest):
+    turn_id: str = Field(min_length=1, max_length=500)
+    input_hash: str = Field(min_length=1, max_length=100)
+    model: str = Field(default="current-codex", min_length=1, max_length=200)
+    notes: list[AgentMemoryNote] = Field(default_factory=list, max_length=20)
+    used_card_ids: list[str] = Field(default_factory=list, max_length=200)
+    outcome: Literal["success", "failed", "partial", "unknown"] = "unknown"
+
+
+class _AgentSubmittedProvider:
+    """Accept the current agent's LLM output, not a second paid model call."""
+
+    provider_name = "agent-llm"
+    prompt_version = "codememory-agent-learn-v1"
+
+    def __init__(self, request: CycleLearnRequest) -> None:
+        self.request = request
+        self.model_name = request.model
+
+    def extract(self, context: Any) -> ExtractionBatch:
+        if context.input_hash != self.request.input_hash:
+            raise ValueError("source evidence changed; run cycle prepare again before learning")
+        candidates = [
+            Candidate(
+                candidate_id=f"agent-note-{_digest((context.task_id, note.model_dump(mode='json')))}",
+                **note.model_dump(mode="python"),
+            )
+            for note in self.request.notes
+        ]
+        return ExtractionBatch(
+            extraction_run_id=context.extraction_run_id,
+            project_id=context.project_id,
+            task_id=context.task_id,
+            session_id=context.session_id,
+            source_event_ids=list(context.event_ids),
+            extractor=ExtractorInfo(provider=self.provider_name, model=self.model_name, prompt_version=self.prompt_version),
+            candidates=candidates,
+        )
 
 
 class AgentMemoryCycleService:
@@ -362,3 +416,53 @@ class AgentMemoryCycleService:
         result["feedback_recorded"] = feedback
         result["cycle"] = self._save(request, task_id=task_id, session_id=session_id, cycle_id=cycle_id, status="closed", cursor="close", prompt_count=int((existing or {}).get("prompt_count", 0)), closed_at=_now().isoformat())
         return result
+
+    def prepare(self, request: CycleBaseRequest) -> dict[str, Any]:
+        """Expose a bounded, evidence-addressed packet for the current Codex LLM."""
+        task_id, session_id, cycle_id = self._ensure_started(request)
+        context = ContextAssembler(
+            self.repository, quality_service=self.bridge.quality_service,
+            max_events=150, max_chars=45_000, max_event_chars=4000,
+        ).assemble(task_id, session_id=session_id)
+        return {
+            "cycle_id": cycle_id,
+            "request": {**request.model_dump(mode="json"), "task_id": task_id, "session_id": session_id},
+            "input_hash": context.input_hash,
+            "events": list(context.events),
+            "truncated": context.truncated,
+            "instruction": "Submit up to 8 useful coding notes with exact evidence_event_ids and binding.evidence. Empty notes are valid. Do not invent success or current-code verification.",
+        }
+
+    def learn(self, request: CycleLearnRequest) -> dict[str, Any]:
+        """Validate current-agent LLM notes through the existing extraction pipeline."""
+        task_id, session_id, cycle_id = self._ensure_started(request)
+        assembler = ContextAssembler(
+            self.repository, quality_service=self.bridge.quality_service,
+            max_events=150, max_chars=45_000, max_event_chars=4000,
+        )
+        current = assembler.assemble(task_id, session_id=session_id)
+        if current.input_hash != request.input_hash:
+            raise ValueError("source evidence changed; run cycle prepare again before learning")
+        extraction = ExtractionService(
+            self.repository,
+            assembler=assembler,
+            store=self.bridge.extraction_store,
+            provider=_AgentSubmittedProvider(request),
+            quality_service=self.bridge.quality_service,
+            extractor_version="agent-memory-submit-v1",
+        ).extract_task(task_id, session_id=session_id)
+        output: dict[str, Any] = {"extraction": extraction.as_dict()}
+        if extraction.status in {"extracted", "duplicate"}:
+            output["consolidation"] = self.bridge.consolidation_service.consolidate(task_id=task_id).as_dict()
+            output["completed_outbox_jobs"] = self.repository.complete_outbox_for_task(task_id)
+            output["feedback_recorded"] = self._record_cards(
+                request, task_id=task_id, session_id=session_id, turn_id=request.turn_id,
+                card_ids=request.used_card_ids, feedback_type="outcome", outcome=request.outcome, used=True,
+            )
+            existing = self.repository.get_agent_memory_cycle(source_system="codex", source_thread_id=request.source_thread_id, project_id=request.project_id, session_id=session_id)
+            output["cycle"] = self._save(
+                request, task_id=task_id, session_id=session_id, cycle_id=cycle_id,
+                status="checkpointed", cursor=request.turn_id,
+                prompt_count=int((existing or {}).get("prompt_count", 0)),
+            )
+        return output

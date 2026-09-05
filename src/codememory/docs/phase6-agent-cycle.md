@@ -16,8 +16,9 @@ PostToolUse
   └─ 记录可见的文件读取/编辑证据，不触发抽取
 Stop
   ├─ 记录 checkpoint:<turn_id> 和最终可见摘要
-  ├─ 运行抽取 → 质量评估 → 合并
-  └─ 保存卡片使用/结果反馈
+  ├─ 请求一次受控的 `[CODEMEMORY_MAINTENANCE]` 续轮
+  └─ 当前 Codex LLM 运行 prepare → 结构化 notes → learn
+       └─ 质量评估 → 合并 → 保存卡片使用/结果反馈
 SessionEnd
   └─ 写入 SESSION_ENDED 并关闭周期（不重复昂贵抽取）
 ```
@@ -25,6 +26,11 @@ SessionEnd
 `agent_memory_cycles` 保存外部线程、任务、会话和最后事件序号；
 `memory_card_feedback` 保存 presented/used/outcome 反馈。反馈是附加证据，
 不会因为一次失败自动删除卡片；它只对 route score 做很小的排序修正。
+
+`cycle prepare` 返回有限事件包和 `input_hash`。Codex 当前模型按证据地址生成
+最多 8 个 notes，`cycle learn` 将其包装为严格的 `ExtractionBatch`，复用原有
+质量门和合并器；因此这里真正承担语义提取的是正在工作的 coding agent，而
+不是隐含的第二个 embedding/LLM 服务。
 
 ## Codex 边界
 

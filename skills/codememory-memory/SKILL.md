@@ -85,3 +85,9 @@ Hooks fail open and only read visible hook fields. If Codex asks for hook review
 approve the project/global hook once in the app; this is a product security
 boundary, not a memory workflow decision. The manual commands remain the
 fallback for imported historical threads and adapters without lifecycle hooks.
+
+When the Codex hook asks for a bounded maintenance continuation, run cycle
+`prepare`, keep only high-value route/decision/failure notes with exact event
+and binding evidence, then submit them with cycle `learn`. This is the point
+where the current Codex LLM performs semantic extraction; the SQLite service
+only validates and persists its structured output.

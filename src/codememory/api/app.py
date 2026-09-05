@@ -22,6 +22,7 @@ from ..cycle import (
     AgentMemoryCycleService,
     CycleCheckpointRequest,
     CycleCloseRequest,
+    CycleLearnRequest,
     CycleOpenRequest,
     CyclePromptRequest,
 )
@@ -298,6 +299,14 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     @app.post("/v1/agent/cycle/close")
     async def agent_cycle_close(request: CycleCloseRequest) -> dict[str, Any]:
         return cycle_service.close(request)
+
+    @app.post("/v1/agent/cycle/prepare")
+    async def agent_cycle_prepare(request: CycleOpenRequest) -> dict[str, Any]:
+        return cycle_service.prepare(request)
+
+    @app.post("/v1/agent/cycle/learn")
+    async def agent_cycle_learn(request: CycleLearnRequest) -> dict[str, Any]:
+        return cycle_service.learn(request)
 
     @app.get("/v1/tasks/{task_id}/timeline")
     async def task_timeline(

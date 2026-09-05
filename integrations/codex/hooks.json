@@ -44,8 +44,7 @@
           {
             "type": "command",
             "command": "py -3 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
-            "async": true,
-            "timeout": 120,
+            "timeout": 20,
             "statusMessage": "Updating CodeMemory"
           }
         ]
