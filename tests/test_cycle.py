@@ -103,10 +103,10 @@ def test_codex_hook_captures_visible_tool_evidence(tmp_path: Path) -> None:
         "hook_event_name": "PostToolUse",
         "session_id": "tool-session-1",
         "turn_id": "tool-turn-1",
-        "tool_call_id": "tool-call-1",
+        "tool_use_id": "tool-call-1",
         "tool_name": "apply_patch",
         "tool_input": {"file_path": "Assets/Scripts/Npc.cs"},
-        "tool_output": "patched",
+        "tool_response": "patched",
         "cwd": "D:/Project_J",
     }
     env = dict(os.environ)

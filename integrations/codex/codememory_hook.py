@@ -176,7 +176,10 @@ def handle(payload: dict[str, Any]) -> dict[str, Any]:
     if event == "PostToolUse":
         tool_name = str(payload.get("tool_name") or payload.get("tool") or "tool")
         tool_input = payload.get("tool_input")
-        tool_output = str(payload.get("tool_output") or "")
+        tool_response = payload.get("tool_response")
+        tool_output = str(
+            tool_response if tool_response is not None else payload.get("tool_output") or ""
+        )
         lowered = tool_name.casefold()
         paths = _tool_paths(tool_input)
         modified = paths if any(word in lowered for word in ("edit", "write", "patch", "create", "replace", "move")) else []
@@ -187,7 +190,12 @@ def handle(payload: dict[str, Any]) -> dict[str, Any]:
         cycle.checkpoint(
             CycleCheckpointRequest(
                 **base,
-                turn_id=str(payload.get("tool_call_id") or payload.get("turn_id") or f"tool:{tool_name}"),
+                turn_id=str(
+                    payload.get("tool_use_id")
+                    or payload.get("tool_call_id")
+                    or payload.get("turn_id")
+                    or f"tool:{tool_name}"
+                ),
                 explored_files=explored,
                 modified_files=modified,
                 summary=summary or tool_name,
