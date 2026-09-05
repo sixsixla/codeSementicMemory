@@ -438,6 +438,24 @@ class CardStore:
             query, summary.get("statement"), summary.get("aliases")
         )
         confidence = max(0.0, min(float(summary.get("confidence") or 0.0), 1.0))
+        feedback_row = conn.execute(
+            "SELECT COUNT(*) AS total, "
+            "SUM(CASE WHEN feedback_type='presented' THEN 1 ELSE 0 END) AS presented, "
+            "SUM(CASE WHEN feedback_type IN ('used','outcome') AND used=1 THEN 1 ELSE 0 END) AS used, "
+            "SUM(CASE WHEN outcome='success' AND used=1 THEN 1 ELSE 0 END) AS success, "
+            "SUM(CASE WHEN outcome='failed' AND used=1 THEN 1 ELSE 0 END) AS failed "
+            "FROM memory_card_feedback WHERE card_id=?",
+            (summary["card_id"],),
+        ).fetchone()
+        feedback_total = int(feedback_row["total"] or 0) if feedback_row else 0
+        feedback_used = int(feedback_row["used"] or 0) if feedback_row else 0
+        feedback_success = int(feedback_row["success"] or 0) if feedback_row else 0
+        feedback_failed = int(feedback_row["failed"] or 0) if feedback_row else 0
+        feedback_rate = (
+            (feedback_success - feedback_failed) / max(1, feedback_used)
+            if feedback_used
+            else 0.0
+        )
         route_score = round(
             0.40 * _ROUTE_STATUS_SCORE.get(status, 0.35)
             + 0.22 * quality_score
@@ -446,6 +464,7 @@ class CardStore:
             + 0.08 * text_score,
             4,
         )
+        route_score = round(max(0.0, min(1.0, route_score + 0.05 * feedback_rate)), 4)
         summary["entrypoints"] = [
             {
                 "path": item.get("path"),
@@ -465,6 +484,12 @@ class CardStore:
             "binding_statuses": statuses,
             "entrypoint_count": len(bindings),
             "quality_decision": quality_decision,
+            "feedback": {
+                "total": feedback_total,
+                "used": feedback_used,
+                "success": feedback_success,
+                "failed": feedback_failed,
+            },
         }
         summary["route_score"] = route_score
         return summary, route_score

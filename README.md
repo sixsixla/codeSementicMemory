@@ -4,13 +4,14 @@ CodeSementicMemory is a local, SQLite-first long-term memory core specialized fo
 
 The canonical store remains below the LLM layer, while the repository now also
 contains an offline-first Phase 2A/3 extraction and consolidation slice plus
-Phase 4A quality gating, Phase 4B Project_J code-binding verification, and a
-manual-first Phase 5A agent bridge. It
+Phase 4A quality gating, Phase 4B Project_J code-binding verification, a
+manual-first Phase 5A agent bridge, and an incremental Phase 6 agent-memory
+cycle. It
 captures trustworthy coding evidence through a stable event contract, persists
 it idempotently, extracts auditable candidate memories, validates their
 evidence deterministically, and exposes their evidence graph locally.
 
-## Current status (Phase 0–1 + Phase 2A + Phase 3 + Phase 4A + Phase 4B + Phase 5A)
+## Current status (Phase 0–1 + Phase 2A + Phase 3 + Phase 4A + Phase 4B + Phase 5A + Phase 6)
 
 Implemented:
 
@@ -49,6 +50,15 @@ Implemented:
 - Localhost `/v1/agent/{start,query,capture,finish}` routes and
   `codememory agent {start,query,capture,finish}` commands with stable identities,
   summary completeness, duplicate replay, and changed-content conflicts.
+- Incremental `AgentMemoryCycleService` with durable cycle cursors, prompt/tool
+  observations, stop-time extraction, close-time lifecycle updates, and idempotent
+  card-use/outcome feedback.
+- Localhost `/v1/agent/cycle/{open,prompt,checkpoint,close}` routes and matching
+  CLI payload commands for adapters that do not have native hooks.
+- Codex lifecycle hook adapter in [`integrations/codex/codememory_hook.py`](integrations/codex/codememory_hook.py):
+  route hints on prompt submit, bounded visible file evidence after tools, and
+  automatic extraction/consolidation at stop. It fails open and never reads hidden
+  reasoning or private Codex databases.
 - A Codex manual Skill guide and sanitized Project_J evidence fixtures at
   [`src/codememory/docs/codex-manual-agent-skill.md`](src/codememory/docs/codex-manual-agent-skill.md)
   and [`fixtures/agent-bridge/`](fixtures/agent-bridge/).
@@ -87,8 +97,8 @@ Not in this round:
 - Full-repository (`coverage=complete`) snapshot generation and automatic snapshot refresh.
 - AST/LSP method-level validation beyond the manifest bridge.
 - Embedding/vector projection.
-- Native Codex Desktop hooks, private app database integration, and automatic
-  transcript capture; the manual bridge is intentionally the compatibility path.
+- Full transcript replay from opaque/private Codex app storage; visible hook fields
+  and the sanitized history importer are the supported compatibility boundary.
 - Production web hosting, authentication, and a production-grade graph layout.
 
 These remain separate layers; they do not require replacing the event store.
@@ -97,7 +107,7 @@ These remain separate layers; they do not require replacing the event store.
 
 ```mermaid
 flowchart LR
-    A[Manual Agent bridge or JSONL fixture] --> B[codememory.event.v1]
+    A[Codex hooks, cycle API, manual bridge, or JSONL fixture] --> B[codememory.event.v1]
     B --> C[Validate and redact]
     C --> D[(SQLite WAL<br/>events and entities)]
     D --> E[Durable outbox]
@@ -173,6 +183,13 @@ The same lifecycle is available over `/v1/agent/start`, `/v1/agent/query`,
 `/v1/agent/capture`, and `/v1/agent/finish`. See the Codex-specific manual
 instructions in [`src/codememory/docs/codex-manual-agent-skill.md`](src/codememory/docs/codex-manual-agent-skill.md).
 
+Automatic Codex integration is installed from the repository's
+[`integrations/codex/hooks.json`](integrations/codex/hooks.json) template. The
+current user profile also has the equivalent global hook configuration. Codex
+may require a one-time review/approval in the app's Hooks settings. The hook
+uses the platform-local database unless `CODEMEMORY_DB` is set, and maps
+`Project_J` to `project_j` (override with `CODEMEMORY_PROJECT_ID`).
+
 For Codex-driven historical extraction and memory maintenance, use the installed
 `$codememory-memory` Skill instead of manually typing the lifecycle commands. Its
 versioned source is [`skills/codememory-memory/SKILL.md`](skills/codememory-memory/SKILL.md);
@@ -180,6 +197,8 @@ route-first retrieval semantics are documented in
 [`src/codememory/docs/phase6-route-first-retrieval.md`](src/codememory/docs/phase6-route-first-retrieval.md).
 it resolves visible history, runs bounded import/extract/consolidate operations, and
 reports duplicates, conflicts, quality decisions, card changes, and query evidence.
+The automatic lifecycle and retry semantics are documented in
+[`src/codememory/docs/phase6-agent-cycle.md`](src/codememory/docs/phase6-agent-cycle.md).
 
 Verify the Project_J seed bindings against a provider snapshot (dry-run first):
 
@@ -211,6 +230,10 @@ that every omitted file is missing.
 | `POST` | `/v1/agent/query` | Query cards and canonical event evidence before coding |
 | `POST` | `/v1/agent/capture` | Capture one bounded, summary-completeness coding evidence package |
 | `POST` | `/v1/agent/finish` | End a session and optionally extract/consolidate its memory |
+| `POST` | `/v1/agent/cycle/open` | Open/resume an incremental agent-memory cycle |
+| `POST` | `/v1/agent/cycle/prompt` | Record a visible prompt and return route hints |
+| `POST` | `/v1/agent/cycle/checkpoint` | Record stop/tool evidence and optionally extract/consolidate |
+| `POST` | `/v1/agent/cycle/close` | Close a cycle and persist final outcome |
 | `GET` | `/v1/tasks/{task_id}/timeline` | Inspect the ordered evidence timeline |
 | `GET` | `/v1/search?q=...` | Query the rebuildable FTS5 projection |
 | `GET` | `/v1/outbox` | Inspect durable downstream jobs |

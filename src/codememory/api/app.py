@@ -18,6 +18,13 @@ from ..agent_bridge import (
     MemoryQueryRequest,
     SessionStartRequest,
 )
+from ..cycle import (
+    AgentMemoryCycleService,
+    CycleCheckpointRequest,
+    CycleCloseRequest,
+    CycleOpenRequest,
+    CyclePromptRequest,
+)
 from ..config import default_db_path
 from ..consolidation.service import ConsolidationService
 from ..consolidation.store import CardStore
@@ -130,6 +137,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         consolidation_service=consolidation_service,
         quality_service=quality_service,
     )
+    cycle_service = AgentMemoryCycleService(repository, bridge=agent_bridge)
     app = FastAPI(
         title="CodeSementicMemory",
         version="0.1.0",
@@ -145,6 +153,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     app.state.quality_service = quality_service
     app.state.verification_service = verification_service
     app.state.agent_bridge = agent_bridge
+    app.state.cycle_service = cycle_service
 
     web_candidates = (
         Path(__file__).resolve().parents[3] / "web",
@@ -273,6 +282,22 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 content={"error": "agent_finish_failed", "message": str(exc)},
             )
+
+    @app.post("/v1/agent/cycle/open")
+    async def agent_cycle_open(request: CycleOpenRequest) -> dict[str, Any]:
+        return cycle_service.open(request)
+
+    @app.post("/v1/agent/cycle/prompt")
+    async def agent_cycle_prompt(request: CyclePromptRequest) -> dict[str, Any]:
+        return cycle_service.prompt(request)
+
+    @app.post("/v1/agent/cycle/checkpoint")
+    async def agent_cycle_checkpoint(request: CycleCheckpointRequest) -> dict[str, Any]:
+        return cycle_service.checkpoint(request)
+
+    @app.post("/v1/agent/cycle/close")
+    async def agent_cycle_close(request: CycleCloseRequest) -> dict[str, Any]:
+        return cycle_service.close(request)
 
     @app.get("/v1/tasks/{task_id}/timeline")
     async def task_timeline(

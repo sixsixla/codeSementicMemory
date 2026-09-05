@@ -583,6 +583,145 @@ class MemoryRepository:
                 ).fetchall()
             return [self._event_from_row(row) for row in rows]
 
+    def get_agent_memory_cycle(
+        self,
+        *,
+        source_system: str,
+        source_thread_id: str,
+        project_id: str,
+        session_id: str,
+    ) -> dict[str, Any] | None:
+        """Return the durable cursor for one external agent conversation."""
+
+        with self.db.connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM agent_memory_cycles "
+                "WHERE source_system=? AND source_thread_id=? AND project_id=? AND session_id=?",
+                (source_system, source_thread_id, project_id, session_id),
+            ).fetchone()
+            if row is None:
+                return None
+            return {
+                "cycle_id": str(row["cycle_id"]),
+                "source_system": str(row["source_system"]),
+                "source_thread_id": str(row["source_thread_id"]),
+                "project_id": str(row["project_id"]),
+                "task_id": str(row["task_id"]),
+                "session_id": str(row["session_id"]),
+                "status": str(row["status"]),
+                "cursor": row["cursor"],
+                "prompt_count": int(row["prompt_count"]),
+                "last_event_seq": int(row["last_event_seq"]),
+                "metadata": json_value(row["metadata_json"], {}),
+                "opened_at": str(row["opened_at"]),
+                "updated_at": str(row["updated_at"]),
+                "closed_at": row["closed_at"],
+            }
+
+    def upsert_agent_memory_cycle(
+        self,
+        *,
+        cycle_id: str,
+        source_system: str,
+        source_thread_id: str,
+        project_id: str,
+        task_id: str,
+        session_id: str,
+        status: str,
+        cursor: str | None,
+        prompt_count: int,
+        last_event_seq: int,
+        metadata: Mapping[str, Any] | None = None,
+        opened_at: str | None = None,
+        updated_at: str | None = None,
+        closed_at: str | None = None,
+    ) -> dict[str, Any]:
+        """Create or advance a cycle cursor without duplicating a conversation."""
+
+        now = updated_at or iso_now()
+        opened = opened_at or now
+        metadata_json = json_text(dict(metadata or {}))
+        with self.db.transaction() as conn:
+            conn.execute(
+                "INSERT INTO agent_memory_cycles "
+                "(cycle_id,source_system,source_thread_id,project_id,task_id,session_id,status,cursor,"
+                "prompt_count,last_event_seq,metadata_json,opened_at,updated_at,closed_at) "
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?) "
+                "ON CONFLICT(source_system,source_thread_id,project_id,session_id) DO UPDATE SET "
+                "cycle_id=excluded.cycle_id, task_id=excluded.task_id, status=excluded.status, "
+                "cursor=excluded.cursor, prompt_count=excluded.prompt_count, "
+                "last_event_seq=excluded.last_event_seq, metadata_json=excluded.metadata_json, "
+                "updated_at=excluded.updated_at, closed_at=excluded.closed_at",
+                (
+                    cycle_id,
+                    source_system,
+                    source_thread_id,
+                    project_id,
+                    task_id,
+                    session_id,
+                    status,
+                    cursor,
+                    max(0, int(prompt_count)),
+                    max(-1, int(last_event_seq)),
+                    metadata_json,
+                    opened,
+                    now,
+                    closed_at,
+                ),
+            )
+        result = self.get_agent_memory_cycle(
+            source_system=source_system,
+            source_thread_id=source_thread_id,
+            project_id=project_id,
+            session_id=session_id,
+        )
+        if result is None:  # pragma: no cover - defensive guard for a failed transaction
+            raise RuntimeError("agent memory cycle was not persisted")
+        return result
+
+    def record_memory_card_feedback(
+        self,
+        *,
+        feedback_id: str,
+        feedback_key: str,
+        project_id: str,
+        task_id: str,
+        session_id: str,
+        card_id: str,
+        turn_id: str,
+        feedback_type: str,
+        outcome: str = "unknown",
+        used: bool = False,
+        reason: str | None = None,
+        metadata: Mapping[str, Any] | None = None,
+        created_at: str | None = None,
+    ) -> bool:
+        """Record idempotent evidence about whether a route card was useful."""
+
+        with self.db.transaction() as conn:
+            result = conn.execute(
+                "INSERT OR IGNORE INTO memory_card_feedback "
+                "(feedback_id,feedback_key,project_id,task_id,session_id,card_id,turn_id,"
+                "feedback_type,outcome,used,reason,metadata_json,created_at) "
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (
+                    feedback_id,
+                    feedback_key,
+                    project_id,
+                    task_id,
+                    session_id,
+                    card_id,
+                    turn_id,
+                    feedback_type,
+                    outcome,
+                    1 if used else 0,
+                    reason,
+                    json_text(dict(metadata or {})),
+                    created_at or iso_now(),
+                ),
+            )
+            return bool(result.rowcount)
+
     def list_tasks(
         self,
         *,
@@ -863,6 +1002,12 @@ class MemoryRepository:
                 "projects": int(conn.execute("SELECT COUNT(*) FROM projects").fetchone()[0]),
                 "tasks": int(conn.execute("SELECT COUNT(*) FROM tasks").fetchone()[0]),
                 "sessions": int(conn.execute("SELECT COUNT(*) FROM sessions").fetchone()[0]),
+                "agent_memory_cycles": int(
+                    conn.execute("SELECT COUNT(*) FROM agent_memory_cycles").fetchone()[0]
+                ),
+                "memory_card_feedback": int(
+                    conn.execute("SELECT COUNT(*) FROM memory_card_feedback").fetchone()[0]
+                ),
                 "events": int(conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]),
                 "artifacts": int(conn.execute("SELECT COUNT(*) FROM artifacts").fetchone()[0]),
                 "extraction_runs": int(

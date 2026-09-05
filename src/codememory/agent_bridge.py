@@ -341,9 +341,9 @@ class AgentBridgeService:
             captured_at = request.captured_at
         context = self._context(request.context, [{"context": previous_context}])
         producer = {
-            "agent_id": "codex" if not request.context.get("agent_id") else str(request.context["agent_id"]),
-            "adapter": "manual-skill",
-            "adapter_version": "0.1",
+            "agent_id": str(request.context.get("agent_id") or "codex"),
+            "adapter": str(request.context.get("adapter") or "manual-skill"),
+            "adapter_version": str(request.context.get("adapter_version") or "0.1"),
         }
         common = {
             "project_id": request.project_id,
@@ -388,7 +388,7 @@ class AgentBridgeService:
             )
         for index, validation in enumerate(request.validations):
             add(EventType.VALIDATION_RUN, dict(validation), f"validation-{index}")
-        if request.summary or request.outcome:
+        if request.summary or request.outcome != "partial":
             add(
                 EventType.ASSISTANT_MESSAGE,
                 {"text": request.summary, "outcome": request.outcome},

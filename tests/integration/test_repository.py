@@ -17,7 +17,7 @@ def test_migration_is_repeatable_and_wal(tmp_path):
     db.initialize()
     db.initialize()
     assert db.journal_mode() == "wal"
-    assert db.migration_version() == "0008_snapshot_manifest_content.sql"
+    assert db.migration_version() == "0009_agent_memory_cycle.sql"
     assert db.integrity_check() == "ok"
 
 

@@ -18,6 +18,13 @@ from .agent_bridge import (
     MemoryQueryRequest,
     SessionStartRequest,
 )
+from .cycle import (
+    AgentMemoryCycleService,
+    CycleCheckpointRequest,
+    CycleCloseRequest,
+    CycleOpenRequest,
+    CyclePromptRequest,
+)
 from .api.app import create_app
 from .adapters import CliProducer
 from .config import default_db_path, event_schema_path
@@ -71,6 +78,11 @@ def _agent_bridge(path: Path) -> AgentBridgeService:
         consolidation_service=consolidation,
         quality_service=quality_service,
     )
+
+
+def _agent_cycle(path: Path) -> AgentMemoryCycleService:
+    bridge = _agent_bridge(path)
+    return AgentMemoryCycleService(bridge.repository, bridge=bridge)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -414,6 +426,18 @@ def build_parser() -> argparse.ArgumentParser:
     agent_finish = agent_sub.add_parser("finish", help="finish a manual coding session")
     agent_finish.add_argument("path", type=Path, help="JSON FinishRequest payload")
     agent_finish.add_argument("--db", help="database path")
+
+    agent_cycle = agent_sub.add_parser("cycle", help="incremental automatic agent-memory cycle")
+    cycle_sub = agent_cycle.add_subparsers(dest="cycle_command", required=True)
+    for cycle_name, help_text in (
+        ("open", "open or resume a cycle"),
+        ("prompt", "record one user prompt and return route hints"),
+        ("checkpoint", "record stop-time evidence and update memory"),
+        ("close", "close a cycle and optionally run extraction"),
+    ):
+        cycle_parser = cycle_sub.add_parser(cycle_name, help=help_text)
+        cycle_parser.add_argument("path", type=Path, help="JSON cycle request payload")
+        cycle_parser.add_argument("--db", help="database path")
 
     serve = sub.add_parser("serve", help="run the localhost HTTP API")
     serve.add_argument("--db", help="database path")
@@ -926,6 +950,27 @@ def main(argv: list[str] | None = None) -> int:
                 if not isinstance(payload, dict):
                     raise ValueError("finish JSON must be an object")
                 _print(bridge.finish(FinishRequest.model_validate(payload)))
+                return 0
+            if args.agent_command == "cycle":
+                cycle = _agent_cycle(path)
+                payload = _load_json_object(args.path)
+                if not isinstance(payload, dict):
+                    raise ValueError("cycle JSON must be an object")
+                request_types = {
+                    "open": CycleOpenRequest,
+                    "prompt": CyclePromptRequest,
+                    "checkpoint": CycleCheckpointRequest,
+                    "close": CycleCloseRequest,
+                }
+                request_type = request_types[args.cycle_command]
+                request = request_type.model_validate(payload)
+                result = {
+                    "open": cycle.open,
+                    "prompt": cycle.prompt,
+                    "checkpoint": cycle.checkpoint,
+                    "close": cycle.close,
+                }[args.cycle_command](request)
+                _print(result)
                 return 0
         if args.command == "serve":
             import uvicorn

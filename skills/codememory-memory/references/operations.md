@@ -97,3 +97,24 @@ current source before editing.
 Use `trusted` when only quality-accepted `verified`/`stable` cards should be
 returned. Use `audit` to inspect terminal and lifecycle states; combine it with
 `--include-quarantine` only for explicit diagnostics.
+
+## Automatic cycle API
+
+The same flow is available to an adapter without reading a Codex transcript:
+
+```powershell
+py -m codememory agent cycle open cycle-open.json --db $db
+py -m codememory agent cycle prompt cycle-prompt.json --db $db
+py -m codememory agent cycle checkpoint cycle-checkpoint.json --db $db
+py -m codememory agent cycle close cycle-close.json --db $db
+```
+
+The JSON payloads use `project_id`, `source_thread_id`, optional `task_id` and
+`session_id`, and the operation-specific fields. `turn_id` makes prompt and
+checkpoint retries idempotent. The API equivalents are
+`/v1/agent/cycle/open`, `/prompt`, `/checkpoint`, and `/close`.
+
+The Codex hook maps the current working directory to a project (`Project_J` to
+`project_j`, the CodeMemory repository to `codeSementicMemory`, or an explicit
+`CODEMEMORY_PROJECT_ID`). Set `CODEMEMORY_DB` to override the local database and
+`CODEMEMORY_HOOK_PROVIDER` to use a configured extraction provider.

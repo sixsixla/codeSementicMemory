@@ -65,3 +65,23 @@ Report, in plain language:
 Treat cards as proposals backed by evidence, not as a replacement for checking the
 current source tree. The normal memory update is append-only at the event layer and
 versioned at the card layer.
+
+## Codex automatic loop
+
+The repository ships `integrations/codex/codememory_hook.py` and a matching
+`integrations/codex/hooks.json` template. The installed global Codex hook uses
+the same cycle service automatically:
+
+- `SessionStart` opens or resumes a durable cycle cursor.
+- `UserPromptSubmit` records the visible prompt and injects route-first cards as
+  additional context. These are hypotheses, not authoritative code facts.
+- `PostToolUse` records bounded visible file-read/edit evidence without running
+  extraction on every tool call.
+- `Stop` checkpoints the visible assistant result, runs bounded extraction and
+  consolidation, and records any explicitly used card ids.
+- `SessionEnd` closes the cycle without a second expensive extraction pass.
+
+Hooks fail open and only read visible hook fields. If Codex asks for hook review,
+approve the project/global hook once in the app; this is a product security
+boundary, not a memory workflow decision. The manual commands remain the
+fallback for imported historical threads and adapters without lifecycle hooks.
