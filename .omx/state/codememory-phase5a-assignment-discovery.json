@@ -1,0 +1,35 @@
+{
+  "role": "investigator",
+  "home_state": "DISCOVERY",
+  "task_slice": "Inspect the existing event, API, CLI, extraction, consolidation, and Codex history boundaries and freeze the manual bridge contract.",
+  "required": true,
+  "read_scope": [
+    "src/codememory/**",
+    "tests/**",
+    "README.md",
+    "src/codememory/docs/phase5-agent-integration-plan.md",
+    ".omx/state/codememory-phase5a-task-contract.json"
+  ],
+  "write_scope": [
+    ".omx/state/codememory-phase5a-discovery-packet.json",
+    ".omx/state/codememory-phase5a-assignment-discovery.json"
+  ],
+  "forbidden_scope": [
+    ".git/**",
+    "*.sqlite3",
+    "Project_J source contents",
+    "Codex Desktop private databases"
+  ],
+  "dependencies": [],
+  "input_artifact_refs": ["73a6f0d5-2fcb-48b8-bc40-f84c3a79aa79"],
+  "expected_output_artifact_refs": ["artifact_type:DiscoveryPacket"],
+  "milestones": [
+    {
+      "milestone_id": "bridge-boundary",
+      "label": "Manual bridge entry points and evidence boundary recorded",
+      "required": true,
+      "status": "COMPLETED",
+      "evidence": [".omx/state/codememory-phase5a-discovery-packet.json"]
+    }
+  ]
+}

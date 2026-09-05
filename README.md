@@ -4,12 +4,13 @@ CodeSementicMemory is a local, SQLite-first long-term memory core specialized fo
 
 The canonical store remains below the LLM layer, while the repository now also
 contains an offline-first Phase 2A/3 extraction and consolidation slice plus
-Phase 4A quality gating and Phase 4B Project_J code-binding verification. It
+Phase 4A quality gating, Phase 4B Project_J code-binding verification, and a
+manual-first Phase 5A agent bridge. It
 captures trustworthy coding evidence through a stable event contract, persists
 it idempotently, extracts auditable candidate memories, validates their
 evidence deterministically, and exposes their evidence graph locally.
 
-## Current status (Phase 0–1 + Phase 2A + Phase 3 + Phase 4A + Phase 4B)
+## Current status (Phase 0–1 + Phase 2A + Phase 3 + Phase 4A + Phase 4B + Phase 5A)
 
 Implemented:
 
@@ -42,6 +43,15 @@ Implemented:
 - Dry-run/write verification CLI and REST endpoints; provider failures never demote an
   existing authoritative binding, and bounded snapshots cannot imply repository-wide absence.
 - 3D graph/file/symbol nodes display the current binding verification state.
+- Manual-first `start/query/capture/finish` AgentBridgeService for Codex and future
+  coding agents; it uses the existing event, extraction, consolidation, and query
+  services without a private desktop hook.
+- Localhost `/v1/agent/{start,query,capture,finish}` routes and
+  `codememory agent {start,query,capture,finish}` commands with stable identities,
+  summary completeness, duplicate replay, and changed-content conflicts.
+- A Codex manual Skill guide and sanitized Project_J evidence fixtures at
+  [`src/codememory/docs/codex-manual-agent-skill.md`](src/codememory/docs/codex-manual-agent-skill.md)
+  and [`fixtures/agent-bridge/`](fixtures/agent-bridge/).
 
 The local replay database is an external runtime artifact, not a checked-in
 fixture. The 2026-09-04 delivery replayed 2,573 indexed visible threads into
@@ -77,7 +87,8 @@ Not in this round:
 - Full-repository (`coverage=complete`) snapshot generation and automatic snapshot refresh.
 - AST/LSP method-level validation beyond the manifest bridge.
 - Embedding/vector projection.
-- Codex Desktop or other agent adapters.
+- Native Codex Desktop hooks, private app database integration, and automatic
+  transcript capture; the manual bridge is intentionally the compatibility path.
 - Production web hosting, authentication, and a production-grade graph layout.
 
 These remain separate layers; they do not require replacing the event store.
@@ -86,7 +97,7 @@ These remain separate layers; they do not require replacing the event store.
 
 ```mermaid
 flowchart LR
-    A[Agent adapter or JSONL fixture] --> B[codememory.event.v1]
+    A[Manual Agent bridge or JSONL fixture] --> B[codememory.event.v1]
     B --> C[Validate and redact]
     C --> D[(SQLite WAL<br/>events and entities)]
     D --> E[Durable outbox]
@@ -147,6 +158,21 @@ Open `http://127.0.0.1:8765/` for the local 3D graph inspector. Interactive API 
 
 If `--db` is omitted, the path is resolved from `CODEMEMORY_DB`, then `CODEMEMORY_DATA_DIR`, then the platform-local application data directory.
 
+Manual-first Agent smoke flow:
+
+```powershell
+.venv\Scripts\codememory agent start --db $db `
+  --project-id project_j --task-id task-demo --session-id session-demo `
+  --intent "NPC 交互结束后打开通用分享界面"
+.venv\Scripts\codememory agent query "ShareManager" --project-id project_j --db $db
+.venv\Scripts\codememory agent capture fixtures/agent-bridge/project-j-capture.json --db $db
+.venv\Scripts\codememory agent finish fixtures/agent-bridge/project-j-finish.json --db $db
+```
+
+The same lifecycle is available over `/v1/agent/start`, `/v1/agent/query`,
+`/v1/agent/capture`, and `/v1/agent/finish`. See the Codex-specific manual
+instructions in [`src/codememory/docs/codex-manual-agent-skill.md`](src/codememory/docs/codex-manual-agent-skill.md).
+
 Verify the Project_J seed bindings against a provider snapshot (dry-run first):
 
 ```powershell
@@ -173,6 +199,10 @@ that every omitted file is missing.
 | `POST` | `/v1/events` | Validate, redact, and atomically ingest one event |
 | `POST` | `/v1/events/batch` | Ingest up to 500 events with per-event results |
 | `POST` | `/v1/replay` | Replay an in-memory event batch through the same service |
+| `POST` | `/v1/agent/start` | Start an idempotent manual coding-agent session |
+| `POST` | `/v1/agent/query` | Query cards and canonical event evidence before coding |
+| `POST` | `/v1/agent/capture` | Capture one bounded, summary-completeness coding evidence package |
+| `POST` | `/v1/agent/finish` | End a session and optionally extract/consolidate its memory |
 | `GET` | `/v1/tasks/{task_id}/timeline` | Inspect the ordered evidence timeline |
 | `GET` | `/v1/search?q=...` | Query the rebuildable FTS5 projection |
 | `GET` | `/v1/outbox` | Inspect durable downstream jobs |
@@ -282,12 +312,16 @@ Phase 2A consumes a task window (directly or through `event.ingested` jobs) and 
 
 Phase 4B now resolves current paths and symbols against explicit P4 and
 CodeBaseMemory manifests for Project_J and marks bindings verified, missing,
-renamed, stale, unverified, or rejected. Full-repository snapshots, AST/LSP
-method-level checks, periodic refresh, embeddings/vector projections, MCP, and a
-native Codex adapter remain separate replaceable layers; none is required by the
-SQLite core or by the quality gate.
+renamed, stale, unverified, or rejected. Phase 5A adds a manual-first bridge so
+an actual Codex task can participate without a private desktop hook. Full-
+repository snapshots, AST/LSP method-level checks, periodic refresh, embeddings/
+vector projections, MCP packaging, and automatic Codex capture remain separate
+replaceable layers; none is required by the SQLite core or by the quality gate.
 
 The complete implementation records are in
 [`src/codememory/docs/phase3-delivery.md`](src/codememory/docs/phase3-delivery.md),
 [`src/codememory/docs/phase4a-quality-gate.md`](src/codememory/docs/phase4a-quality-gate.md),
 and [`src/codememory/docs/phase4b-project-j-verification.md`](src/codememory/docs/phase4b-project-j-verification.md).
+The Phase 5A delivery plan and manual Skill contract are recorded in
+[`src/codememory/docs/phase5-agent-integration-plan.md`](src/codememory/docs/phase5-agent-integration-plan.md)
+and [`src/codememory/docs/codex-manual-agent-skill.md`](src/codememory/docs/codex-manual-agent-skill.md).

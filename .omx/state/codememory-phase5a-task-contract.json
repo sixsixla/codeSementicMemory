@@ -1,0 +1,51 @@
+{
+  "goal": "Implement the first real coding-agent bridge for CodeMemory: a manual-first start/query/capture/finish flow that a Codex task can invoke without depending on hidden desktop hooks, and validate it end-to-end against a Project_J task.",
+  "success_criteria": [
+    "A thin local bridge exposes deterministic start, memory query, event capture/batch, and finish operations over the existing event and card APIs.",
+    "The bridge preserves project/task/session identity, event ordering, idempotency, completeness, and existing redaction boundaries without writing SQLite directly.",
+    "A Codex-specific project skill/instruction documents the manual lifecycle and produces an allowlisted coding evidence package.",
+    "A real Project_J smoke task can query prior memory, append a bounded event stream, trigger extraction/consolidation, and retrieve the resulting card or report.",
+    "Focused bridge tests, full regression, lint, compile, and a localhost API smoke pass; no hidden Codex API or automatic hook is required."
+  ],
+  "scope_allowlist": [
+    "src/**",
+    "tests/**",
+    "schemas/**",
+    "fixtures/**",
+    "web/**",
+    "README.md",
+    "pyproject.toml",
+    ".omx/plans/**",
+    ".omx/state/**"
+  ],
+  "scope_forbidden": [
+    ".git/**",
+    ".venv/**",
+    "*.sqlite",
+    "*.sqlite3",
+    "*.db",
+    "data/**",
+    "build/**",
+    "dist/**",
+    "Project_J source contents",
+    "P4 credentials",
+    "Codex Desktop private databases"
+  ],
+  "constraints": [
+    "SQLite remains the canonical store and the bridge uses the existing IngestService or public HTTP surface.",
+    "Manual-first is the required compatibility path; automatic hooks, MCP server packaging, and transcript interception are out of scope.",
+    "Only visible, allowlisted coding evidence may be captured; hidden reasoning, credentials, host instructions, and unrelated plugin text are excluded.",
+    "Project_J verification remains read-only and bounded by the existing manifest contract.",
+    "JSONL is a replay/failure fallback only; localhost HTTP or the shared service is the primary transport."
+  ],
+  "non_goals": [
+    "Native Codex Desktop hook or private app database integration",
+    "Production MCP server, authentication, or remote hosting",
+    "Embedding/vector projection",
+    "Automatic full-history capture",
+    "General-purpose non-coding memory behavior"
+  ],
+  "risk_profile": "T2",
+  "human_decisions_required": [],
+  "stop_condition": "Stop after the manual bridge, Codex skill instructions, Project_J smoke evidence, focused/full verification, and documentation are complete; leave automatic hooks as a separately evaluated next phase."
+}

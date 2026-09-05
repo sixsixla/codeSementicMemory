@@ -1,0 +1,40 @@
+{
+  "current_behavior": "CodeMemory already accepts canonical coding events through shared HTTP/CLI paths, extracts candidates, consolidates cards, and verifies Project_J bindings. No cohesive manual agent lifecycle bridge exists yet.",
+  "entry_points": [
+    "src/codememory/ingest/service.py::IngestService",
+    "src/codememory/api/app.py::create_app",
+    "src/codememory/cli.py::build_parser/main",
+    "src/codememory/history/codex.py::CodexHistoryImporter"
+  ],
+  "affected_consumers": [
+    "Codex project Skill/manual workflow",
+    "Future Pi/Cursor/other agent adapters",
+    "Existing extraction worker and consolidation service",
+    "Project_J verification and 3D graph UI"
+  ],
+  "evidence": [
+    "README.md lists POST /v1/events, POST /v1/events/batch, cards/search, extraction, consolidation, and verification surfaces.",
+    "EventEnvelope already carries producer, project/task/session, seq, context, payload, artifacts, source, and completeness.",
+    "CodexHistoryImporter filters host context and hidden reasoning before canonical ingestion.",
+    "Phase 4B Project_J baseline and verification service are available for bounded smoke validation."
+  ],
+  "falsifiers": [
+    "A bridge bypasses IngestService or writes SQLite directly.",
+    "Repeated start/capture/finish requests cannot be replayed idempotently.",
+    "The manual capture package cannot produce evidence sufficient for extraction and card query.",
+    "A Project_J smoke task cannot complete without a private Codex application API."
+  ],
+  "recommended_knowledge_routes": [
+    "Keep the bridge provider-neutral and event-envelope based.",
+    "Use three coarse-grained lifecycle operations rather than exposing every internal event as a user action.",
+    "Mark summarized/manual evidence as partial or summary instead of claiming full transcript capture.",
+    "Leave hook/MCP automation as replaceable transport adapters after the manual path is proven."
+  ],
+  "unknowns": [
+    "Which Codex skill/plugin configuration will be available in the target desktop build.",
+    "Whether a future agent can emit individual tool events or only a bounded end-of-task package.",
+    "How much of the existing large runtime outbox should be drained before a live smoke test."
+  ],
+  "reuse_decision": "EXTEND",
+  "runtime_or_system_owner": "CodeSementicMemory localhost process and Codex project skill; no external agent runtime is mutated."
+}

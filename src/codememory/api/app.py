@@ -11,6 +11,13 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, ValidationError
 
+from ..agent_bridge import (
+    AgentBridgeService,
+    CaptureRequest,
+    FinishRequest,
+    MemoryQueryRequest,
+    SessionStartRequest,
+)
 from ..config import default_db_path
 from ..consolidation.service import ConsolidationService
 from ..consolidation.store import CardStore
@@ -115,6 +122,14 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     verification_service = VerificationService(
         repository, quality_service=quality_service
     )
+    agent_bridge = AgentBridgeService(
+        repository,
+        ingest_service=service,
+        card_store=card_store,
+        extraction_service=extraction_service,
+        consolidation_service=consolidation_service,
+        quality_service=quality_service,
+    )
     app = FastAPI(
         title="CodeSementicMemory",
         version="0.1.0",
@@ -129,6 +144,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     app.state.consolidation_service = consolidation_service
     app.state.quality_service = quality_service
     app.state.verification_service = verification_service
+    app.state.agent_bridge = agent_bridge
 
     web_candidates = (
         Path(__file__).resolve().parents[3] / "web",
@@ -235,6 +251,28 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
                     }
                 )
         return {"total": len(results), "results": results}
+
+    @app.post("/v1/agent/start")
+    async def agent_start(request: SessionStartRequest) -> dict[str, Any]:
+        return agent_bridge.start(request)
+
+    @app.post("/v1/agent/query")
+    async def agent_query(request: MemoryQueryRequest) -> dict[str, Any]:
+        return agent_bridge.query(request)
+
+    @app.post("/v1/agent/capture")
+    async def agent_capture(request: CaptureRequest) -> dict[str, Any]:
+        return agent_bridge.capture(request)
+
+    @app.post("/v1/agent/finish", response_model=None)
+    async def agent_finish(request: FinishRequest) -> Any:
+        try:
+            return agent_bridge.finish(request)
+        except ValueError as exc:
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={"error": "agent_finish_failed", "message": str(exc)},
+            )
 
     @app.get("/v1/tasks/{task_id}/timeline")
     async def task_timeline(

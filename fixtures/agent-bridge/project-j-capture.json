@@ -1,0 +1,33 @@
+{
+  "project_id": "project_j",
+  "task_id": "task-agent-bridge-fixture",
+  "session_id": "session-agent-bridge-fixture",
+  "capture_id": "capture-project-j-route-1",
+  "intent": "NPC 交互结束后打开通用分享界面",
+  "explored_files": [
+    "Assets/Script/Npc/YeQuNpcInteract.cs",
+    "Assets/Script/UI/CommonSharePanel.cs"
+  ],
+  "modified_files": [
+    "Assets/Script/Npc/YeQuNpcInteract.cs"
+  ],
+  "symbols": [
+    "YeQuNpcInteract",
+    "CommonSharePanel",
+    "ShareManager"
+  ],
+  "validations": [
+    {"command": "compile", "status": "passed"}
+  ],
+  "rejected_candidates": [
+    "Assets/Script/UI/OldSharePanel.cs"
+  ],
+  "summary": "确认 NPC 交互入口通过 ShareManager 打开 CommonSharePanel，编译通过。",
+  "outcome": "success",
+  "context": {
+    "repo_id": "project-j-repo",
+    "root_path": "D:/P4Workspace/client/mainline",
+    "branch": "mainline"
+  },
+  "captured_at": "2026-09-05T04:30:00Z"
+}

@@ -1,0 +1,11 @@
+{
+  "project_id": "project_j",
+  "task_id": "task-agent-bridge-fixture",
+  "session_id": "session-agent-bridge-fixture",
+  "summary": "任务完成，路由、修改文件和编译结果已经记录。",
+  "outcome": "success",
+  "provider": "mock",
+  "extract": true,
+  "consolidate": true,
+  "occurred_at": "2026-09-05T04:31:00Z"
+}

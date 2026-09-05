@@ -1,0 +1,13 @@
+{
+  "role": "implementer",
+  "home_state": "IMPLEMENT",
+  "task_slice": "Implement the manual AgentBridgeService, API/CLI lifecycle surface, Codex Skill instructions, fixtures, and focused tests within the frozen scope.",
+  "required": true,
+  "read_scope": ["src/**", "tests/**", "README.md", ".omx/state/codememory-phase5a-change-spec.json"],
+  "write_scope": ["src/**", "tests/**", "README.md", "fixtures/agent-bridge/**", ".omx/state/**"],
+  "forbidden_scope": [".git/**", "*.sqlite3", "Project_J source contents", "Codex Desktop private databases"],
+  "dependencies": [],
+  "input_artifact_refs": ["475a7447-d282-46e8-bac2-93c9e6f15825"],
+  "expected_output_artifact_refs": ["artifact_type:PatchManifest"],
+  "milestones": [{"milestone_id":"bridge-implementation","label":"Bridge code, Skill, fixtures, tests, and smoke evidence complete","required":true,"status":"COMPLETED","evidence":[".omx/state/codememory-phase5a-patch-manifest.json","py -m pytest -q"]}]
+}

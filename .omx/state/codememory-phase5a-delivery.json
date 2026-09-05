@@ -1,0 +1,5023 @@
+{
+  "agent_runs": [
+    {
+      "agent_run_id": "79c21156-d8be-4960-9c45-8434845f0ff5",
+      "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+      "attempt": 1,
+      "context_id": null,
+      "ended_at": "2026-09-05T04:00:02+00:00",
+      "evidence": [
+        ".omx/state/codememory-phase5a-discovery-packet.json",
+        "Existing event/API/CLI/extraction boundaries inspected"
+      ],
+      "home_state": "DISCOVERY",
+      "last_seen_at": "2026-09-05T04:00:02+00:00",
+      "output_artifact_refs": [
+        "55b5fed8-a33d-48f2-8816-44b64460b7d9"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "codex-root-discovery",
+      "runtime_kind": "local-codex",
+      "started_at": "2026-09-05T03:58:58+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+      "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+      "attempt": 1,
+      "context_id": null,
+      "ended_at": "2026-09-05T04:02:14+00:00",
+      "evidence": [
+        ".omx/state/codememory-phase5a-triage-packet.json",
+        "Manual bridge contract frozen"
+      ],
+      "home_state": "TRIAGE",
+      "last_seen_at": "2026-09-05T04:02:14+00:00",
+      "output_artifact_refs": [
+        "9c45a199-cda5-467b-b54b-c6b7be72988c"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "codex-root-architect",
+      "runtime_kind": "local-codex",
+      "started_at": "2026-09-05T04:01:48+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "40249006-16ff-468a-b82d-c3577a6959df",
+      "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+      "attempt": 1,
+      "context_id": null,
+      "ended_at": "2026-09-05T04:03:48+00:00",
+      "evidence": [
+        ".omx/state/codememory-phase5a-change-spec.json",
+        "Bridge lifecycle ownership and idempotency design frozen"
+      ],
+      "home_state": "DESIGN",
+      "last_seen_at": "2026-09-05T04:03:48+00:00",
+      "output_artifact_refs": [
+        "475a7447-d282-46e8-bac2-93c9e6f15825"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "codex-root-design",
+      "runtime_kind": "local-codex",
+      "started_at": "2026-09-05T04:03:17+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "92768b5e-72fd-4d29-b920-3307ed23129d",
+      "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "attempt": 1,
+      "context_id": null,
+      "ended_at": "2026-09-05T04:23:16+00:00",
+      "evidence": [
+        "Focused bridge/API tests passed",
+        "Full regression passed",
+        "CLI fresh-database smoke passed",
+        "ruff, compileall, node syntax, and diff checks passed"
+      ],
+      "home_state": "IMPLEMENT",
+      "last_seen_at": "2026-09-05T04:23:16+00:00",
+      "output_artifact_refs": [
+        "b1c83125-4b02-44c2-b446-60e2a7ff3b82"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "codex-root-implementer",
+      "runtime_kind": "codex",
+      "started_at": "2026-09-05T04:21:15+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "cf4aa70e-2ecf-4bb6-a9da-b6465fc22410",
+      "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "attempt": 1,
+      "context_id": null,
+      "ended_at": "2026-09-05T04:27:06+00:00",
+      "evidence": [
+        "Reviewed AgentBridgeService boundary and event idempotency",
+        "Reviewed API/CLI/Skill and fixture scope",
+        "No blocking contract violations"
+      ],
+      "home_state": "REVIEW",
+      "last_seen_at": "2026-09-05T04:27:06+00:00",
+      "output_artifact_refs": [
+        "50d9a628-1044-4023-9f37-11096b63800a"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "codex-root-reviewer",
+      "runtime_kind": "codex",
+      "started_at": "2026-09-05T04:25:06+00:00",
+      "status": "SUCCEEDED"
+    },
+    {
+      "agent_run_id": "73063a89-f60b-4b6e-a21a-76bed8f09277",
+      "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "attempt": 1,
+      "context_id": null,
+      "ended_at": "2026-09-05T04:34:51+00:00",
+      "evidence": [
+        "VerificationLedger recorded",
+        "Full regression, static checks, CLI smoke, API smoke, and Project_J fixture replay completed"
+      ],
+      "home_state": "VERIFY",
+      "last_seen_at": "2026-09-05T04:34:51+00:00",
+      "output_artifact_refs": [
+        "b9fe95f1-3f51-4228-ba0a-05e71ba44acd"
+      ],
+      "parent_agent_run_id": null,
+      "runtime_agent_id": "codex-root-verifier",
+      "runtime_kind": "codex",
+      "started_at": "2026-09-05T04:27:54+00:00",
+      "status": "SUCCEEDED"
+    }
+  ],
+  "artifacts": {
+    "ChangeSpec": [
+      {
+        "artifact_id": "475a7447-d282-46e8-bac2-93c9e6f15825",
+        "artifact_revision": 1,
+        "artifact_type": "ChangeSpec",
+        "data": {
+          "behavior_matrix": [
+            {
+              "case": "start",
+              "expected": "deterministic session_started envelope is ingested and repeated calls are duplicates"
+            },
+            {
+              "case": "query",
+              "expected": "cards and canonical event search are returned with project/task filters"
+            },
+            {
+              "case": "capture",
+              "expected": "allowlisted evidence becomes ordered summary events with stable capture ids"
+            },
+            {
+              "case": "capture conflict",
+              "expected": "reusing a capture id with changed content returns a conflict"
+            },
+            {
+              "case": "finish",
+              "expected": "session_ended is ingested and optional extraction/consolidation results are reported"
+            },
+            {
+              "case": "agent compatibility",
+              "expected": "all operations work through public localhost API or CLI without private desktop hooks"
+            }
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "implementation_slices": [
+            "src/codememory/agent_bridge.py with bounded Pydantic request models and service",
+            "FastAPI /v1/agent/start, /query, /capture, /finish routes",
+            "codememory agent start/query/capture/finish CLI commands",
+            "Codex project Skill instructions and safe evidence package template",
+            "focused bridge and API tests plus bounded Project_J smoke fixture"
+          ],
+          "invariants": [
+            "Bridge writes only through IngestService and existing extraction/consolidation services.",
+            "Repeated identities are idempotent; changed identity content is a conflict.",
+            "Manual evidence defaults to summary completeness and never copies hidden reasoning.",
+            "The bridge never changes existing card history or Project_J source files.",
+            "All generated event seq values are monotonic within a session."
+          ],
+          "primary_domain": "manual coding-agent memory capture",
+          "required_gates": [
+            "DESIGN_CONTRACT",
+            "WRITE_AUTHORIZATION",
+            "SCOPE_CONFORMANCE",
+            "STATIC_CORRECTNESS",
+            "INDEPENDENT_REVIEW",
+            "BEHAVIOR_REGRESSION"
+          ],
+          "required_roles": [
+            "architect",
+            "implementer",
+            "reviewer",
+            "verifier"
+          ],
+          "rollback_or_recovery": "Remove only bridge routes/CLI/tests or revert their additive code; canonical events and existing memory projections remain intact.",
+          "secondary_contracts": [
+            "codememory.event.v1",
+            "Phase 2A extraction contract",
+            "Phase 4B Project_J verification contract"
+          ],
+          "validation_plan": [
+            {
+              "command": "py -m pytest -q tests/test_agent_bridge.py tests/test_agent_bridge_api.py",
+              "evidence": "focused bridge/API tests"
+            },
+            {
+              "command": "py -m pytest -q",
+              "evidence": "full regression"
+            },
+            {
+              "command": "ruff check src tests",
+              "evidence": "lint"
+            },
+            {
+              "command": "py -m compileall -q src tests",
+              "evidence": "compile"
+            },
+            {
+              "command": "CLI/API smoke on a fresh SQLite database",
+              "evidence": "start/capture/finish/query output"
+            }
+          ],
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            ".omx/plans/**",
+            ".omx/state/**"
+          ]
+        },
+        "owner": "architect",
+        "producer_agent_run_id": "40249006-16ff-468a-b82d-c3577a6959df",
+        "producer_assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+        "producer_home_state": "DESIGN",
+        "recorded_at": "2026-09-05T04:03:25+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "DiscoveryPacket": [
+      {
+        "artifact_id": "55b5fed8-a33d-48f2-8816-44b64460b7d9",
+        "artifact_revision": 1,
+        "artifact_type": "DiscoveryPacket",
+        "data": {
+          "affected_consumers": [
+            "Codex project Skill/manual workflow",
+            "Future Pi/Cursor/other agent adapters",
+            "Existing extraction worker and consolidation service",
+            "Project_J verification and 3D graph UI"
+          ],
+          "current_behavior": "CodeMemory already accepts canonical coding events through shared HTTP/CLI paths, extracts candidates, consolidates cards, and verifies Project_J bindings. No cohesive manual agent lifecycle bridge exists yet.",
+          "entry_points": [
+            "src/codememory/ingest/service.py::IngestService",
+            "src/codememory/api/app.py::create_app",
+            "src/codememory/cli.py::build_parser/main",
+            "src/codememory/history/codex.py::CodexHistoryImporter"
+          ],
+          "evidence": [
+            "README.md lists POST /v1/events, POST /v1/events/batch, cards/search, extraction, consolidation, and verification surfaces.",
+            "EventEnvelope already carries producer, project/task/session, seq, context, payload, artifacts, source, and completeness.",
+            "CodexHistoryImporter filters host context and hidden reasoning before canonical ingestion.",
+            "Phase 4B Project_J baseline and verification service are available for bounded smoke validation."
+          ],
+          "falsifiers": [
+            "A bridge bypasses IngestService or writes SQLite directly.",
+            "Repeated start/capture/finish requests cannot be replayed idempotently.",
+            "The manual capture package cannot produce evidence sufficient for extraction and card query.",
+            "A Project_J smoke task cannot complete without a private Codex application API."
+          ],
+          "recommended_knowledge_routes": [
+            "Keep the bridge provider-neutral and event-envelope based.",
+            "Use three coarse-grained lifecycle operations rather than exposing every internal event as a user action.",
+            "Mark summarized/manual evidence as partial or summary instead of claiming full transcript capture.",
+            "Leave hook/MCP automation as replaceable transport adapters after the manual path is proven."
+          ],
+          "reuse_decision": "EXTEND",
+          "runtime_or_system_owner": "CodeSementicMemory localhost process and Codex project skill; no external agent runtime is mutated.",
+          "unknowns": [
+            "Which Codex skill/plugin configuration will be available in the target desktop build.",
+            "Whether a future agent can emit individual tool events or only a bounded end-of-task package.",
+            "How much of the existing large runtime outbox should be drained before a live smoke test."
+          ]
+        },
+        "owner": "investigator",
+        "producer_agent_run_id": "79c21156-d8be-4960-9c45-8434845f0ff5",
+        "producer_assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+        "producer_home_state": "DISCOVERY",
+        "recorded_at": "2026-09-05T03:59:45+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "FinalHandoff": [
+      {
+        "artifact_id": "c90e7f16-fbde-4cf6-8e7a-e4cd9e03cd35",
+        "artifact_revision": 1,
+        "artifact_type": "FinalHandoff",
+        "data": {
+          "evidence": [
+            "PatchManifest b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+            "ReviewReport 50d9a628-1044-4023-9f37-11096b63800a",
+            "VerificationLedger b9fe95f1-3f51-4228-ba0a-05e71ba44acd",
+            "py -m pytest -q: 77 passed, 1 warning",
+            "CLI smoke: start/capture/duplicate/finish/query and health passed on a fresh SQLite database",
+            "HTTP smoke: /v1/agent/start, /query, /capture, /finish all returned 200 with extraction and card retrieval",
+            "ruff check src tests, compileall, node --check, and git diff --check passed"
+          ],
+          "outcome": "Phase 5A delivered: a provider-neutral manual-first AgentBridgeService, localhost HTTP routes, CLI lifecycle commands, Codex Skill instructions, Project_J evidence fixtures, extraction/consolidation handoff, and 3D-memory-compatible query results are implemented and verified.",
+          "recovery_entry": "Start the local service or use codememory agent start/query/capture/finish. Re-submit the same session/capture identities for idempotent duplicate results; changed content under an existing identity returns conflict. Use the existing extraction/consolidation and health commands to inspect or recover projections.",
+          "remaining_actions": [
+            "Add a provider-specific Codex/Pi/Cursor adapter or MCP wrapper that emits the same four lifecycle operations.",
+            "Add stricter automatic-adapter policy for completeness claims, path allowlists, and transcript redaction.",
+            "Evaluate automatic loop/hook capture only after the manual contract is used in real coding sessions."
+          ],
+          "remaining_risks": [
+            "The bridge intentionally does not read Codex Desktop private databases or hidden reasoning.",
+            "The checked-in Project_J package is sanitized evidence; live source binding remains the Phase 4B verification adapter concern.",
+            "Manual capture defaults to summary completeness and depends on the Skill/adapter to submit only visible coding evidence."
+          ]
+        },
+        "owner": "codex-root-delivery-lead",
+        "producer_home_state": "HANDOFF",
+        "recorded_at": "2026-09-05T04:35:45+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "PatchManifest": [
+      {
+        "artifact_id": "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+        "artifact_revision": 1,
+        "artifact_type": "PatchManifest",
+        "data": {
+          "behavior_changed": [
+            "Adds a provider-neutral manual AgentBridgeService with start/query/capture/finish lifecycle operations.",
+            "Adds idempotent bounded evidence event construction with summary completeness and changed-content conflicts.",
+            "Adds localhost agent routes and nested CLI commands that reuse existing ingest, extraction, consolidation, and query services.",
+            "Adds Codex manual Skill instructions and sanitized Project_J evidence fixtures."
+          ],
+          "changed_artifacts": [
+            "src/codememory/agent_bridge.py",
+            "src/codememory/api/app.py",
+            "src/codememory/cli.py",
+            "src/codememory/docs/codex-manual-agent-skill.md",
+            "tests/test_agent_bridge.py",
+            "tests/test_agent_bridge_api.py",
+            "README.md",
+            ".omx/state/codememory-phase5a-*.json"
+          ],
+          "contracts_satisfied": [
+            "Phase 5A manual-first AgentBridgeService contract",
+            "codememory.event.v1 ingest and idempotency contract",
+            "Phase 2A extraction/consolidation service boundary",
+            "Phase 4B Project_J bounded evidence boundary"
+          ],
+          "known_gaps": [
+            "No native Codex Desktop hook or private app database integration.",
+            "No MCP server packaging or automatic transcript capture.",
+            "Manual evidence is summary completeness unless a future adapter supplies fuller events.",
+            "Production authentication and remote hosting remain out of scope."
+          ],
+          "local_checks": [
+            {
+              "command": "py -m pytest -q tests/test_agent_bridge.py tests/test_agent_bridge_api.py",
+              "result": "3 passed, 1 deprecation warning"
+            },
+            {
+              "command": "py -m pytest -q",
+              "result": "77 passed, 1 deprecation warning"
+            },
+            {
+              "command": "ruff check src tests",
+              "result": "All checks passed"
+            },
+            {
+              "command": "py -m compileall -q src tests",
+              "result": "passed"
+            },
+            {
+              "command": "node --check web/app.js",
+              "result": "passed"
+            },
+            {
+              "command": "CLI fresh-database smoke",
+              "result": "start accepted; capture 7 accepted then 7 duplicates; finish extracted 2 candidates and created 2 cards; health ok"
+            }
+          ],
+          "scope_exceptions": []
+        },
+        "owner": "implementer",
+        "producer_agent_run_id": "92768b5e-72fd-4d29-b920-3307ed23129d",
+        "producer_assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+        "producer_home_state": "IMPLEMENT",
+        "recorded_at": "2026-09-05T04:22:41+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "ReviewReport": [
+      {
+        "artifact_id": "50d9a628-1044-4023-9f37-11096b63800a",
+        "artifact_revision": 1,
+        "artifact_type": "ReviewReport",
+        "data": {
+          "contract_violations": [],
+          "findings": [
+            {
+              "area": "service-boundary",
+              "finding": "AgentBridgeService writes canonical data only through IngestService and delegates extraction/consolidation to the existing Phase 2A services; it does not write SQLite directly.",
+              "severity": "info"
+            },
+            {
+              "area": "idempotency",
+              "finding": "Start, capture, and finish use deterministic event identities. Replays return duplicates, while changed content under an existing identity raises ConflictError; capture sequence and parent links are reconstructed from the first stored capture event.",
+              "severity": "info"
+            },
+            {
+              "area": "evidence-boundary",
+              "finding": "The manual Skill excludes hidden reasoning, credentials, host instructions, and unrelated plugin text. Manual evidence defaults to summary completeness and is marked as a known limitation rather than pretending to be a full transcript.",
+              "severity": "info"
+            },
+            {
+              "area": "follow-up",
+              "finding": "The request model still permits an adapter to explicitly claim full completeness or submit arbitrary visible paths; Phase 5B should add stricter adapter-level completeness/path policy if automatic transports need stronger enforcement.",
+              "severity": "process"
+            },
+            {
+              "area": "compatibility",
+              "finding": "The bridge is provider-neutral and usable through localhost HTTP or CLI without Codex Desktop private APIs; the sanitized Project_J fixture exercises the same lifecycle contract.",
+              "severity": "info"
+            }
+          ],
+          "required_rework": [],
+          "scope_drift": [],
+          "unverified_assumptions": [
+            "Codex Desktop Skill invocation and local service startup remain user-environment concerns; no private desktop hook is assumed.",
+            "The checked-in Project_J fixture is sanitized evidence and is not a live source-tree verification run."
+          ],
+          "verdict": "PASS"
+        },
+        "owner": "reviewer",
+        "producer_agent_run_id": "cf4aa70e-2ecf-4bb6-a9da-b6465fc22410",
+        "producer_assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+        "producer_home_state": "REVIEW",
+        "recorded_at": "2026-09-05T04:26:53+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "TaskContract": [
+      {
+        "artifact_id": "73a6f0d5-2fcb-48b8-bc40-f84c3a79aa79",
+        "artifact_revision": 1,
+        "artifact_type": "TaskContract",
+        "data": {
+          "constraints": [
+            "SQLite remains the canonical store and the bridge uses the existing IngestService or public HTTP surface.",
+            "Manual-first is the required compatibility path; automatic hooks, MCP server packaging, and transcript interception are out of scope.",
+            "Only visible, allowlisted coding evidence may be captured; hidden reasoning, credentials, host instructions, and unrelated plugin text are excluded.",
+            "Project_J verification remains read-only and bounded by the existing manifest contract.",
+            "JSONL is a replay/failure fallback only; localhost HTTP or the shared service is the primary transport."
+          ],
+          "goal": "Implement the first real coding-agent bridge for CodeMemory: a manual-first start/query/capture/finish flow that a Codex task can invoke without depending on hidden desktop hooks, and validate it end-to-end against a Project_J task.",
+          "human_decisions_required": [],
+          "non_goals": [
+            "Native Codex Desktop hook or private app database integration",
+            "Production MCP server, authentication, or remote hosting",
+            "Embedding/vector projection",
+            "Automatic full-history capture",
+            "General-purpose non-coding memory behavior"
+          ],
+          "risk_profile": "T2",
+          "scope_allowlist": [
+            "src/**",
+            "tests/**",
+            "schemas/**",
+            "fixtures/**",
+            "web/**",
+            "README.md",
+            "pyproject.toml",
+            ".omx/plans/**",
+            ".omx/state/**"
+          ],
+          "scope_forbidden": [
+            ".git/**",
+            ".venv/**",
+            "*.sqlite",
+            "*.sqlite3",
+            "*.db",
+            "data/**",
+            "build/**",
+            "dist/**",
+            "Project_J source contents",
+            "P4 credentials",
+            "Codex Desktop private databases"
+          ],
+          "stop_condition": "Stop after the manual bridge, Codex skill instructions, Project_J smoke evidence, focused/full verification, and documentation are complete; leave automatic hooks as a separately evaluated next phase.",
+          "success_criteria": [
+            "A thin local bridge exposes deterministic start, memory query, event capture/batch, and finish operations over the existing event and card APIs.",
+            "The bridge preserves project/task/session identity, event ordering, idempotency, completeness, and existing redaction boundaries without writing SQLite directly.",
+            "A Codex-specific project skill/instruction documents the manual lifecycle and produces an allowlisted coding evidence package.",
+            "A real Project_J smoke task can query prior memory, append a bounded event stream, trigger extraction/consolidation, and retrieve the resulting card or report.",
+            "Focused bridge tests, full regression, lint, compile, and a localhost API smoke pass; no hidden Codex API or automatic hook is required."
+          ]
+        },
+        "owner": "codex-root-delivery-lead",
+        "producer_home_state": "INTAKE",
+        "recorded_at": "2026-09-05T03:53:19+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "TriagePacket": [
+      {
+        "artifact_id": "9c45a199-cda5-467b-b54b-c6b7be72988c",
+        "artifact_revision": 1,
+        "artifact_type": "TriagePacket",
+        "data": {
+          "behavior_matrix": [
+            {
+              "case": "start repeated with same session",
+              "expected": "duplicate event, same identity and no new canonical row"
+            },
+            {
+              "case": "capture repeated with same capture id",
+              "expected": "duplicate batch results; changed payload conflicts"
+            },
+            {
+              "case": "manual evidence package",
+              "expected": "summary/partial coding events retain paths, symbols, validation, and outcome"
+            },
+            {
+              "case": "finish with extraction/consolidation",
+              "expected": "session end, candidate extraction, quality evaluation, and cards are queryable"
+            },
+            {
+              "case": "Codex task without private app API",
+              "expected": "the same flow works through local CLI/HTTP calls"
+            }
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "implementation_slices": [
+            "provider-neutral AgentBridgeService and request models",
+            "idempotent start/capture/finish event construction",
+            "memory query projection over existing cards/events",
+            "localhost API routes and nested CLI commands",
+            "Codex project Skill instruction and sample evidence package",
+            "focused integration tests and Project_J smoke fixture"
+          ],
+          "invariants": [
+            "The bridge never writes SQLite directly and always uses IngestService/public service boundaries.",
+            "Canonical events remain append-only and agent lifecycle calls are idempotent.",
+            "Manual summaries never claim full transcript capture.",
+            "Project and task identity are preserved across start/capture/finish.",
+            "No hidden reasoning, host instructions, credentials, or private Codex database content is captured."
+          ],
+          "primary_domain": "coding-agent manual lifecycle bridge",
+          "required_gates": [
+            "DESIGN_CONTRACT",
+            "WRITE_AUTHORIZATION",
+            "SCOPE_CONFORMANCE",
+            "STATIC_CORRECTNESS",
+            "INDEPENDENT_REVIEW",
+            "BEHAVIOR_REGRESSION"
+          ],
+          "required_roles": [
+            "architect",
+            "implementer",
+            "reviewer",
+            "verifier"
+          ],
+          "rollback_or_recovery": "Keep canonical events and existing cards intact; remove or rebuild only new bridge projections/tests if the bridge contract changes.",
+          "secondary_contracts": [
+            "codememory.event.v1",
+            "SQLite/outbox contract",
+            "Phase 2A extraction contract",
+            "Phase 4B Project_J verification contract"
+          ],
+          "validation_plan": [
+            {
+              "command": "py -m pytest -q tests/test_agent_bridge.py tests/test_agent_bridge_api.py",
+              "evidence": "focused bridge tests"
+            },
+            {
+              "command": "py -m pytest -q",
+              "evidence": "full regression suite"
+            },
+            {
+              "command": "ruff check src tests",
+              "evidence": "lint"
+            },
+            {
+              "command": "py -m compileall -q src tests",
+              "evidence": "compile"
+            },
+            {
+              "command": "localhost HTTP smoke and Project_J bounded verification",
+              "evidence": "real local service output"
+            }
+          ],
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            ".omx/plans/**",
+            ".omx/state/**"
+          ]
+        },
+        "owner": "architect",
+        "producer_agent_run_id": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+        "producer_assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+        "producer_home_state": "TRIAGE",
+        "recorded_at": "2026-09-05T04:01:56+00:00",
+        "schema_version": "1.0"
+      }
+    ],
+    "VerificationLedger": [
+      {
+        "artifact_id": "b9fe95f1-3f51-4228-ba0a-05e71ba44acd",
+        "artifact_revision": 1,
+        "artifact_type": "VerificationLedger",
+        "data": {
+          "gate_results": [
+            {
+              "claim_proven": "The Phase 5A/5B manual-first bridge scope, non-goals, and safety boundaries are frozen in the delivery contract.",
+              "evidence": [
+                ".omx/state/codememory-phase5a-task-contract.json",
+                "src/codememory/docs/phase5-agent-integration-plan.md"
+              ],
+              "executor": "codex-root-delivery-lead",
+              "gate_id": "GOAL_AND_SCOPE",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "Existing canonical event, HTTP/CLI, extraction, consolidation, and Codex-history boundaries are understood and the manual bridge contract is frozen.",
+              "evidence": [
+                "55b5fed8-a33d-48f2-8816-44b64460b7d9",
+                ".omx/state/codememory-phase5a-discovery-packet.json"
+              ],
+              "executor": "79c21156-d8be-4960-9c45-8434845f0ff5",
+              "gate_id": "DISCOVERY_COMPLETE",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "The AgentBridgeService symbols, lifecycle ownership, idempotency strategy, public API/CLI shape, and verification map are frozen.",
+              "evidence": [
+                "475a7447-d282-46e8-bac2-93c9e6f15825",
+                ".omx/state/codememory-phase5a-change-spec.json"
+              ],
+              "executor": "40249006-16ff-468a-b82d-c3577a6959df",
+              "gate_id": "DESIGN_CONTRACT",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "The user explicitly authorized implementation after the manual-first design was reviewed.",
+              "evidence": [
+                "User request: 同意，按结论计划执行开发",
+                "475a7447-d282-46e8-bac2-93c9e6f15825"
+              ],
+              "executor": "codex-root-delivery-lead",
+              "gate_id": "WRITE_AUTHORIZATION",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "All PatchManifest paths are within the effective workflow allow layers; fixture files remain within the approved task and assignment scope.",
+              "evidence": [
+                "adaptive_vibe record-artifact scope validation returned ok=true",
+                "PatchManifest b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+                "git diff --check"
+              ],
+              "executor": "codex-root-implementer",
+              "gate_id": "SCOPE_CONFORMANCE",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "The manual bridge passes focused and full regression checks plus static syntax validation.",
+              "evidence": [
+                "py -m pytest -q: 77 passed, 1 warning",
+                "ruff check src tests: All checks passed",
+                "py -m compileall -q src tests: passed",
+                "node --check web/app.js: passed"
+              ],
+              "executor": "codex-root-implementer",
+              "gate_id": "STATIC_CORRECTNESS",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "Independent review found no blocking contract violations; the only follow-up is stricter policy enforcement for future automatic adapters.",
+              "evidence": [
+                "ReviewReport 50d9a628-1044-4023-9f37-11096b63800a",
+                "No blocking contract violations",
+                "Service boundary and idempotency review completed"
+              ],
+              "executor": "codex-root-reviewer",
+              "gate_id": "INDEPENDENT_REVIEW",
+              "status": "PASS"
+            },
+            {
+              "claim_proven": "Fresh SQLite CLI and localhost HTTP smoke tests prove start, capture, duplicate replay, finish extraction/consolidation, query retrieval, and health integrity behavior for the sanitized Project_J evidence package.",
+              "evidence": [
+                "CLI smoke: start accepted; capture 7 accepted then 7 duplicates; finish extracted 2 candidates, created 2 cards, completed 9 outbox jobs",
+                "HTTP smoke: /v1/agent start/capture/finish/query all returned 200; extraction=extracted; cards=1",
+                "Fresh SQLite health: status=ok, schema=0008, unresolved_parent_links=0, dead outbox=0",
+                "fixtures/agent-bridge/project-j-capture.json",
+                "fixtures/agent-bridge/project-j-finish.json"
+              ],
+              "executor": "codex-root-verifier",
+              "gate_id": "BEHAVIOR_REGRESSION",
+              "status": "PASS"
+            }
+          ],
+          "remaining_gaps": [],
+          "required_gates": [
+            "GOAL_AND_SCOPE",
+            "DISCOVERY_COMPLETE",
+            "DESIGN_CONTRACT",
+            "WRITE_AUTHORIZATION",
+            "SCOPE_CONFORMANCE",
+            "STATIC_CORRECTNESS",
+            "INDEPENDENT_REVIEW",
+            "BEHAVIOR_REGRESSION"
+          ]
+        },
+        "owner": "verifier",
+        "producer_agent_run_id": "73063a89-f60b-4b6e-a21a-76bed8f09277",
+        "producer_assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+        "producer_home_state": "VERIFY",
+        "recorded_at": "2026-09-05T04:34:36+00:00",
+        "schema_version": "1.0",
+        "source_gate_count": 15
+      }
+    ]
+  },
+  "assignments": [
+    {
+      "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+      "created_at": "2026-09-05T03:58:50+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-05T04:00:02+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:DiscoveryPacket"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "Project_J source contents",
+        "Codex Desktop private databases"
+      ],
+      "home_state": "DISCOVERY",
+      "input_artifact_refs": [
+        "73a6f0d5-2fcb-48b8-bc40-f84c3a79aa79"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            ".omx/state/codememory-phase5a-discovery-packet.json"
+          ],
+          "label": "Manual bridge entry points and evidence boundary recorded",
+          "milestone_id": "bridge-boundary",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-05T03:58:50+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "55b5fed8-a33d-48f2-8816-44b64460b7d9"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/codememory/**",
+        "tests/**",
+        "README.md",
+        "src/codememory/docs/phase5-agent-integration-plan.md",
+        ".omx/state/codememory-phase5a-task-contract.json"
+      ],
+      "required": true,
+      "role": "investigator",
+      "status": "COMPLETED",
+      "task_slice": "Inspect the existing event, API, CLI, extraction, consolidation, and Codex history boundaries and freeze the manual bridge contract.",
+      "updated_at": "2026-09-05T04:00:02+00:00",
+      "write_scope": [
+        ".omx/state/codememory-phase5a-discovery-packet.json",
+        ".omx/state/codememory-phase5a-assignment-discovery.json"
+      ]
+    },
+    {
+      "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+      "created_at": "2026-09-05T04:01:41+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-05T04:02:14+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:TriagePacket"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "Project_J source contents",
+        "Codex Desktop private databases"
+      ],
+      "home_state": "TRIAGE",
+      "input_artifact_refs": [
+        "55b5fed8-a33d-48f2-8816-44b64460b7d9"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            ".omx/state/codememory-phase5a-triage-packet.json"
+          ],
+          "label": "Agent bridge contract and behavior matrix recorded",
+          "milestone_id": "bridge-contract",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-05T04:01:41+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "9c45a199-cda5-467b-b54b-c6b7be72988c"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "README.md",
+        "src/codememory/docs/phase5-agent-integration-plan.md",
+        ".omx/state/codememory-phase5a-discovery-packet.json"
+      ],
+      "required": true,
+      "role": "architect",
+      "status": "COMPLETED",
+      "task_slice": "Freeze the manual-first AgentBridgeService contract, idempotency strategy, public API/CLI shape, and compatibility boundary.",
+      "updated_at": "2026-09-05T04:02:14+00:00",
+      "write_scope": [
+        ".omx/state/codememory-phase5a-triage-packet.json",
+        ".omx/state/codememory-phase5a-assignment-architect.json"
+      ]
+    },
+    {
+      "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+      "created_at": "2026-09-05T04:03:08+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-05T04:03:48+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:ChangeSpec"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "Project_J source contents",
+        "Codex Desktop private databases"
+      ],
+      "home_state": "DESIGN",
+      "input_artifact_refs": [
+        "9c45a199-cda5-467b-b54b-c6b7be72988c"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            ".omx/state/codememory-phase5a-change-spec.json"
+          ],
+          "label": "Bridge design and verification map recorded",
+          "milestone_id": "change-spec",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-05T04:03:08+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "475a7447-d282-46e8-bac2-93c9e6f15825"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "README.md",
+        "src/codememory/docs/phase5-agent-integration-plan.md",
+        ".omx/state/codememory-phase5a-triage-packet.json"
+      ],
+      "required": true,
+      "role": "architect",
+      "status": "COMPLETED",
+      "task_slice": "Freeze symbol-level additions, ownership, lifecycle control flow, rejected mechanisms, and verification map for the manual bridge.",
+      "updated_at": "2026-09-05T04:03:48+00:00",
+      "write_scope": [
+        ".omx/state/codememory-phase5a-change-spec.json",
+        ".omx/state/codememory-phase5a-assignment-design.json"
+      ]
+    },
+    {
+      "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "created_at": "2026-09-05T04:18:25+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-05T04:23:16+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:PatchManifest"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "Project_J source contents",
+        "Codex Desktop private databases"
+      ],
+      "home_state": "IMPLEMENT",
+      "input_artifact_refs": [
+        "475a7447-d282-46e8-bac2-93c9e6f15825"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+            "py -m pytest -q",
+            "CLI fresh-database smoke"
+          ],
+          "label": "Bridge code, Skill, fixtures, tests, and smoke evidence complete",
+          "milestone_id": "bridge-implementation",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-05T04:23:16+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "b1c83125-4b02-44c2-b446-60e2a7ff3b82"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "README.md",
+        ".omx/state/codememory-phase5a-change-spec.json"
+      ],
+      "required": true,
+      "role": "implementer",
+      "status": "COMPLETED",
+      "task_slice": "Implement the manual AgentBridgeService, API/CLI lifecycle surface, Codex Skill instructions, fixtures, and focused tests within the frozen scope.",
+      "updated_at": "2026-09-05T04:23:16+00:00",
+      "write_scope": [
+        "src/**",
+        "tests/**",
+        "README.md",
+        "fixtures/agent-bridge/**",
+        ".omx/state/**"
+      ]
+    },
+    {
+      "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "created_at": "2026-09-05T04:24:58+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-05T04:27:06+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:ReviewReport"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "Project_J source contents",
+        "Codex Desktop private databases"
+      ],
+      "home_state": "REVIEW",
+      "input_artifact_refs": [
+        "b1c83125-4b02-44c2-b446-60e2a7ff3b82"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            "50d9a628-1044-4023-9f37-11096b63800a",
+            "No blocking contract violations"
+          ],
+          "label": "Independent review findings and evidence recorded",
+          "milestone_id": "bridge-review",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-05T04:27:06+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "50d9a628-1044-4023-9f37-11096b63800a"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "README.md",
+        "fixtures/agent-bridge/**",
+        ".omx/state/codememory-phase5a-change-spec.json",
+        ".omx/state/codememory-phase5a-patch-manifest.json"
+      ],
+      "required": true,
+      "role": "reviewer",
+      "status": "COMPLETED",
+      "task_slice": "Independently review the Phase 5A manual bridge for contract adherence, idempotency, evidence redaction, service-boundary usage, and test/documentation gaps.",
+      "updated_at": "2026-09-05T04:27:06+00:00",
+      "write_scope": [
+        ".omx/state/**"
+      ]
+    },
+    {
+      "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "created_at": "2026-09-05T04:27:46+00:00",
+      "dependencies": [],
+      "ended_at": "2026-09-05T04:34:51+00:00",
+      "expected_output_artifact_refs": [
+        "artifact_type:VerificationLedger"
+      ],
+      "forbidden_scope": [
+        ".git/**",
+        "*.sqlite3",
+        "Project_J source contents",
+        "Codex Desktop private databases"
+      ],
+      "home_state": "VERIFY",
+      "input_artifact_refs": [
+        "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+        "50d9a628-1044-4023-9f37-11096b63800a"
+      ],
+      "milestones": [
+        {
+          "evidence": [
+            "b9fe95f1-3f51-4228-ba0a-05e71ba44acd",
+            "77 passed",
+            "CLI/API smoke passed"
+          ],
+          "label": "Regression, static, smoke, and Project_J fixture checks complete",
+          "milestone_id": "bridge-verification",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-05T04:34:51+00:00"
+        }
+      ],
+      "output_artifact_refs": [
+        "b9fe95f1-3f51-4228-ba0a-05e71ba44acd"
+      ],
+      "parent_assignment_id": null,
+      "read_scope": [
+        "src/**",
+        "tests/**",
+        "README.md",
+        "fixtures/agent-bridge/**",
+        ".omx/state/codememory-phase5a-change-spec.json",
+        ".omx/state/codememory-phase5a-patch-manifest.json",
+        ".omx/state/codememory-phase5a-review-report.json"
+      ],
+      "required": true,
+      "role": "verifier",
+      "status": "COMPLETED",
+      "task_slice": "Run the Phase 5A verification matrix on the manual bridge, including regression, static checks, fresh SQLite CLI/API smoke, and sanitized Project_J evidence replay.",
+      "updated_at": "2026-09-05T04:34:51+00:00",
+      "write_scope": [
+        ".omx/state/**"
+      ]
+    }
+  ],
+  "created_at": "2026-09-05T03:53:19+00:00",
+  "entry_mode": "DELIVER",
+  "entry_provenance": {
+    "kind": "DIRECT_DELIVERY",
+    "owner": "codex-root-delivery-lead",
+    "started_at": "2026-09-05T03:53:19+00:00"
+  },
+  "finalized_at": "2026-09-05T04:35:54+00:00",
+  "gate_ledger": [
+    {
+      "claim_proven": "The Phase 5A/5B manual-first bridge scope, non-goals, and safety boundaries are frozen in the delivery contract.",
+      "evidence": [
+        ".omx/state/codememory-phase5a-task-contract.json",
+        "src/codememory/docs/phase5-agent-integration-plan.md"
+      ],
+      "executor": "codex-root-delivery-lead",
+      "gate_id": "GOAL_AND_SCOPE",
+      "recorded_at": "2026-09-05T03:58:03+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The user explicitly authorized implementing the manual-first Agent bridge and Codex smoke flow.",
+      "evidence": [
+        "User request: 同意，按结论计划执行开发",
+        "TaskContract scope allowlist"
+      ],
+      "executor": "codex-root-delivery-lead",
+      "gate_id": "WRITE_AUTHORIZATION",
+      "recorded_at": "2026-09-05T03:58:03+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "Existing canonical event, HTTP/CLI, extraction, consolidation, and Codex-history boundaries are understood and the manual bridge contract is frozen.",
+      "evidence": [
+        ".omx/state/codememory-phase5a-discovery-packet.json",
+        "src/codememory/domain/events.py",
+        "src/codememory/api/app.py",
+        "src/codememory/cli.py",
+        "src/codememory/history/codex.py"
+      ],
+      "executor": "79c21156-d8be-4960-9c45-8434845f0ff5",
+      "gate_id": "DISCOVERY_COMPLETE",
+      "recorded_at": "2026-09-05T03:59:27+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "prior result invalidated: DiscoveryPacket was recorded",
+      "evidence": [
+        {
+          "invalidated_result_at": "2026-09-05T03:59:27+00:00"
+        }
+      ],
+      "executor": "workflow-core",
+      "gate_id": "DISCOVERY_COMPLETE",
+      "recorded_at": "2026-09-05T03:59:45+00:00",
+      "status": "BLOCKED"
+    },
+    {
+      "claim_proven": "prior result invalidated: DiscoveryPacket was recorded",
+      "evidence": [
+        {
+          "invalidated_result_at": "2026-09-05T03:58:03+00:00"
+        }
+      ],
+      "executor": "workflow-core",
+      "gate_id": "WRITE_AUTHORIZATION",
+      "recorded_at": "2026-09-05T03:59:45+00:00",
+      "status": "BLOCKED"
+    },
+    {
+      "claim_proven": "Existing canonical event, HTTP/CLI, extraction, consolidation, and Codex-history boundaries are understood and the manual bridge contract is frozen.",
+      "evidence": [
+        "55b5fed8-a33d-48f2-8816-44b64460b7d9",
+        ".omx/state/codememory-phase5a-discovery-packet.json"
+      ],
+      "executor": "79c21156-d8be-4960-9c45-8434845f0ff5",
+      "gate_id": "DISCOVERY_COMPLETE",
+      "recorded_at": "2026-09-05T04:00:26+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The user explicitly authorized implementing the manual-first Agent bridge and Codex smoke flow.",
+      "evidence": [
+        "User request: 同意，按结论计划执行开发",
+        "TaskContract scope allowlist"
+      ],
+      "executor": "codex-root-delivery-lead",
+      "gate_id": "WRITE_AUTHORIZATION",
+      "recorded_at": "2026-09-05T04:00:26+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "prior result invalidated: TriagePacket was recorded",
+      "evidence": [
+        {
+          "invalidated_result_at": "2026-09-05T04:00:26+00:00"
+        }
+      ],
+      "executor": "workflow-core",
+      "gate_id": "WRITE_AUTHORIZATION",
+      "recorded_at": "2026-09-05T04:01:56+00:00",
+      "status": "BLOCKED"
+    },
+    {
+      "claim_proven": "The provider-neutral manual bridge contract, behavior matrix, invariants, and validation plan are frozen.",
+      "evidence": [
+        "9c45a199-cda5-467b-b54b-c6b7be72988c",
+        ".omx/state/codememory-phase5a-triage-packet.json"
+      ],
+      "executor": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+      "gate_id": "TRIAGE_COMPLETE",
+      "recorded_at": "2026-09-05T04:02:14+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The AgentBridgeService symbols, lifecycle ownership, idempotency strategy, public API/CLI shape, and verification map are frozen.",
+      "evidence": [
+        "475a7447-d282-46e8-bac2-93c9e6f15825",
+        ".omx/state/codememory-phase5a-change-spec.json"
+      ],
+      "executor": "40249006-16ff-468a-b82d-c3577a6959df",
+      "gate_id": "DESIGN_CONTRACT",
+      "recorded_at": "2026-09-05T04:03:48+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The user explicitly authorized implementation after the manual-first design was reviewed.",
+      "evidence": [
+        "User request: 同意，按结论计划执行开发",
+        "475a7447-d282-46e8-bac2-93c9e6f15825"
+      ],
+      "executor": "codex-root-delivery-lead",
+      "gate_id": "WRITE_AUTHORIZATION",
+      "recorded_at": "2026-09-05T04:03:48+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "All PatchManifest paths are within the effective workflow allow layers; fixture files remain within the approved task and assignment scope.",
+      "evidence": [
+        "adaptive_vibe record-artifact scope validation returned ok=true",
+        "PatchManifest b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+        "git diff --check"
+      ],
+      "executor": "codex-root-implementer",
+      "gate_id": "SCOPE_CONFORMANCE",
+      "recorded_at": "2026-09-05T04:23:58+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "The manual bridge passes focused and full regression checks plus static syntax validation.",
+      "evidence": [
+        "py -m pytest -q: 77 passed, 1 warning",
+        "ruff check src tests: All checks passed",
+        "py -m compileall -q src tests: passed",
+        "node --check web/app.js: passed"
+      ],
+      "executor": "codex-root-implementer",
+      "gate_id": "STATIC_CORRECTNESS",
+      "recorded_at": "2026-09-05T04:23:58+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "Independent review found no blocking contract violations; the only follow-up is stricter policy enforcement for future automatic adapters.",
+      "evidence": [
+        "ReviewReport 50d9a628-1044-4023-9f37-11096b63800a",
+        "No blocking contract violations",
+        "Service boundary and idempotency review completed"
+      ],
+      "executor": "codex-root-reviewer",
+      "gate_id": "INDEPENDENT_REVIEW",
+      "recorded_at": "2026-09-05T04:27:15+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "Fresh SQLite CLI and localhost HTTP smoke tests prove start, capture, duplicate replay, finish extraction/consolidation, query retrieval, and health integrity behavior for the sanitized Project_J evidence package.",
+      "evidence": [
+        "CLI smoke: start accepted; capture 7 accepted then 7 duplicates; finish extracted 2 candidates, created 2 cards, completed 9 outbox jobs",
+        "HTTP smoke: /v1/agent start/capture/finish/query all returned 200; extraction=extracted; cards=1",
+        "Fresh SQLite health: status=ok, schema=0008, unresolved_parent_links=0, dead outbox=0",
+        "fixtures/agent-bridge/project-j-capture.json",
+        "fixtures/agent-bridge/project-j-finish.json"
+      ],
+      "executor": "codex-root-verifier",
+      "gate_id": "BEHAVIOR_REGRESSION",
+      "recorded_at": "2026-09-05T04:32:34+00:00",
+      "status": "PASS"
+    },
+    {
+      "claim_proven": "all required artifacts and gates support the delivery claim",
+      "evidence": [
+        {
+          "ledger_revision": 51
+        },
+        {
+          "required_gates": [
+            "GOAL_AND_SCOPE",
+            "DISCOVERY_COMPLETE",
+            "DESIGN_CONTRACT",
+            "WRITE_AUTHORIZATION",
+            "SCOPE_CONFORMANCE",
+            "STATIC_CORRECTNESS",
+            "INDEPENDENT_REVIEW",
+            "BEHAVIOR_REGRESSION"
+          ]
+        },
+        {
+          "required_artifacts": [
+            "TaskContract",
+            "DiscoveryPacket",
+            "TriagePacket",
+            "ChangeSpec",
+            "PatchManifest",
+            "ReviewReport",
+            "VerificationLedger",
+            "FinalHandoff"
+          ]
+        }
+      ],
+      "executor": "codex-root-delivery-lead",
+      "gate_id": "FINALIZE",
+      "recorded_at": "2026-09-05T04:35:54+00:00",
+      "status": "PASS"
+    }
+  ],
+  "lead": "codex-root-delivery-lead",
+  "ledger_version": "1.0",
+  "orchestration_activation_state": "INTAKE",
+  "orchestration_contract_version": "2.0",
+  "orchestration_events": [
+    {
+      "actor": "workflow-core",
+      "artifact_id": "73a6f0d5-2fcb-48b8-bc40-f84c3a79aa79",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "INTAKE",
+      "kind": "workflow.contract.registered",
+      "observed": {
+        "artifact": {
+          "artifact_id": "73a6f0d5-2fcb-48b8-bc40-f84c3a79aa79",
+          "artifact_revision": 1,
+          "artifact_type": "TaskContract",
+          "data": {
+            "constraints": [
+              "SQLite remains the canonical store and the bridge uses the existing IngestService or public HTTP surface.",
+              "Manual-first is the required compatibility path; automatic hooks, MCP server packaging, and transcript interception are out of scope.",
+              "Only visible, allowlisted coding evidence may be captured; hidden reasoning, credentials, host instructions, and unrelated plugin text are excluded.",
+              "Project_J verification remains read-only and bounded by the existing manifest contract.",
+              "JSONL is a replay/failure fallback only; localhost HTTP or the shared service is the primary transport."
+            ],
+            "goal": "Implement the first real coding-agent bridge for CodeMemory: a manual-first start/query/capture/finish flow that a Codex task can invoke without depending on hidden desktop hooks, and validate it end-to-end against a Project_J task.",
+            "human_decisions_required": [],
+            "non_goals": [
+              "Native Codex Desktop hook or private app database integration",
+              "Production MCP server, authentication, or remote hosting",
+              "Embedding/vector projection",
+              "Automatic full-history capture",
+              "General-purpose non-coding memory behavior"
+            ],
+            "risk_profile": "T2",
+            "scope_allowlist": [
+              "src/**",
+              "tests/**",
+              "schemas/**",
+              "fixtures/**",
+              "web/**",
+              "README.md",
+              "pyproject.toml",
+              ".omx/plans/**",
+              ".omx/state/**"
+            ],
+            "scope_forbidden": [
+              ".git/**",
+              ".venv/**",
+              "*.sqlite",
+              "*.sqlite3",
+              "*.db",
+              "data/**",
+              "build/**",
+              "dist/**",
+              "Project_J source contents",
+              "P4 credentials",
+              "Codex Desktop private databases"
+            ],
+            "stop_condition": "Stop after the manual bridge, Codex skill instructions, Project_J smoke evidence, focused/full verification, and documentation are complete; leave automatic hooks as a separately evaluated next phase.",
+            "success_criteria": [
+              "A thin local bridge exposes deterministic start, memory query, event capture/batch, and finish operations over the existing event and card APIs.",
+              "The bridge preserves project/task/session identity, event ordering, idempotency, completeness, and existing redaction boundaries without writing SQLite directly.",
+              "A Codex-specific project skill/instruction documents the manual lifecycle and produces an allowlisted coding evidence package.",
+              "A real Project_J smoke task can query prior memory, append a bounded event stream, trigger extraction/consolidation, and retrieve the resulting card or report.",
+              "Focused bridge tests, full regression, lint, compile, and a localhost API smoke pass; no hidden Codex API or automatic hook is required."
+            ]
+          },
+          "owner": "codex-root-delivery-lead",
+          "producer_home_state": "INTAKE",
+          "recorded_at": "2026-09-05T03:53:19+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 1,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T03:53:19+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "INTAKE",
+      "kind": "workflow.mode.selected",
+      "observed": {
+        "entry_mode": "DELIVER",
+        "entry_provenance": {
+          "kind": "DIRECT_DELIVERY",
+          "owner": "codex-root-delivery-lead",
+          "started_at": "2026-09-05T03:53:19+00:00"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 2,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T03:53:19+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "GOAL_AND_SCOPE"
+      ],
+      "home_state": "INTAKE",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The Phase 5A/5B manual-first bridge scope, non-goals, and safety boundaries are frozen in the delivery contract.",
+        "evidence": [
+          ".omx/state/codememory-phase5a-task-contract.json",
+          "src/codememory/docs/phase5-agent-integration-plan.md"
+        ],
+        "executor": "codex-root-delivery-lead",
+        "gate": {
+          "claim_proven": "The Phase 5A/5B manual-first bridge scope, non-goals, and safety boundaries are frozen in the delivery contract.",
+          "evidence": [
+            ".omx/state/codememory-phase5a-task-contract.json",
+            "src/codememory/docs/phase5-agent-integration-plan.md"
+          ],
+          "executor": "codex-root-delivery-lead",
+          "gate_id": "GOAL_AND_SCOPE",
+          "recorded_at": "2026-09-05T03:58:03+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 3,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T03:58:03+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "WRITE_AUTHORIZATION"
+      ],
+      "home_state": "DESIGN",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The user explicitly authorized implementing the manual-first Agent bridge and Codex smoke flow.",
+        "evidence": [
+          "User request: 同意，按结论计划执行开发",
+          "TaskContract scope allowlist"
+        ],
+        "executor": "codex-root-delivery-lead",
+        "gate": {
+          "claim_proven": "The user explicitly authorized implementing the manual-first Agent bridge and Codex smoke flow.",
+          "evidence": [
+            "User request: 同意，按结论计划执行开发",
+            "TaskContract scope allowlist"
+          ],
+          "executor": "codex-root-delivery-lead",
+          "gate_id": "WRITE_AUTHORIZATION",
+          "recorded_at": "2026-09-05T03:58:03+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 4,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T03:58:03+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "INTAKE",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-05T03:58:04+00:00",
+          "from": "INTAKE",
+          "reason": "Scope and write authorization are recorded; begin repository discovery for the bridge.",
+          "to": "DISCOVERY"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 5,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T03:58:04+00:00",
+      "to_state": "DISCOVERY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+          "created_at": "2026-09-05T03:58:50+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:DiscoveryPacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "DISCOVERY",
+          "input_artifact_refs": [
+            "73a6f0d5-2fcb-48b8-bc40-f84c3a79aa79"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-discovery-packet.json"
+              ],
+              "label": "Manual bridge entry points and evidence boundary recorded",
+              "milestone_id": "bridge-boundary",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T03:58:50+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/codememory/**",
+            "tests/**",
+            "README.md",
+            "src/codememory/docs/phase5-agent-integration-plan.md",
+            ".omx/state/codememory-phase5a-task-contract.json"
+          ],
+          "required": true,
+          "role": "investigator",
+          "status": "PLANNED",
+          "task_slice": "Inspect the existing event, API, CLI, extraction, consolidation, and Codex history boundaries and freeze the manual bridge contract.",
+          "updated_at": "2026-09-05T03:58:50+00:00",
+          "write_scope": [
+            ".omx/state/codememory-phase5a-discovery-packet.json",
+            ".omx/state/codememory-phase5a-assignment-discovery.json"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 6,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-05T03:58:50+00:00"
+    },
+    {
+      "accepted_at": "2026-09-05T03:58:50+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "73a6f0d5-2fcb-48b8-bc40-f84c3a79aa79",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "INTAKE",
+      "handoff_id": "a7642c1e-7058-41a3-a78d-856e4f44ee4d",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-05T03:58:50+00:00",
+          "artifact_id": "73a6f0d5-2fcb-48b8-bc40-f84c3a79aa79",
+          "from_assignment_id": null,
+          "from_state": "INTAKE",
+          "handoff_id": "a7642c1e-7058-41a3-a78d-856e4f44ee4d",
+          "to_assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+          "to_state": "DISCOVERY"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 7,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T03:58:50+00:00",
+      "to_assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+      "to_state": "DISCOVERY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+          "created_at": "2026-09-05T03:58:50+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:DiscoveryPacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "DISCOVERY",
+          "input_artifact_refs": [
+            "73a6f0d5-2fcb-48b8-bc40-f84c3a79aa79"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-discovery-packet.json"
+              ],
+              "label": "Manual bridge entry points and evidence boundary recorded",
+              "milestone_id": "bridge-boundary",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T03:58:50+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/codememory/**",
+            "tests/**",
+            "README.md",
+            "src/codememory/docs/phase5-agent-integration-plan.md",
+            ".omx/state/codememory-phase5a-task-contract.json"
+          ],
+          "required": true,
+          "role": "investigator",
+          "status": "ACTIVE",
+          "task_slice": "Inspect the existing event, API, CLI, extraction, consolidation, and Codex history boundaries and freeze the manual bridge contract.",
+          "updated_at": "2026-09-05T03:58:58+00:00",
+          "write_scope": [
+            ".omx/state/codememory-phase5a-discovery-packet.json",
+            ".omx/state/codememory-phase5a-assignment-discovery.json"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 8,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-05T03:58:58+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "79c21156-d8be-4960-9c45-8434845f0ff5",
+      "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "79c21156-d8be-4960-9c45-8434845f0ff5",
+          "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+          "attempt": 1,
+          "context_id": null,
+          "evidence": [],
+          "home_state": "DISCOVERY",
+          "last_seen_at": "2026-09-05T03:58:58+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-discovery",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-05T03:58:58+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 9,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-05T03:58:58+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "DISCOVERY_COMPLETE"
+      ],
+      "home_state": "DISCOVERY",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "Existing canonical event, HTTP/CLI, extraction, consolidation, and Codex-history boundaries are understood and the manual bridge contract is frozen.",
+        "evidence": [
+          ".omx/state/codememory-phase5a-discovery-packet.json",
+          "src/codememory/domain/events.py",
+          "src/codememory/api/app.py",
+          "src/codememory/cli.py",
+          "src/codememory/history/codex.py"
+        ],
+        "executor": "79c21156-d8be-4960-9c45-8434845f0ff5",
+        "gate": {
+          "claim_proven": "Existing canonical event, HTTP/CLI, extraction, consolidation, and Codex-history boundaries are understood and the manual bridge contract is frozen.",
+          "evidence": [
+            ".omx/state/codememory-phase5a-discovery-packet.json",
+            "src/codememory/domain/events.py",
+            "src/codememory/api/app.py",
+            "src/codememory/cli.py",
+            "src/codememory/history/codex.py"
+          ],
+          "executor": "79c21156-d8be-4960-9c45-8434845f0ff5",
+          "gate_id": "DISCOVERY_COMPLETE",
+          "recorded_at": "2026-09-05T03:59:27+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 10,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T03:59:27+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "DISCOVERY_COMPLETE"
+      ],
+      "home_state": "DISCOVERY",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "prior result invalidated: DiscoveryPacket was recorded",
+        "evidence": [
+          {
+            "invalidated_result_at": "2026-09-05T03:59:27+00:00"
+          }
+        ],
+        "executor": "workflow-core",
+        "gate": {
+          "claim_proven": "prior result invalidated: DiscoveryPacket was recorded",
+          "evidence": [
+            {
+              "invalidated_result_at": "2026-09-05T03:59:27+00:00"
+            }
+          ],
+          "executor": "workflow-core",
+          "gate_id": "DISCOVERY_COMPLETE",
+          "recorded_at": "2026-09-05T03:59:45+00:00",
+          "status": "BLOCKED"
+        },
+        "gate_status": "BLOCKED"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 11,
+      "source": "workflow-ledger",
+      "status": "BLOCKED",
+      "timestamp_utc": "2026-09-05T03:59:45+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "WRITE_AUTHORIZATION"
+      ],
+      "home_state": "DESIGN",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "prior result invalidated: DiscoveryPacket was recorded",
+        "evidence": [
+          {
+            "invalidated_result_at": "2026-09-05T03:58:03+00:00"
+          }
+        ],
+        "executor": "workflow-core",
+        "gate": {
+          "claim_proven": "prior result invalidated: DiscoveryPacket was recorded",
+          "evidence": [
+            {
+              "invalidated_result_at": "2026-09-05T03:58:03+00:00"
+            }
+          ],
+          "executor": "workflow-core",
+          "gate_id": "WRITE_AUTHORIZATION",
+          "recorded_at": "2026-09-05T03:59:45+00:00",
+          "status": "BLOCKED"
+        },
+        "gate_status": "BLOCKED"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 12,
+      "source": "workflow-ledger",
+      "status": "BLOCKED",
+      "timestamp_utc": "2026-09-05T03:59:45+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "79c21156-d8be-4960-9c45-8434845f0ff5",
+      "artifact_id": "55b5fed8-a33d-48f2-8816-44b64460b7d9",
+      "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "55b5fed8-a33d-48f2-8816-44b64460b7d9",
+          "artifact_revision": 1,
+          "artifact_type": "DiscoveryPacket",
+          "data": {
+            "affected_consumers": [
+              "Codex project Skill/manual workflow",
+              "Future Pi/Cursor/other agent adapters",
+              "Existing extraction worker and consolidation service",
+              "Project_J verification and 3D graph UI"
+            ],
+            "current_behavior": "CodeMemory already accepts canonical coding events through shared HTTP/CLI paths, extracts candidates, consolidates cards, and verifies Project_J bindings. No cohesive manual agent lifecycle bridge exists yet.",
+            "entry_points": [
+              "src/codememory/ingest/service.py::IngestService",
+              "src/codememory/api/app.py::create_app",
+              "src/codememory/cli.py::build_parser/main",
+              "src/codememory/history/codex.py::CodexHistoryImporter"
+            ],
+            "evidence": [
+              "README.md lists POST /v1/events, POST /v1/events/batch, cards/search, extraction, consolidation, and verification surfaces.",
+              "EventEnvelope already carries producer, project/task/session, seq, context, payload, artifacts, source, and completeness.",
+              "CodexHistoryImporter filters host context and hidden reasoning before canonical ingestion.",
+              "Phase 4B Project_J baseline and verification service are available for bounded smoke validation."
+            ],
+            "falsifiers": [
+              "A bridge bypasses IngestService or writes SQLite directly.",
+              "Repeated start/capture/finish requests cannot be replayed idempotently.",
+              "The manual capture package cannot produce evidence sufficient for extraction and card query.",
+              "A Project_J smoke task cannot complete without a private Codex application API."
+            ],
+            "recommended_knowledge_routes": [
+              "Keep the bridge provider-neutral and event-envelope based.",
+              "Use three coarse-grained lifecycle operations rather than exposing every internal event as a user action.",
+              "Mark summarized/manual evidence as partial or summary instead of claiming full transcript capture.",
+              "Leave hook/MCP automation as replaceable transport adapters after the manual path is proven."
+            ],
+            "reuse_decision": "EXTEND",
+            "runtime_or_system_owner": "CodeSementicMemory localhost process and Codex project skill; no external agent runtime is mutated.",
+            "unknowns": [
+              "Which Codex skill/plugin configuration will be available in the target desktop build.",
+              "Whether a future agent can emit individual tool events or only a bounded end-of-task package.",
+              "How much of the existing large runtime outbox should be drained before a live smoke test."
+            ]
+          },
+          "owner": "investigator",
+          "producer_agent_run_id": "79c21156-d8be-4960-9c45-8434845f0ff5",
+          "producer_assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+          "producer_home_state": "DISCOVERY",
+          "recorded_at": "2026-09-05T03:59:45+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 13,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T03:59:45+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "79c21156-d8be-4960-9c45-8434845f0ff5",
+      "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "79c21156-d8be-4960-9c45-8434845f0ff5",
+          "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-05T04:00:02+00:00",
+          "evidence": [
+            ".omx/state/codememory-phase5a-discovery-packet.json",
+            "Existing event/API/CLI/extraction boundaries inspected"
+          ],
+          "home_state": "DISCOVERY",
+          "last_seen_at": "2026-09-05T04:00:02+00:00",
+          "output_artifact_refs": [
+            "55b5fed8-a33d-48f2-8816-44b64460b7d9"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-discovery",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-05T03:58:58+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 14,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-05T04:00:02+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DISCOVERY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+          "created_at": "2026-09-05T03:58:50+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-05T04:00:02+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:DiscoveryPacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "DISCOVERY",
+          "input_artifact_refs": [
+            "73a6f0d5-2fcb-48b8-bc40-f84c3a79aa79"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-discovery-packet.json"
+              ],
+              "label": "Manual bridge entry points and evidence boundary recorded",
+              "milestone_id": "bridge-boundary",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T03:58:50+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "55b5fed8-a33d-48f2-8816-44b64460b7d9"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/codememory/**",
+            "tests/**",
+            "README.md",
+            "src/codememory/docs/phase5-agent-integration-plan.md",
+            ".omx/state/codememory-phase5a-task-contract.json"
+          ],
+          "required": true,
+          "role": "investigator",
+          "status": "COMPLETED",
+          "task_slice": "Inspect the existing event, API, CLI, extraction, consolidation, and Codex history boundaries and freeze the manual bridge contract.",
+          "updated_at": "2026-09-05T04:00:02+00:00",
+          "write_scope": [
+            ".omx/state/codememory-phase5a-discovery-packet.json",
+            ".omx/state/codememory-phase5a-assignment-discovery.json"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 15,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-05T04:00:02+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "DISCOVERY_COMPLETE"
+      ],
+      "home_state": "DISCOVERY",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "Existing canonical event, HTTP/CLI, extraction, consolidation, and Codex-history boundaries are understood and the manual bridge contract is frozen.",
+        "evidence": [
+          "55b5fed8-a33d-48f2-8816-44b64460b7d9",
+          ".omx/state/codememory-phase5a-discovery-packet.json"
+        ],
+        "executor": "79c21156-d8be-4960-9c45-8434845f0ff5",
+        "gate": {
+          "claim_proven": "Existing canonical event, HTTP/CLI, extraction, consolidation, and Codex-history boundaries are understood and the manual bridge contract is frozen.",
+          "evidence": [
+            "55b5fed8-a33d-48f2-8816-44b64460b7d9",
+            ".omx/state/codememory-phase5a-discovery-packet.json"
+          ],
+          "executor": "79c21156-d8be-4960-9c45-8434845f0ff5",
+          "gate_id": "DISCOVERY_COMPLETE",
+          "recorded_at": "2026-09-05T04:00:26+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 16,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T04:00:26+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "WRITE_AUTHORIZATION"
+      ],
+      "home_state": "DESIGN",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The user explicitly authorized implementing the manual-first Agent bridge and Codex smoke flow.",
+        "evidence": [
+          "User request: 同意，按结论计划执行开发",
+          "TaskContract scope allowlist"
+        ],
+        "executor": "codex-root-delivery-lead",
+        "gate": {
+          "claim_proven": "The user explicitly authorized implementing the manual-first Agent bridge and Codex smoke flow.",
+          "evidence": [
+            "User request: 同意，按结论计划执行开发",
+            "TaskContract scope allowlist"
+          ],
+          "executor": "codex-root-delivery-lead",
+          "gate_id": "WRITE_AUTHORIZATION",
+          "recorded_at": "2026-09-05T04:00:26+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 17,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T04:00:26+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "DISCOVERY",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-05T04:00:26+00:00",
+          "from": "DISCOVERY",
+          "reason": "Discovery packet, investigator run, and discovery gate are complete.",
+          "to": "TRIAGE"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 18,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:00:26+00:00",
+      "to_state": "TRIAGE"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+          "created_at": "2026-09-05T04:01:41+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:TriagePacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "TRIAGE",
+          "input_artifact_refs": [
+            "55b5fed8-a33d-48f2-8816-44b64460b7d9"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-triage-packet.json"
+              ],
+              "label": "Agent bridge contract and behavior matrix recorded",
+              "milestone_id": "bridge-contract",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:01:41+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "src/codememory/docs/phase5-agent-integration-plan.md",
+            ".omx/state/codememory-phase5a-discovery-packet.json"
+          ],
+          "required": true,
+          "role": "architect",
+          "status": "PLANNED",
+          "task_slice": "Freeze the manual-first AgentBridgeService contract, idempotency strategy, public API/CLI shape, and compatibility boundary.",
+          "updated_at": "2026-09-05T04:01:41+00:00",
+          "write_scope": [
+            ".omx/state/codememory-phase5a-triage-packet.json",
+            ".omx/state/codememory-phase5a-assignment-architect.json"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 19,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-05T04:01:41+00:00"
+    },
+    {
+      "accepted_at": "2026-09-05T04:01:41+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "55b5fed8-a33d-48f2-8816-44b64460b7d9",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+      "from_state": "DISCOVERY",
+      "handoff_id": "c71b93db-5548-462c-8323-ff805a26b67b",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-05T04:01:41+00:00",
+          "artifact_id": "55b5fed8-a33d-48f2-8816-44b64460b7d9",
+          "from_assignment_id": "3f453498-1581-425a-b70a-8203ca481325",
+          "from_state": "DISCOVERY",
+          "handoff_id": "c71b93db-5548-462c-8323-ff805a26b67b",
+          "to_assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+          "to_state": "TRIAGE"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 20,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:01:41+00:00",
+      "to_assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+      "to_state": "TRIAGE"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+          "created_at": "2026-09-05T04:01:41+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:TriagePacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "TRIAGE",
+          "input_artifact_refs": [
+            "55b5fed8-a33d-48f2-8816-44b64460b7d9"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-triage-packet.json"
+              ],
+              "label": "Agent bridge contract and behavior matrix recorded",
+              "milestone_id": "bridge-contract",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:01:41+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "src/codememory/docs/phase5-agent-integration-plan.md",
+            ".omx/state/codememory-phase5a-discovery-packet.json"
+          ],
+          "required": true,
+          "role": "architect",
+          "status": "ACTIVE",
+          "task_slice": "Freeze the manual-first AgentBridgeService contract, idempotency strategy, public API/CLI shape, and compatibility boundary.",
+          "updated_at": "2026-09-05T04:01:48+00:00",
+          "write_scope": [
+            ".omx/state/codememory-phase5a-triage-packet.json",
+            ".omx/state/codememory-phase5a-assignment-architect.json"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 21,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-05T04:01:48+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+      "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+          "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+          "attempt": 1,
+          "context_id": null,
+          "evidence": [],
+          "home_state": "TRIAGE",
+          "last_seen_at": "2026-09-05T04:01:48+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-architect",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-05T04:01:48+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 22,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-05T04:01:48+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "WRITE_AUTHORIZATION"
+      ],
+      "home_state": "DESIGN",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "prior result invalidated: TriagePacket was recorded",
+        "evidence": [
+          {
+            "invalidated_result_at": "2026-09-05T04:00:26+00:00"
+          }
+        ],
+        "executor": "workflow-core",
+        "gate": {
+          "claim_proven": "prior result invalidated: TriagePacket was recorded",
+          "evidence": [
+            {
+              "invalidated_result_at": "2026-09-05T04:00:26+00:00"
+            }
+          ],
+          "executor": "workflow-core",
+          "gate_id": "WRITE_AUTHORIZATION",
+          "recorded_at": "2026-09-05T04:01:56+00:00",
+          "status": "BLOCKED"
+        },
+        "gate_status": "BLOCKED"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 23,
+      "source": "workflow-ledger",
+      "status": "BLOCKED",
+      "timestamp_utc": "2026-09-05T04:01:56+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+      "artifact_id": "9c45a199-cda5-467b-b54b-c6b7be72988c",
+      "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "9c45a199-cda5-467b-b54b-c6b7be72988c",
+          "artifact_revision": 1,
+          "artifact_type": "TriagePacket",
+          "data": {
+            "behavior_matrix": [
+              {
+                "case": "start repeated with same session",
+                "expected": "duplicate event, same identity and no new canonical row"
+              },
+              {
+                "case": "capture repeated with same capture id",
+                "expected": "duplicate batch results; changed payload conflicts"
+              },
+              {
+                "case": "manual evidence package",
+                "expected": "summary/partial coding events retain paths, symbols, validation, and outcome"
+              },
+              {
+                "case": "finish with extraction/consolidation",
+                "expected": "session end, candidate extraction, quality evaluation, and cards are queryable"
+              },
+              {
+                "case": "Codex task without private app API",
+                "expected": "the same flow works through local CLI/HTTP calls"
+              }
+            ],
+            "forbidden_scope": [
+              ".git/**",
+              "*.sqlite3",
+              "Project_J source contents",
+              "Codex Desktop private databases"
+            ],
+            "implementation_slices": [
+              "provider-neutral AgentBridgeService and request models",
+              "idempotent start/capture/finish event construction",
+              "memory query projection over existing cards/events",
+              "localhost API routes and nested CLI commands",
+              "Codex project Skill instruction and sample evidence package",
+              "focused integration tests and Project_J smoke fixture"
+            ],
+            "invariants": [
+              "The bridge never writes SQLite directly and always uses IngestService/public service boundaries.",
+              "Canonical events remain append-only and agent lifecycle calls are idempotent.",
+              "Manual summaries never claim full transcript capture.",
+              "Project and task identity are preserved across start/capture/finish.",
+              "No hidden reasoning, host instructions, credentials, or private Codex database content is captured."
+            ],
+            "primary_domain": "coding-agent manual lifecycle bridge",
+            "required_gates": [
+              "DESIGN_CONTRACT",
+              "WRITE_AUTHORIZATION",
+              "SCOPE_CONFORMANCE",
+              "STATIC_CORRECTNESS",
+              "INDEPENDENT_REVIEW",
+              "BEHAVIOR_REGRESSION"
+            ],
+            "required_roles": [
+              "architect",
+              "implementer",
+              "reviewer",
+              "verifier"
+            ],
+            "rollback_or_recovery": "Keep canonical events and existing cards intact; remove or rebuild only new bridge projections/tests if the bridge contract changes.",
+            "secondary_contracts": [
+              "codememory.event.v1",
+              "SQLite/outbox contract",
+              "Phase 2A extraction contract",
+              "Phase 4B Project_J verification contract"
+            ],
+            "validation_plan": [
+              {
+                "command": "py -m pytest -q tests/test_agent_bridge.py tests/test_agent_bridge_api.py",
+                "evidence": "focused bridge tests"
+              },
+              {
+                "command": "py -m pytest -q",
+                "evidence": "full regression suite"
+              },
+              {
+                "command": "ruff check src tests",
+                "evidence": "lint"
+              },
+              {
+                "command": "py -m compileall -q src tests",
+                "evidence": "compile"
+              },
+              {
+                "command": "localhost HTTP smoke and Project_J bounded verification",
+                "evidence": "real local service output"
+              }
+            ],
+            "write_scope": [
+              "src/**",
+              "tests/**",
+              "README.md",
+              ".omx/plans/**",
+              ".omx/state/**"
+            ]
+          },
+          "owner": "architect",
+          "producer_agent_run_id": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+          "producer_assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+          "producer_home_state": "TRIAGE",
+          "recorded_at": "2026-09-05T04:01:56+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 24,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:01:56+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+      "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+          "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-05T04:02:14+00:00",
+          "evidence": [
+            ".omx/state/codememory-phase5a-triage-packet.json",
+            "Manual bridge contract frozen"
+          ],
+          "home_state": "TRIAGE",
+          "last_seen_at": "2026-09-05T04:02:14+00:00",
+          "output_artifact_refs": [
+            "9c45a199-cda5-467b-b54b-c6b7be72988c"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-architect",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-05T04:01:48+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 25,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-05T04:02:14+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "TRIAGE",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+          "created_at": "2026-09-05T04:01:41+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-05T04:02:14+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:TriagePacket"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "TRIAGE",
+          "input_artifact_refs": [
+            "55b5fed8-a33d-48f2-8816-44b64460b7d9"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-triage-packet.json"
+              ],
+              "label": "Agent bridge contract and behavior matrix recorded",
+              "milestone_id": "bridge-contract",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:01:41+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "9c45a199-cda5-467b-b54b-c6b7be72988c"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "src/codememory/docs/phase5-agent-integration-plan.md",
+            ".omx/state/codememory-phase5a-discovery-packet.json"
+          ],
+          "required": true,
+          "role": "architect",
+          "status": "COMPLETED",
+          "task_slice": "Freeze the manual-first AgentBridgeService contract, idempotency strategy, public API/CLI shape, and compatibility boundary.",
+          "updated_at": "2026-09-05T04:02:14+00:00",
+          "write_scope": [
+            ".omx/state/codememory-phase5a-triage-packet.json",
+            ".omx/state/codememory-phase5a-assignment-architect.json"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 26,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-05T04:02:14+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "TRIAGE_COMPLETE"
+      ],
+      "home_state": "TRIAGE",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The provider-neutral manual bridge contract, behavior matrix, invariants, and validation plan are frozen.",
+        "evidence": [
+          "9c45a199-cda5-467b-b54b-c6b7be72988c",
+          ".omx/state/codememory-phase5a-triage-packet.json"
+        ],
+        "executor": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+        "gate": {
+          "claim_proven": "The provider-neutral manual bridge contract, behavior matrix, invariants, and validation plan are frozen.",
+          "evidence": [
+            "9c45a199-cda5-467b-b54b-c6b7be72988c",
+            ".omx/state/codememory-phase5a-triage-packet.json"
+          ],
+          "executor": "0848cb19-35eb-4b25-9059-6edfd90054fc",
+          "gate_id": "TRIAGE_COMPLETE",
+          "recorded_at": "2026-09-05T04:02:14+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 27,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T04:02:14+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "TRIAGE",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-05T04:02:14+00:00",
+          "from": "TRIAGE",
+          "reason": "Triage packet and architect run are complete.",
+          "to": "DESIGN"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 28,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:02:14+00:00",
+      "to_state": "DESIGN"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+          "created_at": "2026-09-05T04:03:08+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:ChangeSpec"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "DESIGN",
+          "input_artifact_refs": [
+            "9c45a199-cda5-467b-b54b-c6b7be72988c"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-change-spec.json"
+              ],
+              "label": "Bridge design and verification map recorded",
+              "milestone_id": "change-spec",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:03:08+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "src/codememory/docs/phase5-agent-integration-plan.md",
+            ".omx/state/codememory-phase5a-triage-packet.json"
+          ],
+          "required": true,
+          "role": "architect",
+          "status": "PLANNED",
+          "task_slice": "Freeze symbol-level additions, ownership, lifecycle control flow, rejected mechanisms, and verification map for the manual bridge.",
+          "updated_at": "2026-09-05T04:03:08+00:00",
+          "write_scope": [
+            ".omx/state/codememory-phase5a-change-spec.json",
+            ".omx/state/codememory-phase5a-assignment-design.json"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 29,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-05T04:03:08+00:00"
+    },
+    {
+      "accepted_at": "2026-09-05T04:03:08+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "9c45a199-cda5-467b-b54b-c6b7be72988c",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+      "from_state": "TRIAGE",
+      "handoff_id": "19838ba0-d504-4170-89ee-a90a4378032a",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-05T04:03:08+00:00",
+          "artifact_id": "9c45a199-cda5-467b-b54b-c6b7be72988c",
+          "from_assignment_id": "fc985cc7-f08a-4a00-aa98-e6f09ae20c95",
+          "from_state": "TRIAGE",
+          "handoff_id": "19838ba0-d504-4170-89ee-a90a4378032a",
+          "to_assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+          "to_state": "DESIGN"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 30,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:03:08+00:00",
+      "to_assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+      "to_state": "DESIGN"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+          "created_at": "2026-09-05T04:03:08+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:ChangeSpec"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "DESIGN",
+          "input_artifact_refs": [
+            "9c45a199-cda5-467b-b54b-c6b7be72988c"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-change-spec.json"
+              ],
+              "label": "Bridge design and verification map recorded",
+              "milestone_id": "change-spec",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:03:08+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "src/codememory/docs/phase5-agent-integration-plan.md",
+            ".omx/state/codememory-phase5a-triage-packet.json"
+          ],
+          "required": true,
+          "role": "architect",
+          "status": "ACTIVE",
+          "task_slice": "Freeze symbol-level additions, ownership, lifecycle control flow, rejected mechanisms, and verification map for the manual bridge.",
+          "updated_at": "2026-09-05T04:03:17+00:00",
+          "write_scope": [
+            ".omx/state/codememory-phase5a-change-spec.json",
+            ".omx/state/codememory-phase5a-assignment-design.json"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 31,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-05T04:03:17+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "40249006-16ff-468a-b82d-c3577a6959df",
+      "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "40249006-16ff-468a-b82d-c3577a6959df",
+          "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+          "attempt": 1,
+          "context_id": null,
+          "evidence": [],
+          "home_state": "DESIGN",
+          "last_seen_at": "2026-09-05T04:03:17+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-design",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-05T04:03:17+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 32,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-05T04:03:17+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "40249006-16ff-468a-b82d-c3577a6959df",
+      "artifact_id": "475a7447-d282-46e8-bac2-93c9e6f15825",
+      "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "475a7447-d282-46e8-bac2-93c9e6f15825",
+          "artifact_revision": 1,
+          "artifact_type": "ChangeSpec",
+          "data": {
+            "behavior_matrix": [
+              {
+                "case": "start",
+                "expected": "deterministic session_started envelope is ingested and repeated calls are duplicates"
+              },
+              {
+                "case": "query",
+                "expected": "cards and canonical event search are returned with project/task filters"
+              },
+              {
+                "case": "capture",
+                "expected": "allowlisted evidence becomes ordered summary events with stable capture ids"
+              },
+              {
+                "case": "capture conflict",
+                "expected": "reusing a capture id with changed content returns a conflict"
+              },
+              {
+                "case": "finish",
+                "expected": "session_ended is ingested and optional extraction/consolidation results are reported"
+              },
+              {
+                "case": "agent compatibility",
+                "expected": "all operations work through public localhost API or CLI without private desktop hooks"
+              }
+            ],
+            "forbidden_scope": [
+              ".git/**",
+              "*.sqlite3",
+              "Project_J source contents",
+              "Codex Desktop private databases"
+            ],
+            "implementation_slices": [
+              "src/codememory/agent_bridge.py with bounded Pydantic request models and service",
+              "FastAPI /v1/agent/start, /query, /capture, /finish routes",
+              "codememory agent start/query/capture/finish CLI commands",
+              "Codex project Skill instructions and safe evidence package template",
+              "focused bridge and API tests plus bounded Project_J smoke fixture"
+            ],
+            "invariants": [
+              "Bridge writes only through IngestService and existing extraction/consolidation services.",
+              "Repeated identities are idempotent; changed identity content is a conflict.",
+              "Manual evidence defaults to summary completeness and never copies hidden reasoning.",
+              "The bridge never changes existing card history or Project_J source files.",
+              "All generated event seq values are monotonic within a session."
+            ],
+            "primary_domain": "manual coding-agent memory capture",
+            "required_gates": [
+              "DESIGN_CONTRACT",
+              "WRITE_AUTHORIZATION",
+              "SCOPE_CONFORMANCE",
+              "STATIC_CORRECTNESS",
+              "INDEPENDENT_REVIEW",
+              "BEHAVIOR_REGRESSION"
+            ],
+            "required_roles": [
+              "architect",
+              "implementer",
+              "reviewer",
+              "verifier"
+            ],
+            "rollback_or_recovery": "Remove only bridge routes/CLI/tests or revert their additive code; canonical events and existing memory projections remain intact.",
+            "secondary_contracts": [
+              "codememory.event.v1",
+              "Phase 2A extraction contract",
+              "Phase 4B Project_J verification contract"
+            ],
+            "validation_plan": [
+              {
+                "command": "py -m pytest -q tests/test_agent_bridge.py tests/test_agent_bridge_api.py",
+                "evidence": "focused bridge/API tests"
+              },
+              {
+                "command": "py -m pytest -q",
+                "evidence": "full regression"
+              },
+              {
+                "command": "ruff check src tests",
+                "evidence": "lint"
+              },
+              {
+                "command": "py -m compileall -q src tests",
+                "evidence": "compile"
+              },
+              {
+                "command": "CLI/API smoke on a fresh SQLite database",
+                "evidence": "start/capture/finish/query output"
+              }
+            ],
+            "write_scope": [
+              "src/**",
+              "tests/**",
+              "README.md",
+              ".omx/plans/**",
+              ".omx/state/**"
+            ]
+          },
+          "owner": "architect",
+          "producer_agent_run_id": "40249006-16ff-468a-b82d-c3577a6959df",
+          "producer_assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+          "producer_home_state": "DESIGN",
+          "recorded_at": "2026-09-05T04:03:25+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 33,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:03:25+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "40249006-16ff-468a-b82d-c3577a6959df",
+      "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "40249006-16ff-468a-b82d-c3577a6959df",
+          "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-05T04:03:48+00:00",
+          "evidence": [
+            ".omx/state/codememory-phase5a-change-spec.json",
+            "Bridge lifecycle ownership and idempotency design frozen"
+          ],
+          "home_state": "DESIGN",
+          "last_seen_at": "2026-09-05T04:03:48+00:00",
+          "output_artifact_refs": [
+            "475a7447-d282-46e8-bac2-93c9e6f15825"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-design",
+          "runtime_kind": "local-codex",
+          "started_at": "2026-09-05T04:03:17+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 34,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-05T04:03:48+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "DESIGN",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+          "created_at": "2026-09-05T04:03:08+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-05T04:03:48+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:ChangeSpec"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "DESIGN",
+          "input_artifact_refs": [
+            "9c45a199-cda5-467b-b54b-c6b7be72988c"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-change-spec.json"
+              ],
+              "label": "Bridge design and verification map recorded",
+              "milestone_id": "change-spec",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:03:08+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "475a7447-d282-46e8-bac2-93c9e6f15825"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "src/codememory/docs/phase5-agent-integration-plan.md",
+            ".omx/state/codememory-phase5a-triage-packet.json"
+          ],
+          "required": true,
+          "role": "architect",
+          "status": "COMPLETED",
+          "task_slice": "Freeze symbol-level additions, ownership, lifecycle control flow, rejected mechanisms, and verification map for the manual bridge.",
+          "updated_at": "2026-09-05T04:03:48+00:00",
+          "write_scope": [
+            ".omx/state/codememory-phase5a-change-spec.json",
+            ".omx/state/codememory-phase5a-assignment-design.json"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 35,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-05T04:03:48+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "DESIGN_CONTRACT"
+      ],
+      "home_state": "DESIGN",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The AgentBridgeService symbols, lifecycle ownership, idempotency strategy, public API/CLI shape, and verification map are frozen.",
+        "evidence": [
+          "475a7447-d282-46e8-bac2-93c9e6f15825",
+          ".omx/state/codememory-phase5a-change-spec.json"
+        ],
+        "executor": "40249006-16ff-468a-b82d-c3577a6959df",
+        "gate": {
+          "claim_proven": "The AgentBridgeService symbols, lifecycle ownership, idempotency strategy, public API/CLI shape, and verification map are frozen.",
+          "evidence": [
+            "475a7447-d282-46e8-bac2-93c9e6f15825",
+            ".omx/state/codememory-phase5a-change-spec.json"
+          ],
+          "executor": "40249006-16ff-468a-b82d-c3577a6959df",
+          "gate_id": "DESIGN_CONTRACT",
+          "recorded_at": "2026-09-05T04:03:48+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 36,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T04:03:48+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "WRITE_AUTHORIZATION"
+      ],
+      "home_state": "DESIGN",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The user explicitly authorized implementation after the manual-first design was reviewed.",
+        "evidence": [
+          "User request: 同意，按结论计划执行开发",
+          "475a7447-d282-46e8-bac2-93c9e6f15825"
+        ],
+        "executor": "codex-root-delivery-lead",
+        "gate": {
+          "claim_proven": "The user explicitly authorized implementation after the manual-first design was reviewed.",
+          "evidence": [
+            "User request: 同意，按结论计划执行开发",
+            "475a7447-d282-46e8-bac2-93c9e6f15825"
+          ],
+          "executor": "codex-root-delivery-lead",
+          "gate_id": "WRITE_AUTHORIZATION",
+          "recorded_at": "2026-09-05T04:03:48+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 37,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T04:03:48+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "DESIGN",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-05T04:03:48+00:00",
+          "from": "DESIGN",
+          "reason": "ChangeSpec and design gates are complete; implement the bridge and skill.",
+          "to": "IMPLEMENT"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 38,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:03:48+00:00",
+      "to_state": "IMPLEMENT"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+          "created_at": "2026-09-05T04:18:25+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:PatchManifest"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "IMPLEMENT",
+          "input_artifact_refs": [
+            "475a7447-d282-46e8-bac2-93c9e6f15825"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-patch-manifest.json",
+                "py -m pytest -q"
+              ],
+              "label": "Bridge code, Skill, fixtures, tests, and smoke evidence complete",
+              "milestone_id": "bridge-implementation",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:18:25+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            ".omx/state/codememory-phase5a-change-spec.json"
+          ],
+          "required": true,
+          "role": "implementer",
+          "status": "PLANNED",
+          "task_slice": "Implement the manual AgentBridgeService, API/CLI lifecycle surface, Codex Skill instructions, fixtures, and focused tests within the frozen scope.",
+          "updated_at": "2026-09-05T04:18:25+00:00",
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "fixtures/agent-bridge/**",
+            ".omx/state/**"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 39,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-05T04:18:25+00:00"
+    },
+    {
+      "accepted_at": "2026-09-05T04:18:25+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "475a7447-d282-46e8-bac2-93c9e6f15825",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+      "from_state": "DESIGN",
+      "handoff_id": "b1e551c1-e7b4-4c99-83d1-05e785c619a6",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-05T04:18:25+00:00",
+          "artifact_id": "475a7447-d282-46e8-bac2-93c9e6f15825",
+          "from_assignment_id": "b0ff4bff-0daa-48b4-9388-ac2b54fd6b45",
+          "from_state": "DESIGN",
+          "handoff_id": "b1e551c1-e7b4-4c99-83d1-05e785c619a6",
+          "to_assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+          "to_state": "IMPLEMENT"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 40,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:18:25+00:00",
+      "to_assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "to_state": "IMPLEMENT"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+          "created_at": "2026-09-05T04:18:25+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:PatchManifest"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "IMPLEMENT",
+          "input_artifact_refs": [
+            "475a7447-d282-46e8-bac2-93c9e6f15825"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                ".omx/state/codememory-phase5a-patch-manifest.json",
+                "py -m pytest -q"
+              ],
+              "label": "Bridge code, Skill, fixtures, tests, and smoke evidence complete",
+              "milestone_id": "bridge-implementation",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:18:25+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            ".omx/state/codememory-phase5a-change-spec.json"
+          ],
+          "required": true,
+          "role": "implementer",
+          "status": "ACTIVE",
+          "task_slice": "Implement the manual AgentBridgeService, API/CLI lifecycle surface, Codex Skill instructions, fixtures, and focused tests within the frozen scope.",
+          "updated_at": "2026-09-05T04:21:15+00:00",
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "fixtures/agent-bridge/**",
+            ".omx/state/**"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 41,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-05T04:21:15+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "92768b5e-72fd-4d29-b920-3307ed23129d",
+      "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "92768b5e-72fd-4d29-b920-3307ed23129d",
+          "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+          "attempt": 1,
+          "context_id": null,
+          "evidence": [],
+          "home_state": "IMPLEMENT",
+          "last_seen_at": "2026-09-05T04:21:15+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-implementer",
+          "runtime_kind": "codex",
+          "started_at": "2026-09-05T04:21:15+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 42,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-05T04:21:15+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "92768b5e-72fd-4d29-b920-3307ed23129d",
+      "artifact_id": "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+      "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+          "artifact_revision": 1,
+          "artifact_type": "PatchManifest",
+          "data": {
+            "behavior_changed": [
+              "Adds a provider-neutral manual AgentBridgeService with start/query/capture/finish lifecycle operations.",
+              "Adds idempotent bounded evidence event construction with summary completeness and changed-content conflicts.",
+              "Adds localhost agent routes and nested CLI commands that reuse existing ingest, extraction, consolidation, and query services.",
+              "Adds Codex manual Skill instructions and sanitized Project_J evidence fixtures."
+            ],
+            "changed_artifacts": [
+              "src/codememory/agent_bridge.py",
+              "src/codememory/api/app.py",
+              "src/codememory/cli.py",
+              "src/codememory/docs/codex-manual-agent-skill.md",
+              "tests/test_agent_bridge.py",
+              "tests/test_agent_bridge_api.py",
+              "README.md",
+              ".omx/state/codememory-phase5a-*.json"
+            ],
+            "contracts_satisfied": [
+              "Phase 5A manual-first AgentBridgeService contract",
+              "codememory.event.v1 ingest and idempotency contract",
+              "Phase 2A extraction/consolidation service boundary",
+              "Phase 4B Project_J bounded evidence boundary"
+            ],
+            "known_gaps": [
+              "No native Codex Desktop hook or private app database integration.",
+              "No MCP server packaging or automatic transcript capture.",
+              "Manual evidence is summary completeness unless a future adapter supplies fuller events.",
+              "Production authentication and remote hosting remain out of scope."
+            ],
+            "local_checks": [
+              {
+                "command": "py -m pytest -q tests/test_agent_bridge.py tests/test_agent_bridge_api.py",
+                "result": "3 passed, 1 deprecation warning"
+              },
+              {
+                "command": "py -m pytest -q",
+                "result": "77 passed, 1 deprecation warning"
+              },
+              {
+                "command": "ruff check src tests",
+                "result": "All checks passed"
+              },
+              {
+                "command": "py -m compileall -q src tests",
+                "result": "passed"
+              },
+              {
+                "command": "node --check web/app.js",
+                "result": "passed"
+              },
+              {
+                "command": "CLI fresh-database smoke",
+                "result": "start accepted; capture 7 accepted then 7 duplicates; finish extracted 2 candidates and created 2 cards; health ok"
+              }
+            ],
+            "scope_exceptions": []
+          },
+          "owner": "implementer",
+          "producer_agent_run_id": "92768b5e-72fd-4d29-b920-3307ed23129d",
+          "producer_assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+          "producer_home_state": "IMPLEMENT",
+          "recorded_at": "2026-09-05T04:22:41+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 43,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:22:41+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "92768b5e-72fd-4d29-b920-3307ed23129d",
+      "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "92768b5e-72fd-4d29-b920-3307ed23129d",
+          "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-05T04:23:16+00:00",
+          "evidence": [
+            "Focused bridge/API tests passed",
+            "Full regression passed",
+            "CLI fresh-database smoke passed",
+            "ruff, compileall, node syntax, and diff checks passed"
+          ],
+          "home_state": "IMPLEMENT",
+          "last_seen_at": "2026-09-05T04:23:16+00:00",
+          "output_artifact_refs": [
+            "b1c83125-4b02-44c2-b446-60e2a7ff3b82"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-implementer",
+          "runtime_kind": "codex",
+          "started_at": "2026-09-05T04:21:15+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 44,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-05T04:23:16+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "bridge-implementation",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+            "py -m pytest -q",
+            "CLI fresh-database smoke"
+          ],
+          "label": "Bridge code, Skill, fixtures, tests, and smoke evidence complete",
+          "milestone_id": "bridge-implementation",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-05T04:23:16+00:00"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 45,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-05T04:23:16+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "IMPLEMENT",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+          "created_at": "2026-09-05T04:18:25+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-05T04:23:16+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:PatchManifest"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "IMPLEMENT",
+          "input_artifact_refs": [
+            "475a7447-d282-46e8-bac2-93c9e6f15825"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+                "py -m pytest -q",
+                "CLI fresh-database smoke"
+              ],
+              "label": "Bridge code, Skill, fixtures, tests, and smoke evidence complete",
+              "milestone_id": "bridge-implementation",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:23:16+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "b1c83125-4b02-44c2-b446-60e2a7ff3b82"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            ".omx/state/codememory-phase5a-change-spec.json"
+          ],
+          "required": true,
+          "role": "implementer",
+          "status": "COMPLETED",
+          "task_slice": "Implement the manual AgentBridgeService, API/CLI lifecycle surface, Codex Skill instructions, fixtures, and focused tests within the frozen scope.",
+          "updated_at": "2026-09-05T04:23:16+00:00",
+          "write_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "fixtures/agent-bridge/**",
+            ".omx/state/**"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 46,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-05T04:23:16+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "SCOPE_CONFORMANCE"
+      ],
+      "home_state": "IMPLEMENT",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "All PatchManifest paths are within the effective workflow allow layers; fixture files remain within the approved task and assignment scope.",
+        "evidence": [
+          "adaptive_vibe record-artifact scope validation returned ok=true",
+          "PatchManifest b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+          "git diff --check"
+        ],
+        "executor": "codex-root-implementer",
+        "gate": {
+          "claim_proven": "All PatchManifest paths are within the effective workflow allow layers; fixture files remain within the approved task and assignment scope.",
+          "evidence": [
+            "adaptive_vibe record-artifact scope validation returned ok=true",
+            "PatchManifest b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+            "git diff --check"
+          ],
+          "executor": "codex-root-implementer",
+          "gate_id": "SCOPE_CONFORMANCE",
+          "recorded_at": "2026-09-05T04:23:58+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 47,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T04:23:58+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "STATIC_CORRECTNESS"
+      ],
+      "home_state": "IMPLEMENT",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "The manual bridge passes focused and full regression checks plus static syntax validation.",
+        "evidence": [
+          "py -m pytest -q: 77 passed, 1 warning",
+          "ruff check src tests: All checks passed",
+          "py -m compileall -q src tests: passed",
+          "node --check web/app.js: passed"
+        ],
+        "executor": "codex-root-implementer",
+        "gate": {
+          "claim_proven": "The manual bridge passes focused and full regression checks plus static syntax validation.",
+          "evidence": [
+            "py -m pytest -q: 77 passed, 1 warning",
+            "ruff check src tests: All checks passed",
+            "py -m compileall -q src tests: passed",
+            "node --check web/app.js: passed"
+          ],
+          "executor": "codex-root-implementer",
+          "gate_id": "STATIC_CORRECTNESS",
+          "recorded_at": "2026-09-05T04:23:58+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 48,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T04:23:58+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "IMPLEMENT",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-05T04:24:06+00:00",
+          "from": "IMPLEMENT",
+          "reason": "",
+          "to": "REVIEW"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 49,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:24:06+00:00",
+      "to_state": "REVIEW"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+          "created_at": "2026-09-05T04:24:58+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:ReviewReport"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "REVIEW",
+          "input_artifact_refs": [
+            "b1c83125-4b02-44c2-b446-60e2a7ff3b82"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Independent review findings and evidence recorded",
+              "milestone_id": "bridge-review",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-05T04:24:58+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "fixtures/agent-bridge/**",
+            ".omx/state/codememory-phase5a-change-spec.json",
+            ".omx/state/codememory-phase5a-patch-manifest.json"
+          ],
+          "required": true,
+          "role": "reviewer",
+          "status": "PLANNED",
+          "task_slice": "Independently review the Phase 5A manual bridge for contract adherence, idempotency, evidence redaction, service-boundary usage, and test/documentation gaps.",
+          "updated_at": "2026-09-05T04:24:58+00:00",
+          "write_scope": [
+            ".omx/state/**"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 50,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-05T04:24:58+00:00"
+    },
+    {
+      "accepted_at": "2026-09-05T04:24:58+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "from_state": "IMPLEMENT",
+      "handoff_id": "a3524c4c-31f9-4b2f-8322-4065035ebe9e",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-05T04:24:58+00:00",
+          "artifact_id": "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+          "from_assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+          "from_state": "IMPLEMENT",
+          "handoff_id": "a3524c4c-31f9-4b2f-8322-4065035ebe9e",
+          "to_assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+          "to_state": "REVIEW"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 51,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:24:58+00:00",
+      "to_assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "to_state": "REVIEW"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+          "created_at": "2026-09-05T04:24:58+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:ReviewReport"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "REVIEW",
+          "input_artifact_refs": [
+            "b1c83125-4b02-44c2-b446-60e2a7ff3b82"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Independent review findings and evidence recorded",
+              "milestone_id": "bridge-review",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-05T04:24:58+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "fixtures/agent-bridge/**",
+            ".omx/state/codememory-phase5a-change-spec.json",
+            ".omx/state/codememory-phase5a-patch-manifest.json"
+          ],
+          "required": true,
+          "role": "reviewer",
+          "status": "ACTIVE",
+          "task_slice": "Independently review the Phase 5A manual bridge for contract adherence, idempotency, evidence redaction, service-boundary usage, and test/documentation gaps.",
+          "updated_at": "2026-09-05T04:25:06+00:00",
+          "write_scope": [
+            ".omx/state/**"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 52,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-05T04:25:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "cf4aa70e-2ecf-4bb6-a9da-b6465fc22410",
+      "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "cf4aa70e-2ecf-4bb6-a9da-b6465fc22410",
+          "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+          "attempt": 1,
+          "context_id": null,
+          "evidence": [],
+          "home_state": "REVIEW",
+          "last_seen_at": "2026-09-05T04:25:06+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-reviewer",
+          "runtime_kind": "codex",
+          "started_at": "2026-09-05T04:25:06+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 53,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-05T04:25:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "cf4aa70e-2ecf-4bb6-a9da-b6465fc22410",
+      "artifact_id": "50d9a628-1044-4023-9f37-11096b63800a",
+      "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "50d9a628-1044-4023-9f37-11096b63800a",
+          "artifact_revision": 1,
+          "artifact_type": "ReviewReport",
+          "data": {
+            "contract_violations": [],
+            "findings": [
+              {
+                "area": "service-boundary",
+                "finding": "AgentBridgeService writes canonical data only through IngestService and delegates extraction/consolidation to the existing Phase 2A services; it does not write SQLite directly.",
+                "severity": "info"
+              },
+              {
+                "area": "idempotency",
+                "finding": "Start, capture, and finish use deterministic event identities. Replays return duplicates, while changed content under an existing identity raises ConflictError; capture sequence and parent links are reconstructed from the first stored capture event.",
+                "severity": "info"
+              },
+              {
+                "area": "evidence-boundary",
+                "finding": "The manual Skill excludes hidden reasoning, credentials, host instructions, and unrelated plugin text. Manual evidence defaults to summary completeness and is marked as a known limitation rather than pretending to be a full transcript.",
+                "severity": "info"
+              },
+              {
+                "area": "follow-up",
+                "finding": "The request model still permits an adapter to explicitly claim full completeness or submit arbitrary visible paths; Phase 5B should add stricter adapter-level completeness/path policy if automatic transports need stronger enforcement.",
+                "severity": "process"
+              },
+              {
+                "area": "compatibility",
+                "finding": "The bridge is provider-neutral and usable through localhost HTTP or CLI without Codex Desktop private APIs; the sanitized Project_J fixture exercises the same lifecycle contract.",
+                "severity": "info"
+              }
+            ],
+            "required_rework": [],
+            "scope_drift": [],
+            "unverified_assumptions": [
+              "Codex Desktop Skill invocation and local service startup remain user-environment concerns; no private desktop hook is assumed.",
+              "The checked-in Project_J fixture is sanitized evidence and is not a live source-tree verification run."
+            ],
+            "verdict": "PASS"
+          },
+          "owner": "reviewer",
+          "producer_agent_run_id": "cf4aa70e-2ecf-4bb6-a9da-b6465fc22410",
+          "producer_assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+          "producer_home_state": "REVIEW",
+          "recorded_at": "2026-09-05T04:26:53+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 54,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:26:53+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "cf4aa70e-2ecf-4bb6-a9da-b6465fc22410",
+      "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "cf4aa70e-2ecf-4bb6-a9da-b6465fc22410",
+          "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-05T04:27:06+00:00",
+          "evidence": [
+            "Reviewed AgentBridgeService boundary and event idempotency",
+            "Reviewed API/CLI/Skill and fixture scope",
+            "No blocking contract violations"
+          ],
+          "home_state": "REVIEW",
+          "last_seen_at": "2026-09-05T04:27:06+00:00",
+          "output_artifact_refs": [
+            "50d9a628-1044-4023-9f37-11096b63800a"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-reviewer",
+          "runtime_kind": "codex",
+          "started_at": "2026-09-05T04:25:06+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 55,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-05T04:27:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "bridge-review",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "50d9a628-1044-4023-9f37-11096b63800a",
+            "No blocking contract violations"
+          ],
+          "label": "Independent review findings and evidence recorded",
+          "milestone_id": "bridge-review",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-05T04:27:06+00:00"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 56,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-05T04:27:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "REVIEW",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+          "created_at": "2026-09-05T04:24:58+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-05T04:27:06+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:ReviewReport"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "REVIEW",
+          "input_artifact_refs": [
+            "b1c83125-4b02-44c2-b446-60e2a7ff3b82"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                "50d9a628-1044-4023-9f37-11096b63800a",
+                "No blocking contract violations"
+              ],
+              "label": "Independent review findings and evidence recorded",
+              "milestone_id": "bridge-review",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:27:06+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "50d9a628-1044-4023-9f37-11096b63800a"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "fixtures/agent-bridge/**",
+            ".omx/state/codememory-phase5a-change-spec.json",
+            ".omx/state/codememory-phase5a-patch-manifest.json"
+          ],
+          "required": true,
+          "role": "reviewer",
+          "status": "COMPLETED",
+          "task_slice": "Independently review the Phase 5A manual bridge for contract adherence, idempotency, evidence redaction, service-boundary usage, and test/documentation gaps.",
+          "updated_at": "2026-09-05T04:27:06+00:00",
+          "write_scope": [
+            ".omx/state/**"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 57,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-05T04:27:06+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "INDEPENDENT_REVIEW"
+      ],
+      "home_state": "REVIEW",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "Independent review found no blocking contract violations; the only follow-up is stricter policy enforcement for future automatic adapters.",
+        "evidence": [
+          "ReviewReport 50d9a628-1044-4023-9f37-11096b63800a",
+          "No blocking contract violations",
+          "Service boundary and idempotency review completed"
+        ],
+        "executor": "codex-root-reviewer",
+        "gate": {
+          "claim_proven": "Independent review found no blocking contract violations; the only follow-up is stricter policy enforcement for future automatic adapters.",
+          "evidence": [
+            "ReviewReport 50d9a628-1044-4023-9f37-11096b63800a",
+            "No blocking contract violations",
+            "Service boundary and idempotency review completed"
+          ],
+          "executor": "codex-root-reviewer",
+          "gate_id": "INDEPENDENT_REVIEW",
+          "recorded_at": "2026-09-05T04:27:15+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 58,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T04:27:15+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "REVIEW",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-05T04:27:22+00:00",
+          "from": "REVIEW",
+          "reason": "",
+          "to": "VERIFY"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 59,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:27:22+00:00",
+      "to_state": "VERIFY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.created",
+      "observed": {
+        "assignment": {
+          "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+          "created_at": "2026-09-05T04:27:46+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:VerificationLedger"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "VERIFY",
+          "input_artifact_refs": [
+            "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+            "50d9a628-1044-4023-9f37-11096b63800a"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Regression, static, smoke, and Project_J fixture checks complete",
+              "milestone_id": "bridge-verification",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-05T04:27:46+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "fixtures/agent-bridge/**",
+            ".omx/state/codememory-phase5a-change-spec.json",
+            ".omx/state/codememory-phase5a-patch-manifest.json",
+            ".omx/state/codememory-phase5a-review-report.json"
+          ],
+          "required": true,
+          "role": "verifier",
+          "status": "PLANNED",
+          "task_slice": "Run the Phase 5A verification matrix on the manual bridge, including regression, static checks, fresh SQLite CLI/API smoke, and sanitized Project_J evidence replay.",
+          "updated_at": "2026-09-05T04:27:46+00:00",
+          "write_scope": [
+            ".omx/state/**"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 60,
+      "source": "workflow-ledger",
+      "status": "PLANNED",
+      "timestamp_utc": "2026-09-05T04:27:46+00:00"
+    },
+    {
+      "accepted_at": "2026-09-05T04:27:46+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+      "from_state": "IMPLEMENT",
+      "handoff_id": "5d851704-f898-43f6-9abd-42f7df4fe25b",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-05T04:27:46+00:00",
+          "artifact_id": "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+          "from_assignment_id": "2cb42b2d-44d6-4ad5-ab52-77706bab62ff",
+          "from_state": "IMPLEMENT",
+          "handoff_id": "5d851704-f898-43f6-9abd-42f7df4fe25b",
+          "to_assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+          "to_state": "VERIFY"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 61,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:27:46+00:00",
+      "to_assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "to_state": "VERIFY"
+    },
+    {
+      "accepted_at": "2026-09-05T04:27:46+00:00",
+      "actor": "workflow-core",
+      "artifact_id": "50d9a628-1044-4023-9f37-11096b63800a",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+      "from_state": "REVIEW",
+      "handoff_id": "893cdab3-d90a-431e-b55f-34c83882ca5b",
+      "kind": "artifact.handoff.recorded",
+      "observed": {
+        "handoff": {
+          "accepted_at": "2026-09-05T04:27:46+00:00",
+          "artifact_id": "50d9a628-1044-4023-9f37-11096b63800a",
+          "from_assignment_id": "de9049dc-e441-4c8a-8a59-c4cf2e565741",
+          "from_state": "REVIEW",
+          "handoff_id": "893cdab3-d90a-431e-b55f-34c83882ca5b",
+          "to_assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+          "to_state": "VERIFY"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 62,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:27:46+00:00",
+      "to_assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "to_state": "VERIFY"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+          "created_at": "2026-09-05T04:27:46+00:00",
+          "dependencies": [],
+          "expected_output_artifact_refs": [
+            "artifact_type:VerificationLedger"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "VERIFY",
+          "input_artifact_refs": [
+            "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+            "50d9a628-1044-4023-9f37-11096b63800a"
+          ],
+          "milestones": [
+            {
+              "evidence": [],
+              "label": "Regression, static, smoke, and Project_J fixture checks complete",
+              "milestone_id": "bridge-verification",
+              "required": true,
+              "status": "PENDING",
+              "updated_at": "2026-09-05T04:27:46+00:00"
+            }
+          ],
+          "output_artifact_refs": [],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "fixtures/agent-bridge/**",
+            ".omx/state/codememory-phase5a-change-spec.json",
+            ".omx/state/codememory-phase5a-patch-manifest.json",
+            ".omx/state/codememory-phase5a-review-report.json"
+          ],
+          "required": true,
+          "role": "verifier",
+          "status": "ACTIVE",
+          "task_slice": "Run the Phase 5A verification matrix on the manual bridge, including regression, static checks, fresh SQLite CLI/API smoke, and sanitized Project_J evidence replay.",
+          "updated_at": "2026-09-05T04:27:54+00:00",
+          "write_scope": [
+            ".omx/state/**"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 63,
+      "source": "workflow-ledger",
+      "status": "ACTIVE",
+      "timestamp_utc": "2026-09-05T04:27:54+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "73063a89-f60b-4b6e-a21a-76bed8f09277",
+      "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "agent_run.started",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "73063a89-f60b-4b6e-a21a-76bed8f09277",
+          "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+          "attempt": 1,
+          "context_id": null,
+          "evidence": [],
+          "home_state": "VERIFY",
+          "last_seen_at": "2026-09-05T04:27:54+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-verifier",
+          "runtime_kind": "codex",
+          "started_at": "2026-09-05T04:27:54+00:00",
+          "status": "RUNNING"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 64,
+      "source": "workflow-ledger",
+      "status": "RUNNING",
+      "timestamp_utc": "2026-09-05T04:27:54+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "73063a89-f60b-4b6e-a21a-76bed8f09277",
+      "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "73063a89-f60b-4b6e-a21a-76bed8f09277",
+          "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-05T04:32:23+00:00",
+          "evidence": [
+            "Full regression, static checks, CLI smoke, API smoke, and Project_J fixture replay completed"
+          ],
+          "home_state": "VERIFY",
+          "last_seen_at": "2026-09-05T04:32:23+00:00",
+          "output_artifact_refs": [],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-verifier",
+          "runtime_kind": "codex",
+          "started_at": "2026-09-05T04:27:54+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 65,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-05T04:32:23+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "BEHAVIOR_REGRESSION"
+      ],
+      "home_state": "VERIFY",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "Fresh SQLite CLI and localhost HTTP smoke tests prove start, capture, duplicate replay, finish extraction/consolidation, query retrieval, and health integrity behavior for the sanitized Project_J evidence package.",
+        "evidence": [
+          "CLI smoke: start accepted; capture 7 accepted then 7 duplicates; finish extracted 2 candidates, created 2 cards, completed 9 outbox jobs",
+          "HTTP smoke: /v1/agent start/capture/finish/query all returned 200; extraction=extracted; cards=1",
+          "Fresh SQLite health: status=ok, schema=0008, unresolved_parent_links=0, dead outbox=0",
+          "fixtures/agent-bridge/project-j-capture.json",
+          "fixtures/agent-bridge/project-j-finish.json"
+        ],
+        "executor": "codex-root-verifier",
+        "gate": {
+          "claim_proven": "Fresh SQLite CLI and localhost HTTP smoke tests prove start, capture, duplicate replay, finish extraction/consolidation, query retrieval, and health integrity behavior for the sanitized Project_J evidence package.",
+          "evidence": [
+            "CLI smoke: start accepted; capture 7 accepted then 7 duplicates; finish extracted 2 candidates, created 2 cards, completed 9 outbox jobs",
+            "HTTP smoke: /v1/agent start/capture/finish/query all returned 200; extraction=extracted; cards=1",
+            "Fresh SQLite health: status=ok, schema=0008, unresolved_parent_links=0, dead outbox=0",
+            "fixtures/agent-bridge/project-j-capture.json",
+            "fixtures/agent-bridge/project-j-finish.json"
+          ],
+          "executor": "codex-root-verifier",
+          "gate_id": "BEHAVIOR_REGRESSION",
+          "recorded_at": "2026-09-05T04:32:34+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 66,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T04:32:34+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "73063a89-f60b-4b6e-a21a-76bed8f09277",
+      "artifact_id": "b9fe95f1-3f51-4228-ba0a-05e71ba44acd",
+      "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "b9fe95f1-3f51-4228-ba0a-05e71ba44acd",
+          "artifact_revision": 1,
+          "artifact_type": "VerificationLedger",
+          "data": {
+            "gate_results": [
+              {
+                "claim_proven": "The Phase 5A/5B manual-first bridge scope, non-goals, and safety boundaries are frozen in the delivery contract.",
+                "evidence": [
+                  ".omx/state/codememory-phase5a-task-contract.json",
+                  "src/codememory/docs/phase5-agent-integration-plan.md"
+                ],
+                "executor": "codex-root-delivery-lead",
+                "gate_id": "GOAL_AND_SCOPE",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "Existing canonical event, HTTP/CLI, extraction, consolidation, and Codex-history boundaries are understood and the manual bridge contract is frozen.",
+                "evidence": [
+                  "55b5fed8-a33d-48f2-8816-44b64460b7d9",
+                  ".omx/state/codememory-phase5a-discovery-packet.json"
+                ],
+                "executor": "79c21156-d8be-4960-9c45-8434845f0ff5",
+                "gate_id": "DISCOVERY_COMPLETE",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "The AgentBridgeService symbols, lifecycle ownership, idempotency strategy, public API/CLI shape, and verification map are frozen.",
+                "evidence": [
+                  "475a7447-d282-46e8-bac2-93c9e6f15825",
+                  ".omx/state/codememory-phase5a-change-spec.json"
+                ],
+                "executor": "40249006-16ff-468a-b82d-c3577a6959df",
+                "gate_id": "DESIGN_CONTRACT",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "The user explicitly authorized implementation after the manual-first design was reviewed.",
+                "evidence": [
+                  "User request: 同意，按结论计划执行开发",
+                  "475a7447-d282-46e8-bac2-93c9e6f15825"
+                ],
+                "executor": "codex-root-delivery-lead",
+                "gate_id": "WRITE_AUTHORIZATION",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "All PatchManifest paths are within the effective workflow allow layers; fixture files remain within the approved task and assignment scope.",
+                "evidence": [
+                  "adaptive_vibe record-artifact scope validation returned ok=true",
+                  "PatchManifest b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+                  "git diff --check"
+                ],
+                "executor": "codex-root-implementer",
+                "gate_id": "SCOPE_CONFORMANCE",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "The manual bridge passes focused and full regression checks plus static syntax validation.",
+                "evidence": [
+                  "py -m pytest -q: 77 passed, 1 warning",
+                  "ruff check src tests: All checks passed",
+                  "py -m compileall -q src tests: passed",
+                  "node --check web/app.js: passed"
+                ],
+                "executor": "codex-root-implementer",
+                "gate_id": "STATIC_CORRECTNESS",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "Independent review found no blocking contract violations; the only follow-up is stricter policy enforcement for future automatic adapters.",
+                "evidence": [
+                  "ReviewReport 50d9a628-1044-4023-9f37-11096b63800a",
+                  "No blocking contract violations",
+                  "Service boundary and idempotency review completed"
+                ],
+                "executor": "codex-root-reviewer",
+                "gate_id": "INDEPENDENT_REVIEW",
+                "status": "PASS"
+              },
+              {
+                "claim_proven": "Fresh SQLite CLI and localhost HTTP smoke tests prove start, capture, duplicate replay, finish extraction/consolidation, query retrieval, and health integrity behavior for the sanitized Project_J evidence package.",
+                "evidence": [
+                  "CLI smoke: start accepted; capture 7 accepted then 7 duplicates; finish extracted 2 candidates, created 2 cards, completed 9 outbox jobs",
+                  "HTTP smoke: /v1/agent start/capture/finish/query all returned 200; extraction=extracted; cards=1",
+                  "Fresh SQLite health: status=ok, schema=0008, unresolved_parent_links=0, dead outbox=0",
+                  "fixtures/agent-bridge/project-j-capture.json",
+                  "fixtures/agent-bridge/project-j-finish.json"
+                ],
+                "executor": "codex-root-verifier",
+                "gate_id": "BEHAVIOR_REGRESSION",
+                "status": "PASS"
+              }
+            ],
+            "remaining_gaps": [],
+            "required_gates": [
+              "GOAL_AND_SCOPE",
+              "DISCOVERY_COMPLETE",
+              "DESIGN_CONTRACT",
+              "WRITE_AUTHORIZATION",
+              "SCOPE_CONFORMANCE",
+              "STATIC_CORRECTNESS",
+              "INDEPENDENT_REVIEW",
+              "BEHAVIOR_REGRESSION"
+            ]
+          },
+          "owner": "verifier",
+          "producer_agent_run_id": "73063a89-f60b-4b6e-a21a-76bed8f09277",
+          "producer_assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+          "producer_home_state": "VERIFY",
+          "recorded_at": "2026-09-05T04:34:36+00:00",
+          "schema_version": "1.0",
+          "source_gate_count": 15
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 67,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:34:36+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "agent_run_id": "73063a89-f60b-4b6e-a21a-76bed8f09277",
+      "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "agent_run.finished",
+      "observed": {
+        "agent_run": {
+          "agent_run_id": "73063a89-f60b-4b6e-a21a-76bed8f09277",
+          "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+          "attempt": 1,
+          "context_id": null,
+          "ended_at": "2026-09-05T04:34:51+00:00",
+          "evidence": [
+            "VerificationLedger recorded",
+            "Full regression, static checks, CLI smoke, API smoke, and Project_J fixture replay completed"
+          ],
+          "home_state": "VERIFY",
+          "last_seen_at": "2026-09-05T04:34:51+00:00",
+          "output_artifact_refs": [
+            "b9fe95f1-3f51-4228-ba0a-05e71ba44acd"
+          ],
+          "parent_agent_run_id": null,
+          "runtime_agent_id": "codex-root-verifier",
+          "runtime_kind": "codex",
+          "started_at": "2026-09-05T04:27:54+00:00",
+          "status": "SUCCEEDED"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 68,
+      "source": "workflow-ledger",
+      "status": "SUCCEEDED",
+      "timestamp_utc": "2026-09-05T04:34:51+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.milestone.updated",
+      "milestone_id": "bridge-verification",
+      "observed": {
+        "milestone": {
+          "evidence": [
+            "b9fe95f1-3f51-4228-ba0a-05e71ba44acd",
+            "77 passed",
+            "CLI/API smoke passed"
+          ],
+          "label": "Regression, static, smoke, and Project_J fixture checks complete",
+          "milestone_id": "bridge-verification",
+          "required": true,
+          "status": "COMPLETED",
+          "updated_at": "2026-09-05T04:34:51+00:00"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 69,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-05T04:34:51+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "VERIFY",
+      "kind": "assignment.status.changed",
+      "observed": {
+        "assignment": {
+          "assignment_id": "9df9921f-2742-4b4e-bd78-511d3268f10d",
+          "created_at": "2026-09-05T04:27:46+00:00",
+          "dependencies": [],
+          "ended_at": "2026-09-05T04:34:51+00:00",
+          "expected_output_artifact_refs": [
+            "artifact_type:VerificationLedger"
+          ],
+          "forbidden_scope": [
+            ".git/**",
+            "*.sqlite3",
+            "Project_J source contents",
+            "Codex Desktop private databases"
+          ],
+          "home_state": "VERIFY",
+          "input_artifact_refs": [
+            "b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+            "50d9a628-1044-4023-9f37-11096b63800a"
+          ],
+          "milestones": [
+            {
+              "evidence": [
+                "b9fe95f1-3f51-4228-ba0a-05e71ba44acd",
+                "77 passed",
+                "CLI/API smoke passed"
+              ],
+              "label": "Regression, static, smoke, and Project_J fixture checks complete",
+              "milestone_id": "bridge-verification",
+              "required": true,
+              "status": "COMPLETED",
+              "updated_at": "2026-09-05T04:34:51+00:00"
+            }
+          ],
+          "output_artifact_refs": [
+            "b9fe95f1-3f51-4228-ba0a-05e71ba44acd"
+          ],
+          "parent_assignment_id": null,
+          "read_scope": [
+            "src/**",
+            "tests/**",
+            "README.md",
+            "fixtures/agent-bridge/**",
+            ".omx/state/codememory-phase5a-change-spec.json",
+            ".omx/state/codememory-phase5a-patch-manifest.json",
+            ".omx/state/codememory-phase5a-review-report.json"
+          ],
+          "required": true,
+          "role": "verifier",
+          "status": "COMPLETED",
+          "task_slice": "Run the Phase 5A verification matrix on the manual bridge, including regression, static checks, fresh SQLite CLI/API smoke, and sanitized Project_J evidence replay.",
+          "updated_at": "2026-09-05T04:34:51+00:00",
+          "write_scope": [
+            ".omx/state/**"
+          ]
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 70,
+      "source": "workflow-ledger",
+      "status": "COMPLETED",
+      "timestamp_utc": "2026-09-05T04:34:51+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "VERIFY",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "resume": null,
+        "transition": {
+          "at": "2026-09-05T04:35:05+00:00",
+          "from": "VERIFY",
+          "reason": "",
+          "to": "HANDOFF"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 71,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:35:05+00:00",
+      "to_state": "HANDOFF"
+    },
+    {
+      "actor": "workflow-core",
+      "artifact_id": "c90e7f16-fbde-4cf6-8e7a-e4cd9e03cd35",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "home_state": "HANDOFF",
+      "kind": "artifact.produced",
+      "observed": {
+        "artifact": {
+          "artifact_id": "c90e7f16-fbde-4cf6-8e7a-e4cd9e03cd35",
+          "artifact_revision": 1,
+          "artifact_type": "FinalHandoff",
+          "data": {
+            "evidence": [
+              "PatchManifest b1c83125-4b02-44c2-b446-60e2a7ff3b82",
+              "ReviewReport 50d9a628-1044-4023-9f37-11096b63800a",
+              "VerificationLedger b9fe95f1-3f51-4228-ba0a-05e71ba44acd",
+              "py -m pytest -q: 77 passed, 1 warning",
+              "CLI smoke: start/capture/duplicate/finish/query and health passed on a fresh SQLite database",
+              "HTTP smoke: /v1/agent/start, /query, /capture, /finish all returned 200 with extraction and card retrieval",
+              "ruff check src tests, compileall, node --check, and git diff --check passed"
+            ],
+            "outcome": "Phase 5A delivered: a provider-neutral manual-first AgentBridgeService, localhost HTTP routes, CLI lifecycle commands, Codex Skill instructions, Project_J evidence fixtures, extraction/consolidation handoff, and 3D-memory-compatible query results are implemented and verified.",
+            "recovery_entry": "Start the local service or use codememory agent start/query/capture/finish. Re-submit the same session/capture identities for idempotent duplicate results; changed content under an existing identity returns conflict. Use the existing extraction/consolidation and health commands to inspect or recover projections.",
+            "remaining_actions": [
+              "Add a provider-specific Codex/Pi/Cursor adapter or MCP wrapper that emits the same four lifecycle operations.",
+              "Add stricter automatic-adapter policy for completeness claims, path allowlists, and transcript redaction.",
+              "Evaluate automatic loop/hook capture only after the manual contract is used in real coding sessions."
+            ],
+            "remaining_risks": [
+              "The bridge intentionally does not read Codex Desktop private databases or hidden reasoning.",
+              "The checked-in Project_J package is sanitized evidence; live source binding remains the Phase 4B verification adapter concern.",
+              "Manual capture defaults to summary completeness and depends on the Skill/adapter to submit only visible coding evidence."
+            ]
+          },
+          "owner": "codex-root-delivery-lead",
+          "producer_home_state": "HANDOFF",
+          "recorded_at": "2026-09-05T04:35:45+00:00",
+          "schema_version": "1.0"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 72,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:35:45+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "gate_refs": [
+        "FINALIZE"
+      ],
+      "home_state": "HANDOFF",
+      "kind": "gate.recorded",
+      "observed": {
+        "claim": "all required artifacts and gates support the delivery claim",
+        "evidence": [
+          {
+            "ledger_revision": 51
+          },
+          {
+            "required_gates": [
+              "GOAL_AND_SCOPE",
+              "DISCOVERY_COMPLETE",
+              "DESIGN_CONTRACT",
+              "WRITE_AUTHORIZATION",
+              "SCOPE_CONFORMANCE",
+              "STATIC_CORRECTNESS",
+              "INDEPENDENT_REVIEW",
+              "BEHAVIOR_REGRESSION"
+            ]
+          },
+          {
+            "required_artifacts": [
+              "TaskContract",
+              "DiscoveryPacket",
+              "TriagePacket",
+              "ChangeSpec",
+              "PatchManifest",
+              "ReviewReport",
+              "VerificationLedger",
+              "FinalHandoff"
+            ]
+          }
+        ],
+        "executor": "codex-root-delivery-lead",
+        "gate": {
+          "claim_proven": "all required artifacts and gates support the delivery claim",
+          "evidence": [
+            {
+              "ledger_revision": 51
+            },
+            {
+              "required_gates": [
+                "GOAL_AND_SCOPE",
+                "DISCOVERY_COMPLETE",
+                "DESIGN_CONTRACT",
+                "WRITE_AUTHORIZATION",
+                "SCOPE_CONFORMANCE",
+                "STATIC_CORRECTNESS",
+                "INDEPENDENT_REVIEW",
+                "BEHAVIOR_REGRESSION"
+              ]
+            },
+            {
+              "required_artifacts": [
+                "TaskContract",
+                "DiscoveryPacket",
+                "TriagePacket",
+                "ChangeSpec",
+                "PatchManifest",
+                "ReviewReport",
+                "VerificationLedger",
+                "FinalHandoff"
+              ]
+            }
+          ],
+          "executor": "codex-root-delivery-lead",
+          "gate_id": "FINALIZE",
+          "recorded_at": "2026-09-05T04:35:54+00:00",
+          "status": "PASS"
+        },
+        "gate_status": "PASS"
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 73,
+      "source": "workflow-ledger",
+      "status": "PASS",
+      "timestamp_utc": "2026-09-05T04:35:54+00:00"
+    },
+    {
+      "actor": "workflow-core",
+      "expected": {
+        "authority": "workflow-ledger",
+        "observer_authoritative": false
+      },
+      "from_state": "HANDOFF",
+      "kind": "workflow.state.transition",
+      "observed": {
+        "gate": {
+          "claim_proven": "all required artifacts and gates support the delivery claim",
+          "evidence": [
+            {
+              "ledger_revision": 51
+            },
+            {
+              "required_gates": [
+                "GOAL_AND_SCOPE",
+                "DISCOVERY_COMPLETE",
+                "DESIGN_CONTRACT",
+                "WRITE_AUTHORIZATION",
+                "SCOPE_CONFORMANCE",
+                "STATIC_CORRECTNESS",
+                "INDEPENDENT_REVIEW",
+                "BEHAVIOR_REGRESSION"
+              ]
+            },
+            {
+              "required_artifacts": [
+                "TaskContract",
+                "DiscoveryPacket",
+                "TriagePacket",
+                "ChangeSpec",
+                "PatchManifest",
+                "ReviewReport",
+                "VerificationLedger",
+                "FinalHandoff"
+              ]
+            }
+          ],
+          "executor": "codex-root-delivery-lead",
+          "gate_id": "FINALIZE",
+          "recorded_at": "2026-09-05T04:35:54+00:00",
+          "status": "PASS"
+        },
+        "transition": {
+          "at": "2026-09-05T04:35:54+00:00",
+          "from": "HANDOFF",
+          "reason": "FINALIZE passed",
+          "to": "DONE"
+        }
+      },
+      "run_id": "codememory-phase5a-agent-bridge",
+      "schema_version": 2,
+      "seq": 74,
+      "source": "workflow-ledger",
+      "timestamp_utc": "2026-09-05T04:35:54+00:00",
+      "to_state": "DONE"
+    }
+  ],
+  "orchestration_legacy_gate_count": 0,
+  "resume": null,
+  "revision": 52,
+  "state": "DONE",
+  "task_id": "codememory-phase5a-agent-bridge",
+  "tier": "T2",
+  "transitions": [
+    {
+      "at": "2026-09-05T03:58:04+00:00",
+      "from": "INTAKE",
+      "reason": "Scope and write authorization are recorded; begin repository discovery for the bridge.",
+      "to": "DISCOVERY"
+    },
+    {
+      "at": "2026-09-05T04:00:26+00:00",
+      "from": "DISCOVERY",
+      "reason": "Discovery packet, investigator run, and discovery gate are complete.",
+      "to": "TRIAGE"
+    },
+    {
+      "at": "2026-09-05T04:02:14+00:00",
+      "from": "TRIAGE",
+      "reason": "Triage packet and architect run are complete.",
+      "to": "DESIGN"
+    },
+    {
+      "at": "2026-09-05T04:03:48+00:00",
+      "from": "DESIGN",
+      "reason": "ChangeSpec and design gates are complete; implement the bridge and skill.",
+      "to": "IMPLEMENT"
+    },
+    {
+      "at": "2026-09-05T04:24:06+00:00",
+      "from": "IMPLEMENT",
+      "reason": "",
+      "to": "REVIEW"
+    },
+    {
+      "at": "2026-09-05T04:27:22+00:00",
+      "from": "REVIEW",
+      "reason": "",
+      "to": "VERIFY"
+    },
+    {
+      "at": "2026-09-05T04:35:05+00:00",
+      "from": "VERIFY",
+      "reason": "",
+      "to": "HANDOFF"
+    },
+    {
+      "at": "2026-09-05T04:35:54+00:00",
+      "from": "HANDOFF",
+      "reason": "FINALIZE passed",
+      "to": "DONE"
+    }
+  ],
+  "updated_at": "2026-09-05T04:35:54+00:00"
+}

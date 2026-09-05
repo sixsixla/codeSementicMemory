@@ -1,0 +1,13 @@
+{
+  "role": "reviewer",
+  "home_state": "REVIEW",
+  "task_slice": "Independently review the Phase 5A manual bridge for contract adherence, idempotency, evidence redaction, service-boundary usage, and test/documentation gaps.",
+  "required": true,
+  "read_scope": ["src/**", "tests/**", "README.md", "fixtures/agent-bridge/**", ".omx/state/codememory-phase5a-change-spec.json", ".omx/state/codememory-phase5a-patch-manifest.json"],
+  "write_scope": [".omx/state/**"],
+  "forbidden_scope": [".git/**", "*.sqlite3", "Project_J source contents", "Codex Desktop private databases"],
+  "dependencies": [],
+  "input_artifact_refs": ["b1c83125-4b02-44c2-b446-60e2a7ff3b82"],
+  "expected_output_artifact_refs": ["artifact_type:ReviewReport"],
+  "milestones": [{"milestone_id":"bridge-review","label":"Independent review findings and evidence recorded","required":true,"status":"PENDING","evidence":[]}]
+}

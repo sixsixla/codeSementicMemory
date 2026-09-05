@@ -1,0 +1,38 @@
+{
+  "primary_domain": "coding-agent manual lifecycle bridge",
+  "implementation_slices": [
+    "provider-neutral AgentBridgeService and request models",
+    "idempotent start/capture/finish event construction",
+    "memory query projection over existing cards/events",
+    "localhost API routes and nested CLI commands",
+    "Codex project Skill instruction and sample evidence package",
+    "focused integration tests and Project_J smoke fixture"
+  ],
+  "behavior_matrix": [
+    {"case":"start repeated with same session","expected":"duplicate event, same identity and no new canonical row"},
+    {"case":"capture repeated with same capture id","expected":"duplicate batch results; changed payload conflicts"},
+    {"case":"manual evidence package","expected":"summary/partial coding events retain paths, symbols, validation, and outcome"},
+    {"case":"finish with extraction/consolidation","expected":"session end, candidate extraction, quality evaluation, and cards are queryable"},
+    {"case":"Codex task without private app API","expected":"the same flow works through local CLI/HTTP calls"}
+  ],
+  "invariants": [
+    "The bridge never writes SQLite directly and always uses IngestService/public service boundaries.",
+    "Canonical events remain append-only and agent lifecycle calls are idempotent.",
+    "Manual summaries never claim full transcript capture.",
+    "Project and task identity are preserved across start/capture/finish.",
+    "No hidden reasoning, host instructions, credentials, or private Codex database content is captured."
+  ],
+  "secondary_contracts": ["codememory.event.v1", "SQLite/outbox contract", "Phase 2A extraction contract", "Phase 4B Project_J verification contract"],
+  "required_roles": ["architect", "implementer", "reviewer", "verifier"],
+  "required_gates": ["DESIGN_CONTRACT", "WRITE_AUTHORIZATION", "SCOPE_CONFORMANCE", "STATIC_CORRECTNESS", "INDEPENDENT_REVIEW", "BEHAVIOR_REGRESSION"],
+  "write_scope": ["src/**", "tests/**", "README.md", ".omx/plans/**", ".omx/state/**"],
+  "forbidden_scope": [".git/**", "*.sqlite3", "Project_J source contents", "Codex Desktop private databases"],
+  "rollback_or_recovery": "Keep canonical events and existing cards intact; remove or rebuild only new bridge projections/tests if the bridge contract changes.",
+  "validation_plan": [
+    {"command":"py -m pytest -q tests/test_agent_bridge.py tests/test_agent_bridge_api.py","evidence":"focused bridge tests"},
+    {"command":"py -m pytest -q","evidence":"full regression suite"},
+    {"command":"ruff check src tests","evidence":"lint"},
+    {"command":"py -m compileall -q src tests","evidence":"compile"},
+    {"command":"localhost HTTP smoke and Project_J bounded verification","evidence":"real local service output"}
+  ]
+}

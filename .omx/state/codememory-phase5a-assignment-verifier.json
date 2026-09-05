@@ -1,0 +1,13 @@
+{
+  "role": "verifier",
+  "home_state": "VERIFY",
+  "task_slice": "Run the Phase 5A verification matrix on the manual bridge, including regression, static checks, fresh SQLite CLI/API smoke, and sanitized Project_J evidence replay.",
+  "required": true,
+  "read_scope": ["src/**", "tests/**", "README.md", "fixtures/agent-bridge/**", ".omx/state/codememory-phase5a-change-spec.json", ".omx/state/codememory-phase5a-patch-manifest.json", ".omx/state/codememory-phase5a-review-report.json"],
+  "write_scope": [".omx/state/**"],
+  "forbidden_scope": [".git/**", "*.sqlite3", "Project_J source contents", "Codex Desktop private databases"],
+  "dependencies": [],
+  "input_artifact_refs": ["b1c83125-4b02-44c2-b446-60e2a7ff3b82", "50d9a628-1044-4023-9f37-11096b63800a"],
+  "expected_output_artifact_refs": ["artifact_type:VerificationLedger"],
+  "milestones": [{"milestone_id":"bridge-verification","label":"Regression, static, smoke, and Project_J fixture checks complete","required":true,"status":"PENDING","evidence":[]}]
+}

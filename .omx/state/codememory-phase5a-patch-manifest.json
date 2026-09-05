@@ -1,0 +1,39 @@
+{
+  "behavior_changed": [
+    "Adds a provider-neutral manual AgentBridgeService with start/query/capture/finish lifecycle operations.",
+    "Adds idempotent bounded evidence event construction with summary completeness and changed-content conflicts.",
+    "Adds localhost agent routes and nested CLI commands that reuse existing ingest, extraction, consolidation, and query services.",
+    "Adds Codex manual Skill instructions and sanitized Project_J evidence fixtures."
+  ],
+  "changed_artifacts": [
+    "src/codememory/agent_bridge.py",
+    "src/codememory/api/app.py",
+    "src/codememory/cli.py",
+    "src/codememory/docs/codex-manual-agent-skill.md",
+    "tests/test_agent_bridge.py",
+    "tests/test_agent_bridge_api.py",
+    "README.md",
+    ".omx/state/codememory-phase5a-*.json"
+  ],
+  "contracts_satisfied": [
+    "Phase 5A manual-first AgentBridgeService contract",
+    "codememory.event.v1 ingest and idempotency contract",
+    "Phase 2A extraction/consolidation service boundary",
+    "Phase 4B Project_J bounded evidence boundary"
+  ],
+  "known_gaps": [
+    "No native Codex Desktop hook or private app database integration.",
+    "No MCP server packaging or automatic transcript capture.",
+    "Manual evidence is summary completeness unless a future adapter supplies fuller events.",
+    "Production authentication and remote hosting remain out of scope."
+  ],
+  "local_checks": [
+    {"command":"py -m pytest -q tests/test_agent_bridge.py tests/test_agent_bridge_api.py","result":"3 passed, 1 deprecation warning"},
+    {"command":"py -m pytest -q","result":"77 passed, 1 deprecation warning"},
+    {"command":"ruff check src tests","result":"All checks passed"},
+    {"command":"py -m compileall -q src tests","result":"passed"},
+    {"command":"node --check web/app.js","result":"passed"},
+    {"command":"CLI fresh-database smoke","result":"start accepted; capture 7 accepted then 7 duplicates; finish extracted 2 candidates and created 2 cards; health ok"}
+  ],
+  "scope_exceptions": []
+}

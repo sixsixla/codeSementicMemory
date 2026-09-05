@@ -11,6 +11,13 @@ from typing import Any
 
 from pydantic import ValidationError
 
+from .agent_bridge import (
+    AgentBridgeService,
+    CaptureRequest,
+    FinishRequest,
+    MemoryQueryRequest,
+    SessionStartRequest,
+)
 from .api.app import create_app
 from .adapters import CliProducer
 from .config import default_db_path, event_schema_path
@@ -38,6 +45,32 @@ def _service(path: Path) -> tuple[Database, MemoryRepository, IngestService]:
     database = Database(path)
     repository = MemoryRepository(database)
     return database, repository, IngestService(repository)
+
+
+def _agent_bridge(path: Path) -> AgentBridgeService:
+    database = Database(path)
+    repository = MemoryRepository(database)
+    quality_service = QualityService(repository)
+    ingest = IngestService(repository, quality_service=quality_service)
+    card_store = CardStore(database)
+    extraction = ExtractionService(
+        repository,
+        store=ExtractionStore(database),
+        quality_service=quality_service,
+    )
+    consolidation = ConsolidationService(
+        repository,
+        store=card_store,
+        quality_service=quality_service,
+    )
+    return AgentBridgeService(
+        repository,
+        ingest_service=ingest,
+        card_store=card_store,
+        extraction_service=extraction,
+        consolidation_service=consolidation,
+        quality_service=quality_service,
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -333,6 +366,42 @@ def build_parser() -> argparse.ArgumentParser:
     card_promote.add_argument("--reason", required=True)
     card_promote.add_argument("--actor", default="cli")
     card_promote.add_argument("--db", help="database path")
+
+    agent = sub.add_parser(
+        "agent", help="manual-first coding-agent lifecycle bridge"
+    )
+    agent_sub = agent.add_subparsers(dest="agent_command", required=True)
+
+    agent_start = agent_sub.add_parser("start", help="start a manual coding session")
+    agent_start.add_argument("--project-id", required=True)
+    agent_start.add_argument("--task-id")
+    agent_start.add_argument("--session-id")
+    agent_start.add_argument("--agent-id", default="codex")
+    agent_start.add_argument("--adapter", default="manual-skill")
+    agent_start.add_argument("--adapter-version", default="0.1")
+    agent_start.add_argument("--title")
+    agent_start.add_argument("--intent")
+    agent_start.add_argument("--context-json", default="{}")
+    agent_start.add_argument("--occurred-at")
+    agent_start.add_argument("--db", help="database path")
+
+    agent_query = agent_sub.add_parser("query", help="query cards and event evidence")
+    agent_query.add_argument("query")
+    agent_query.add_argument("--project-id")
+    agent_query.add_argument("--task-id")
+    agent_query.add_argument("--limit", type=int, default=20)
+    agent_query.add_argument("--include-quarantine", action="store_true")
+    agent_query.add_argument("--db", help="database path")
+
+    agent_capture = agent_sub.add_parser(
+        "capture", help="capture one bounded manual coding evidence package"
+    )
+    agent_capture.add_argument("path", type=Path, help="JSON CaptureRequest payload")
+    agent_capture.add_argument("--db", help="database path")
+
+    agent_finish = agent_sub.add_parser("finish", help="finish a manual coding session")
+    agent_finish.add_argument("path", type=Path, help="JSON FinishRequest payload")
+    agent_finish.add_argument("--db", help="database path")
 
     serve = sub.add_parser("serve", help="run the localhost HTTP API")
     serve.add_argument("--db", help="database path")
@@ -796,6 +865,54 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
             return 0
+        if args.command == "agent":
+            bridge = _agent_bridge(path)
+            if args.agent_command == "start":
+                context = json.loads(args.context_json)
+                if not isinstance(context, dict):
+                    raise ValueError("--context-json must be a JSON object")
+                _print(
+                    bridge.start(
+                        SessionStartRequest(
+                            project_id=args.project_id,
+                            task_id=args.task_id,
+                            session_id=args.session_id,
+                            agent_id=args.agent_id,
+                            adapter=args.adapter,
+                            adapter_version=args.adapter_version,
+                            title=args.title,
+                            intent=args.intent,
+                            context=context,
+                            occurred_at=args.occurred_at,
+                        )
+                    )
+                )
+                return 0
+            if args.agent_command == "query":
+                _print(
+                    bridge.query(
+                        MemoryQueryRequest(
+                            query=args.query,
+                            project_id=args.project_id,
+                            task_id=args.task_id,
+                            limit=args.limit,
+                            include_quarantine=args.include_quarantine,
+                        )
+                    )
+                )
+                return 0
+            if args.agent_command == "capture":
+                payload = _load_json_object(args.path)
+                if not isinstance(payload, dict):
+                    raise ValueError("capture JSON must be an object")
+                _print(bridge.capture(CaptureRequest.model_validate(payload)))
+                return 0
+            if args.agent_command == "finish":
+                payload = _load_json_object(args.path)
+                if not isinstance(payload, dict):
+                    raise ValueError("finish JSON must be an object")
+                _print(bridge.finish(FinishRequest.model_validate(payload)))
+                return 0
         if args.command == "serve":
             import uvicorn
 

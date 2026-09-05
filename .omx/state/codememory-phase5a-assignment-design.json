@@ -1,0 +1,13 @@
+{
+  "role": "architect",
+  "home_state": "DESIGN",
+  "task_slice": "Freeze symbol-level additions, ownership, lifecycle control flow, rejected mechanisms, and verification map for the manual bridge.",
+  "required": true,
+  "read_scope": ["src/**", "tests/**", "README.md", "src/codememory/docs/phase5-agent-integration-plan.md", ".omx/state/codememory-phase5a-triage-packet.json"],
+  "write_scope": [".omx/state/codememory-phase5a-change-spec.json", ".omx/state/codememory-phase5a-assignment-design.json"],
+  "forbidden_scope": [".git/**", "*.sqlite3", "Project_J source contents", "Codex Desktop private databases"],
+  "dependencies": [],
+  "input_artifact_refs": ["9c45a199-cda5-467b-b54b-c6b7be72988c"],
+  "expected_output_artifact_refs": ["artifact_type:ChangeSpec"],
+  "milestones": [{"milestone_id":"change-spec","label":"Bridge design and verification map recorded","required":true,"status":"COMPLETED","evidence":[".omx/state/codememory-phase5a-change-spec.json"]}]
+}

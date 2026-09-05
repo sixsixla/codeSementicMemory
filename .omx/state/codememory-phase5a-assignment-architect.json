@@ -1,0 +1,13 @@
+{
+  "role": "architect",
+  "home_state": "TRIAGE",
+  "task_slice": "Freeze the manual-first AgentBridgeService contract, idempotency strategy, public API/CLI shape, and compatibility boundary.",
+  "required": true,
+  "read_scope": ["src/**", "tests/**", "README.md", "src/codememory/docs/phase5-agent-integration-plan.md", ".omx/state/codememory-phase5a-discovery-packet.json"],
+  "write_scope": [".omx/state/codememory-phase5a-triage-packet.json", ".omx/state/codememory-phase5a-assignment-architect.json"],
+  "forbidden_scope": [".git/**", "*.sqlite3", "Project_J source contents", "Codex Desktop private databases"],
+  "dependencies": [],
+  "input_artifact_refs": ["55b5fed8-a33d-48f2-8816-44b64460b7d9"],
+  "expected_output_artifact_refs": ["artifact_type:TriagePacket"],
+  "milestones": [{"milestone_id":"bridge-contract","label":"Agent bridge contract and behavior matrix recorded","required":true,"status":"COMPLETED","evidence":[".omx/state/codememory-phase5a-triage-packet.json"]}]
+}
