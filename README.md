@@ -33,7 +33,7 @@ Implemented:
 - A deterministic, versioned quality gate for events and extracted candidates, with accepted/review/quarantine decisions and auditable reasons.
 - Logical project scopes and explicit aliases, including a reviewed Project_J mapping across raw Codex project ids.
 - Idempotent dry-run/write quality replay with bounded transactions, input hashes, and stale-run recovery after interrupted processes.
-- Conservative default retrieval: quarantine-backed cards and candidates are hidden from cards/search/3D graph, with an explicit debug opt-in.
+- Route-first retrieval: non-quarantined proposed/review cards remain available as low-confidence coding entry hints, while verified/stable cards rank first; quarantine remains hidden by default.
 - Quality reports and API/CLI surfaces for project scope, candidate review, replay, and operational diagnosis.
 - Versioned Phase 4B snapshot manifests and append-only binding verification runs.
 - Exact normalized manifests are retained in SQLite (`code_snapshots.manifest_json`) for
@@ -164,7 +164,7 @@ Manual-first Agent smoke flow:
 .venv\Scripts\codememory agent start --db $db `
   --project-id project_j --task-id task-demo --session-id session-demo `
   --intent "NPC 交互结束后打开通用分享界面"
-.venv\Scripts\codememory agent query "ShareManager" --project-id project_j --db $db
+.venv\Scripts\codememory agent query "ShareManager" --project-id project_j --db $db --retrieval-mode route
 .venv\Scripts\codememory agent capture fixtures/agent-bridge/project-j-capture.json --db $db
 .venv\Scripts\codememory agent finish fixtures/agent-bridge/project-j-finish.json --db $db
 ```
@@ -176,6 +176,8 @@ instructions in [`src/codememory/docs/codex-manual-agent-skill.md`](src/codememo
 For Codex-driven historical extraction and memory maintenance, use the installed
 `$codememory-memory` Skill instead of manually typing the lifecycle commands. Its
 versioned source is [`skills/codememory-memory/SKILL.md`](skills/codememory-memory/SKILL.md);
+route-first retrieval semantics are documented in
+[`src/codememory/docs/phase6-route-first-retrieval.md`](src/codememory/docs/phase6-route-first-retrieval.md).
 it resolves visible history, runs bounded import/extract/consolidate operations, and
 reports duplicates, conflicts, quality decisions, card changes, and query evidence.
 
@@ -233,8 +235,8 @@ that every omitted file is missing.
 | `GET` | `/v1/quality/projects` | List logical projects and effective raw-project aliases |
 | `POST` | `/v1/quality/projects/aliases` | Register a reviewed raw-project alias |
 | `GET` | `/v1/quality/candidates/{candidate_id}` | Inspect candidate quality reasons, dimensions, and evidence |
-| `GET` | `/v1/cards` | List versioned cards with status/task/kind filters (`include_quarantine` is an explicit debug opt-in) |
-| `GET` | `/v1/cards/search?q=...` | Search current card statements, aliases, and bindings (`include_quarantine` is an explicit debug opt-in) |
+| `GET` | `/v1/cards` | List versioned cards with status/task/kind and `retrieval_mode=route|trusted|audit` filters |
+| `GET` | `/v1/cards/search?q=...` | Search card statements, aliases, and bindings; `route` is recall-first, `trusted` is precision-first |
 | `GET` | `/v1/cards/{card_id}` | Inspect versions, evidence, links, decisions, and lifecycle |
 | `POST` | `/v1/cards/{card_id}/transition` | Apply an audited lifecycle transition |
 | `GET` | `/v1/graph` | Return bounded nodes/edges for the 3D UI (`include_quarantine` is an explicit debug opt-in) |

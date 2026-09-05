@@ -110,6 +110,22 @@ def test_manual_lifecycle_is_idempotent_and_extractable(tmp_path):
         MemoryQueryRequest(query="CommonSharePanel", project_id="project_j", task_id="task-agent-bridge")
     )
     assert query["cards"] or query["events"]
+    assert query["retrieval_mode"] == "route"
+    assert all("route" in card for card in query["cards"])
+    assert all(card["route"]["trust_level"] in {"route_hint", "verified_route", "stable_knowledge", "stale_route"} for card in query["cards"])
+
+    trusted = bridge.query(
+        MemoryQueryRequest(
+            query="CommonSharePanel",
+            project_id="project_j",
+            task_id="task-agent-bridge",
+            retrieval_mode="trusted",
+        )
+    )
+    # The first extraction is deliberately only a route hint.  Trusted mode
+    # must not silently turn it into an authoritative result.
+    assert trusted["retrieval_mode"] == "trusted"
+    assert not trusted["cards"]
 
 
 def test_manual_capture_marks_summary_completeness(tmp_path):

@@ -65,3 +65,4 @@ def test_agent_bridge_http_lifecycle(tmp_path):
     )
     assert query.status_code == 200
     assert query.json()["cards"] or query.json()["events"]
+    assert query.json()["retrieval_mode"] == "route"

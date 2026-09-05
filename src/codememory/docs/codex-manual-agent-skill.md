@@ -33,10 +33,14 @@ codememory agent start `
 然后用需求中的业务词或代码词查询已有记忆：
 
 ```powershell
-codememory agent query "NPC ShareManager" --project-id project_j --db $db
+codememory agent query "NPC ShareManager" --project-id project_j --db $db \
+  --retrieval-mode route
 ```
 
-查询结果中的卡片、文件、符号和验证状态只是建议；Agent 仍必须检查当前源码。
+默认 `route` 模式是高召回的代码入口检索：`proposed`/`review` 卡片可以作为低权重
+起点返回，但结果会携带 `trust_level`、`route_score`、绑定状态和证据。它们不是当前
+源码事实，Agent 仍必须检查当前源码。需要高精度结果时使用
+`--retrieval-mode trusted`；审计全部生命周期投影时使用 `audit`。
 
 ## 任务结束
 

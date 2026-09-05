@@ -491,6 +491,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         task_id: str | None = Query(default=None),
         status_filter: str | None = Query(default=None, alias="status"),
         limit: int = Query(default=20, ge=1, le=200),
+        retrieval_mode: Literal["route", "trusted", "audit"] = Query(default="route"),
         include_quarantine: bool = Query(
             default=False,
             description="Include cards backed by quarantined candidates for audit/debugging",
@@ -504,8 +505,10 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
                 task_id=task_id,
                 status=status_filter,
                 limit=limit,
+                retrieval_mode=retrieval_mode,
                 include_quarantine=include_quarantine,
             ),
+            "retrieval_mode": retrieval_mode,
         }
 
     @app.get("/v1/cards")
@@ -515,6 +518,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         status_filter: str | None = Query(default=None, alias="status"),
         kind: str | None = Query(default=None),
         limit: int = Query(default=100, ge=1, le=10_000),
+        retrieval_mode: Literal["route", "trusted", "audit"] = Query(default="route"),
         include_quarantine: bool = Query(
             default=False,
             description="Include cards backed by quarantined candidates for audit/debugging",
@@ -527,6 +531,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
                 status=status_filter,
                 kind=kind,
                 limit=limit,
+                retrieval_mode=retrieval_mode,
                 include_quarantine=include_quarantine,
             )
         }

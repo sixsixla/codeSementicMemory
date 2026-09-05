@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import sqlite3
 import uuid
 from datetime import datetime, timezone
@@ -36,6 +37,26 @@ CARD_STATUSES = {
     "rejected",
 }
 BOUNDING_STATUSES = {"unverified", "verified", "stale", "missing", "renamed", "rejected"}
+RETRIEVAL_MODES = {"route", "trusted", "audit"}
+
+_ROUTE_STATUS_SCORE = {
+    "stable": 1.0,
+    "verified": 0.86,
+    "proposed": 0.56,
+    "uncertain": 0.44,
+    "stale": 0.24,
+    "superseded": 0.0,
+    "rejected": 0.0,
+}
+_ROUTE_TRUST_LEVEL = {
+    "stable": "stable_knowledge",
+    "verified": "verified_route",
+    "stale": "stale_route",
+    "proposed": "route_hint",
+    "uncertain": "route_hint",
+    "superseded": "hidden",
+    "rejected": "hidden",
+}
 
 
 def _now() -> str:
@@ -301,6 +322,153 @@ class CardStore:
             f"WHERE qcv.card_id={card_alias}.card_id AND qcr.decision='quarantine')"
         )
 
+    @classmethod
+    def _retrieval_visibility_clause(
+        cls,
+        *,
+        card_alias: str = "c",
+        retrieval_mode: str = "route",
+        include_quarantine: bool = False,
+    ) -> str:
+        """Build the visibility policy for agent-facing card retrieval.
+
+        ``route`` is deliberately recall-first: any non-terminal, non-
+        quarantined card can provide a useful starting point. ``trusted`` is
+        the precision-first view used when the caller needs a current,
+        quality-accepted route. ``audit`` exposes the lifecycle projection for
+        inspection (subject to the explicit quarantine switch).
+        """
+
+        if retrieval_mode not in RETRIEVAL_MODES:
+            raise ValueError(
+                f"unknown retrieval mode: {retrieval_mode}; "
+                f"expected one of {sorted(RETRIEVAL_MODES)}"
+            )
+        clauses: list[str] = []
+        if retrieval_mode == "route":
+            clauses.append(f"{card_alias}.status NOT IN ('rejected','superseded')")
+        elif retrieval_mode == "trusted":
+            clauses.append(f"{card_alias}.status IN ('verified','stable')")
+            clauses.append(
+                "EXISTS (SELECT 1 FROM memory_card_evidence tqe "
+                "JOIN memory_card_versions tqv ON tqv.card_version_id=tqe.card_version_id "
+                "JOIN candidate_quality_reviews tqcr ON tqcr.candidate_id=tqe.candidate_id "
+                f"WHERE tqv.card_id={card_alias}.card_id AND tqcr.decision='accepted')"
+            )
+            clauses.append(
+                "NOT EXISTS (SELECT 1 FROM memory_card_evidence tqe2 "
+                "JOIN memory_card_versions tqv2 ON tqv2.card_version_id=tqe2.card_version_id "
+                "JOIN candidate_quality_reviews tqcr2 ON tqcr2.candidate_id=tqe2.candidate_id "
+                f"WHERE tqv2.card_id={card_alias}.card_id AND tqcr2.decision IN ('review','quarantine'))"
+            )
+
+        quality_clause = cls._quality_visibility_clause(
+            card_alias=card_alias, include_quarantine=include_quarantine
+        )
+        if quality_clause:
+            clauses.append(quality_clause)
+        return " AND ".join(clauses)
+
+    @staticmethod
+    def _current_bindings(
+        conn: sqlite3.Connection, card_id: str, version_id: str | None
+    ) -> list[dict[str, Any]]:
+        if not version_id:
+            return []
+        return [
+            CardStore._binding_from_row(row, conn)
+            for row in conn.execute(
+                "SELECT * FROM memory_card_bindings WHERE card_version_id=? "
+                "ORDER BY role, normalized_target",
+                (version_id,),
+            ).fetchall()
+        ]
+
+    @staticmethod
+    def _text_match_score(query: str, statement: Any, aliases: Any) -> float:
+        haystack = " ".join(
+            [str(statement or "").casefold(), " ".join(str(item) for item in (aliases or []))]
+        ).strip()
+        needle = str(query or "").strip().casefold()
+        if not haystack or not needle:
+            return 0.0
+        if needle in haystack:
+            return 1.0
+        tokens = [item for item in re.findall(r"[\w\u4e00-\u9fff]+", needle) if item]
+        if not tokens:
+            return 0.0
+        return round(sum(token in haystack for token in tokens) / len(tokens), 4)
+
+    @classmethod
+    def _route_projection(
+        cls,
+        conn: sqlite3.Connection,
+        summary: dict[str, Any],
+        quality: dict[str, Any],
+        query: str,
+        retrieval_mode: str,
+    ) -> tuple[dict[str, Any], float]:
+        bindings = cls._current_bindings(
+            conn, summary["card_id"], summary.get("current_version_id")
+        )
+        statuses = [str(item.get("status") or "unverified") for item in bindings]
+        invalid = {"stale", "missing", "renamed", "rejected"}
+        if not statuses:
+            binding_score = 0.45
+            binding_status = "unverified"
+        elif any(item in invalid for item in statuses):
+            binding_score = 0.2
+            binding_status = "stale"
+        elif all(item == "verified" for item in statuses):
+            binding_score = 1.0
+            binding_status = "verified"
+        else:
+            binding_score = 0.55
+            binding_status = "unverified"
+
+        quality_decision = str(quality.get("decision") or "legacy_unreviewed")
+        quality_score = {
+            "accepted": 1.0,
+            "review": 0.55,
+            "legacy_unreviewed": 0.45,
+            "quarantine": 0.0,
+        }.get(quality_decision, 0.35)
+        status = str(summary.get("status") or "proposed")
+        text_score = cls._text_match_score(
+            query, summary.get("statement"), summary.get("aliases")
+        )
+        confidence = max(0.0, min(float(summary.get("confidence") or 0.0), 1.0))
+        route_score = round(
+            0.40 * _ROUTE_STATUS_SCORE.get(status, 0.35)
+            + 0.22 * quality_score
+            + 0.18 * binding_score
+            + 0.12 * confidence
+            + 0.08 * text_score,
+            4,
+        )
+        summary["entrypoints"] = [
+            {
+                "path": item.get("path"),
+                "symbol": item.get("symbol"),
+                "qualified_symbol": item.get("qualified_symbol"),
+                "role": item.get("role"),
+                "status": item.get("status"),
+                "snapshot_id": item.get("snapshot_id"),
+            }
+            for item in bindings
+        ]
+        summary["route"] = {
+            "mode": retrieval_mode,
+            "trust_level": _ROUTE_TRUST_LEVEL.get(status, "route_hint"),
+            "score": route_score,
+            "binding_status": binding_status,
+            "binding_statuses": statuses,
+            "entrypoint_count": len(bindings),
+            "quality_decision": quality_decision,
+        }
+        summary["route_score"] = route_score
+        return summary, route_score
+
     def list_cards(
         self,
         *,
@@ -309,6 +477,7 @@ class CardStore:
         status: str | None = None,
         kind: str | None = None,
         limit: int = 100,
+        retrieval_mode: str = "route",
         include_quarantine: bool = False,
     ) -> list[dict[str, Any]]:
         clauses: list[str] = []
@@ -332,8 +501,10 @@ class CardStore:
                 raise ValueError(f"unknown card kind: {kind}")
             clauses.append("c.kind=?")
             params.append(kind)
-        quality_clause = self._quality_visibility_clause(
-            card_alias="c", include_quarantine=include_quarantine
+        quality_clause = self._retrieval_visibility_clause(
+            card_alias="c",
+            retrieval_mode=retrieval_mode,
+            include_quarantine=include_quarantine,
         )
         if quality_clause:
             clauses.append(quality_clause)
@@ -351,6 +522,9 @@ class CardStore:
             for row in rows:
                 summary = self._card_summary(row)
                 summary["quality"] = self._card_quality(conn, summary["card_id"])
+                summary, _ = self._route_projection(
+                    conn, summary, summary["quality"], "", retrieval_mode
+                )
                 result.append(summary)
             return result
 
@@ -448,6 +622,7 @@ class CardStore:
         task_id: str | None = None,
         status: str | None = None,
         limit: int = 20,
+        retrieval_mode: str = "route",
         include_quarantine: bool = False,
     ) -> list[dict[str, Any]]:
         query = query.strip()
@@ -472,13 +647,16 @@ class CardStore:
                 raise ValueError(f"unknown card status: {status}")
             clauses.append("c.status=?")
             params.append(status)
-        quality_clause = self._quality_visibility_clause(
-            card_alias="c", include_quarantine=include_quarantine
+        quality_clause = self._retrieval_visibility_clause(
+            card_alias="c",
+            retrieval_mode=retrieval_mode,
+            include_quarantine=include_quarantine,
         )
         if quality_clause:
             clauses.append(quality_clause)
         suffix = (" AND " + " AND ".join(clauses)) if clauses else ""
-        params.append(limit)
+        fetch_limit = min(max(limit * 5, limit), 200)
+        params.append(fetch_limit)
         with self.db.connection() as conn:
             try:
                 rows = conn.execute(
@@ -499,6 +677,29 @@ class CardStore:
                     tuple(params),
                 ).fetchall()
             if not rows:
+                # Route lookup should not require every word in a natural
+                # language request to occur in the same card.  Try a bounded
+                # token-OR expansion before the literal substring fallback.
+                tokens = [
+                    item
+                    for item in re.findall(r"[\w\u4e00-\u9fff]+", query.casefold())
+                    if len(item) > 1
+                ]
+                if len(tokens) > 1:
+                    token_query = " OR ".join(f'"{item.replace(chr(34), chr(34) * 2)}"' for item in tokens)
+                    token_params = list(params)
+                    token_params[0] = token_query
+                    try:
+                        rows = conn.execute(
+                            "SELECT c.*, v.version_no, v.statement, v.aliases_json "
+                            "FROM memory_card_fts f JOIN memory_cards c ON c.card_id=f.card_id "
+                            "LEFT JOIN memory_card_versions v ON v.card_version_id=c.current_version_id "
+                            f"WHERE memory_card_fts MATCH ?{suffix} ORDER BY c.updated_at DESC LIMIT ?",
+                            tuple(token_params),
+                        ).fetchall()
+                    except sqlite3.OperationalError:
+                        rows = []
+            if not rows:
                 # Literal fallback is useful for contiguous CJK phrases and
                 # punctuation-heavy paths when unicode61 does not tokenize as
                 # the user expects.
@@ -515,7 +716,7 @@ class CardStore:
                     fallback_params.extend([task_id, task_id])
                 if status:
                     fallback_params.append(status)
-                fallback_params.append(limit)
+                fallback_params.append(fetch_limit)
                 extra = ""
                 if project_id:
                     extra += " AND c.project_id=?"
@@ -541,8 +742,18 @@ class CardStore:
             for row in rows:
                 summary = self._card_summary(row)
                 summary["quality"] = self._card_quality(conn, summary["card_id"])
-                result.append(summary)
-            return result
+                summary, score = self._route_projection(
+                    conn, summary, summary["quality"], query, retrieval_mode
+                )
+                result.append((score, summary))
+            result.sort(
+                key=lambda item: (
+                    -item[0],
+                    -float(item[1].get("confidence") or 0.0),
+                    str(item[1].get("updated_at") or ""),
+                )
+            )
+            return [item[1] for item in result[:limit]]
 
     # ---- transactional write helpers used by ConsolidationService ----
 

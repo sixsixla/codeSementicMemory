@@ -68,6 +68,7 @@ class MemoryQueryRequest(_BridgeModel):
     project_id: str | None = Field(default=None, max_length=300)
     task_id: str | None = Field(default=None, max_length=300)
     limit: int = Field(default=20, ge=1, le=200)
+    retrieval_mode: Literal["route", "trusted", "audit"] = "route"
     include_quarantine: bool = False
 
 
@@ -291,6 +292,7 @@ class AgentBridgeService:
             project_id=request.project_id,
             task_id=request.task_id,
             limit=request.limit,
+            retrieval_mode=request.retrieval_mode,
             include_quarantine=request.include_quarantine,
         )
         events = self.repository.search(
@@ -303,6 +305,7 @@ class AgentBridgeService:
         return {
             "schema_version": AGENT_BRIDGE_SCHEMA_VERSION,
             "query": request.query,
+            "retrieval_mode": request.retrieval_mode,
             "cards": cards,
             "events": events,
         }

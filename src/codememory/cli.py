@@ -344,6 +344,12 @@ def build_parser() -> argparse.ArgumentParser:
     cards.add_argument("--kind")
     cards.add_argument("--limit", type=int, default=100)
     cards.add_argument(
+        "--retrieval-mode",
+        choices=("route", "trusted", "audit"),
+        default="route",
+        help="route is recall-first; trusted is precision-first; audit shows lifecycle data",
+    )
+    cards.add_argument(
         "--include-quarantine",
         action="store_true",
         help="include cards backed by quarantined candidates for audit",
@@ -390,6 +396,12 @@ def build_parser() -> argparse.ArgumentParser:
     agent_query.add_argument("--project-id")
     agent_query.add_argument("--task-id")
     agent_query.add_argument("--limit", type=int, default=20)
+    agent_query.add_argument(
+        "--retrieval-mode",
+        choices=("route", "trusted", "audit"),
+        default="route",
+        help="route is recall-first; trusted is precision-first; audit shows lifecycle data",
+    )
     agent_query.add_argument("--include-quarantine", action="store_true")
     agent_query.add_argument("--db", help="database path")
 
@@ -733,6 +745,7 @@ def main(argv: list[str] | None = None) -> int:
                         status=args.status,
                         kind=args.kind,
                         limit=args.limit,
+                        retrieval_mode=args.retrieval_mode,
                         include_quarantine=args.include_quarantine,
                     )
                 }
@@ -896,6 +909,7 @@ def main(argv: list[str] | None = None) -> int:
                             project_id=args.project_id,
                             task_id=args.task_id,
                             limit=args.limit,
+                            retrieval_mode=args.retrieval_mode,
                             include_quarantine=args.include_quarantine,
                         )
                     )

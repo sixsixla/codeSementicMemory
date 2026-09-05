@@ -78,9 +78,22 @@ After an update, inspect:
 ```powershell
 py -m codememory health --db $db
 py -m codememory quality-report --db $db --project-id $project
-py -m codememory agent query "<business term or symbol>" --project-id $project --db $db
+py -m codememory agent query "<business term or symbol>" --project-id $project \
+  --retrieval-mode route --db $db
 ```
 
 For local visual inspection, start `py -m codememory serve --db $db` and open
 `http://127.0.0.1:8765/`. A result with conflicts, dead outbox jobs, or unexpected
 cross-project evidence must be reported for review rather than auto-promoted.
+
+### Retrieval modes
+
+`route` is the default coding-agent mode. It intentionally keeps non-quarantined
+`proposed` and `review` cards visible as low-confidence entry hints, while ranking
+`stable` and `verified` cards first. Each result includes `route.trust_level`,
+`route.score`, binding status, and quality decision so the agent can verify the
+current source before editing.
+
+Use `trusted` when only quality-accepted `verified`/`stable` cards should be
+returned. Use `audit` to inspect terminal and lifecycle states; combine it with
+`--include-quarantine` only for explicit diagnostics.
