@@ -431,6 +431,35 @@ class AgentMemoryCycleService:
             "events": list(context.events),
             "truncated": context.truncated,
             "instruction": "Submit up to 8 useful coding notes with exact evidence_event_ids and binding.evidence. Empty notes are valid. Do not invent success or current-code verification.",
+            "learn_schema": {
+                "project_id": request.project_id,
+                "source_thread_id": request.source_thread_id,
+                "session_id": session_id,
+                "turn_id": "<maintenance-turn-id>",
+                "input_hash": context.input_hash,
+                "model": "<current-codex-model>",
+                "outcome": "unknown",
+                "notes": [
+                    {
+                        "kind": "route_observation",
+                        "statement": "<one useful coding fact>",
+                        "aliases": [],
+                        "evidence_event_ids": ["<event_id from events>"],
+                        "bindings": [
+                            {
+                                "role": "modified_file",
+                                "path": "<path>",
+                                "symbol": None,
+                                "qualified_symbol": None,
+                                "evidence": ["<same event_id>"],
+                            }
+                        ],
+                        "confidence": 0.65,
+                        "uncertainty": "Historical observation; verify current source.",
+                        "relation_hints": [],
+                    }
+                ],
+            },
         }
 
     def learn(self, request: CycleLearnRequest) -> dict[str, Any]:
