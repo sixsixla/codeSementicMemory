@@ -173,6 +173,12 @@ The same lifecycle is available over `/v1/agent/start`, `/v1/agent/query`,
 `/v1/agent/capture`, and `/v1/agent/finish`. See the Codex-specific manual
 instructions in [`src/codememory/docs/codex-manual-agent-skill.md`](src/codememory/docs/codex-manual-agent-skill.md).
 
+For Codex-driven historical extraction and memory maintenance, use the installed
+`$codememory-memory` Skill instead of manually typing the lifecycle commands. Its
+versioned source is [`skills/codememory-memory/SKILL.md`](skills/codememory-memory/SKILL.md);
+it resolves visible history, runs bounded import/extract/consolidate operations, and
+reports duplicates, conflicts, quality decisions, card changes, and query evidence.
+
 Verify the Project_J seed bindings against a provider snapshot (dry-run first):
 
 ```powershell

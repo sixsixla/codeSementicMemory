@@ -1,0 +1,7 @@
+interface:
+  display_name: "CodeMemory 历史记忆维护"
+  short_description: "从可见 Codex 历史提取并持续维护项目级代码记忆卡片"
+  default_prompt: "Use $codememory-memory to extract and update project-scoped coding memories from visible Codex history."
+
+policy:
+  allow_implicit_invocation: true
