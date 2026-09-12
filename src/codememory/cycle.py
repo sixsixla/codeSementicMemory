@@ -119,7 +119,11 @@ class AgentMemoryNote(_BridgeModel):
     bindings: list[Binding] = Field(default_factory=list, max_length=200)
     evidence_event_ids: list[str] = Field(min_length=1, max_length=500)
     confidence: float = Field(default=0.65, ge=0, le=1)
-    uncertainty: str = Field(default="Historical coding observation; verify current source.", min_length=1, max_length=2000)
+    uncertainty: str = Field(
+        default="Historical coding observation; verify current source.",
+        min_length=1,
+        max_length=2000,
+    )
     relation_hints: list[dict[str, Any]] = Field(default_factory=list, max_length=200)
 
 
@@ -158,7 +162,11 @@ class _AgentSubmittedProvider:
             task_id=context.task_id,
             session_id=context.session_id,
             source_event_ids=list(context.event_ids),
-            extractor=ExtractorInfo(provider=self.provider_name, model=self.model_name, prompt_version=self.prompt_version),
+            extractor=ExtractorInfo(
+                provider=self.provider_name,
+                model=self.model_name,
+                prompt_version=self.prompt_version,
+            ),
             candidates=candidates,
         )
 
@@ -166,7 +174,9 @@ class _AgentSubmittedProvider:
 class AgentMemoryCycleService:
     """Make Codex lifecycle events incremental, idempotent, and queryable."""
 
-    def __init__(self, repository: MemoryRepository, *, bridge: AgentBridgeService | None = None) -> None:
+    def __init__(
+        self, repository: MemoryRepository, *, bridge: AgentBridgeService | None = None
+    ) -> None:
         self.repository = repository
         self.bridge = bridge or AgentBridgeService(repository)
 
@@ -179,7 +189,9 @@ class AgentMemoryCycleService:
 
     @staticmethod
     def _cycle_id(request: CycleBaseRequest, task_id: str, session_id: str) -> str:
-        return f"cycle-{_digest((request.project_id, request.source_thread_id, task_id, session_id))}"
+        return (
+            f"cycle-{_digest((request.project_id, request.source_thread_id, task_id, session_id))}"
+        )
 
     @staticmethod
     def _last_seq(repository: MemoryRepository, task_id: str, session_id: str) -> int:
@@ -284,7 +296,9 @@ class AgentMemoryCycleService:
                 continue
         return count
 
-    def _query(self, request: CycleBaseRequest, query: str | None, *, limit: int, retrieval_mode: str) -> dict[str, Any]:
+    def _query(
+        self, request: CycleBaseRequest, query: str | None, *, limit: int, retrieval_mode: str
+    ) -> dict[str, Any]:
         if not query:
             return {"cards": [], "events": [], "query": "", "retrieval_mode": retrieval_mode}
         return self.bridge.query(
@@ -304,25 +318,47 @@ class AgentMemoryCycleService:
         turn_id = request.turn_id or f"open-{_digest(request.prompt or request.source_thread_id)}"
         if request.prompt:
             prompt_result = self.prompt(
-                CyclePromptRequest(**request.model_dump(exclude={"prompt", "turn_id", "retrieval_mode", "limit"}), prompt=request.prompt, turn_id=turn_id, retrieval_mode=request.retrieval_mode, limit=request.limit)
+                CyclePromptRequest(
+                    **request.model_dump(exclude={"prompt", "turn_id", "retrieval_mode", "limit"}),
+                    prompt=request.prompt,
+                    turn_id=turn_id,
+                    retrieval_mode=request.retrieval_mode,
+                    limit=request.limit,
+                )
             )
             prompt_count = int((prompt_result.get("cycle") or {}).get("prompt_count", 1))
         else:
             existing = self.repository.get_agent_memory_cycle(
-                source_system="codex", source_thread_id=request.source_thread_id, project_id=request.project_id, session_id=session_id
+                source_system="codex",
+                source_thread_id=request.source_thread_id,
+                project_id=request.project_id,
+                session_id=session_id,
             )
             prompt_count = int((existing or {}).get("prompt_count", 0))
-        query = self._query(request, request.prompt, limit=request.limit, retrieval_mode=request.retrieval_mode)
+        query = self._query(
+            request, request.prompt, limit=request.limit, retrieval_mode=request.retrieval_mode
+        )
         if request.prompt:
             cycle = prompt_result["cycle"] if prompt_result else {}
         else:
-            cycle = self._save(request, task_id=task_id, session_id=session_id, cycle_id=cycle_id, status="active", cursor=None, prompt_count=prompt_count)
+            cycle = self._save(
+                request,
+                task_id=task_id,
+                session_id=session_id,
+                cycle_id=cycle_id,
+                status="active",
+                cursor=None,
+                prompt_count=prompt_count,
+            )
         return {"cycle": cycle, "task_id": task_id, "session_id": session_id, "query": query}
 
     def prompt(self, request: CyclePromptRequest) -> dict[str, Any]:
         task_id, session_id, cycle_id = self._ensure_started(request)
         existing = self.repository.get_agent_memory_cycle(
-            source_system="codex", source_thread_id=request.source_thread_id, project_id=request.project_id, session_id=session_id
+            source_system="codex",
+            source_thread_id=request.source_thread_id,
+            project_id=request.project_id,
+            session_id=session_id,
         )
         prompt_count = int((existing or {}).get("prompt_count", 0))
         existing_prompt = any(
@@ -340,9 +376,20 @@ class AgentMemoryCycleService:
                 context=self._context(request),
             )
         )
-        query = self._query(request, request.prompt, limit=request.limit, retrieval_mode=request.retrieval_mode)
-        card_ids = [str(card.get("card_id")) for card in query.get("cards", []) if card.get("card_id")]
-        self._record_cards(request, task_id=task_id, session_id=session_id, turn_id=request.turn_id, card_ids=card_ids, feedback_type="presented")
+        query = self._query(
+            request, request.prompt, limit=request.limit, retrieval_mode=request.retrieval_mode
+        )
+        card_ids = [
+            str(card.get("card_id")) for card in query.get("cards", []) if card.get("card_id")
+        ]
+        self._record_cards(
+            request,
+            task_id=task_id,
+            session_id=session_id,
+            turn_id=request.turn_id,
+            card_ids=card_ids,
+            feedback_type="presented",
+        )
         cycle = self._save(
             request,
             task_id=task_id,
@@ -382,14 +429,40 @@ class AgentMemoryCycleService:
                 provider=provider,
                 quality_service=self.bridge.quality_service,
             )
-            output["extraction"] = extraction.extract_task(task_id, session_id=session_id, force=request.force).as_dict()
+            output["extraction"] = extraction.extract_task(
+                task_id, session_id=session_id, force=request.force
+            ).as_dict()
             if request.consolidate:
-                output["consolidation"] = self.bridge.consolidation_service.consolidate(task_id=task_id).as_dict()
+                output["consolidation"] = self.bridge.consolidation_service.consolidate(
+                    task_id=task_id
+                ).as_dict()
             output["completed_outbox_jobs"] = self.repository.complete_outbox_for_task(task_id)
-        feedback = self._record_cards(request, task_id=task_id, session_id=session_id, turn_id=request.turn_id, card_ids=request.used_card_ids, feedback_type="outcome", outcome=request.outcome, used=True)
+        feedback = self._record_cards(
+            request,
+            task_id=task_id,
+            session_id=session_id,
+            turn_id=request.turn_id,
+            card_ids=request.used_card_ids,
+            feedback_type="outcome",
+            outcome=request.outcome,
+            used=True,
+        )
         output["feedback_recorded"] = feedback
-        existing = self.repository.get_agent_memory_cycle(source_system="codex", source_thread_id=request.source_thread_id, project_id=request.project_id, session_id=session_id)
-        output["cycle"] = self._save(request, task_id=task_id, session_id=session_id, cycle_id=cycle_id, status="checkpointed", cursor=request.turn_id, prompt_count=int((existing or {}).get("prompt_count", 0)))
+        existing = self.repository.get_agent_memory_cycle(
+            source_system="codex",
+            source_thread_id=request.source_thread_id,
+            project_id=request.project_id,
+            session_id=session_id,
+        )
+        output["cycle"] = self._save(
+            request,
+            task_id=task_id,
+            session_id=session_id,
+            cycle_id=cycle_id,
+            status="checkpointed",
+            cursor=request.turn_id,
+            prompt_count=int((existing or {}).get("prompt_count", 0)),
+        )
         return output
 
     def close(self, request: CycleCloseRequest) -> dict[str, Any]:
@@ -411,29 +484,61 @@ class AgentMemoryCycleService:
                 force=request.force,
             )
         )
-        feedback = self._record_cards(request, task_id=task_id, session_id=session_id, turn_id="close", card_ids=request.used_card_ids, feedback_type="outcome", outcome=request.outcome, used=True)
-        existing = self.repository.get_agent_memory_cycle(source_system="codex", source_thread_id=request.source_thread_id, project_id=request.project_id, session_id=session_id)
+        feedback = self._record_cards(
+            request,
+            task_id=task_id,
+            session_id=session_id,
+            turn_id="close",
+            card_ids=request.used_card_ids,
+            feedback_type="outcome",
+            outcome=request.outcome,
+            used=True,
+        )
+        existing = self.repository.get_agent_memory_cycle(
+            source_system="codex",
+            source_thread_id=request.source_thread_id,
+            project_id=request.project_id,
+            session_id=session_id,
+        )
         result["feedback_recorded"] = feedback
-        result["cycle"] = self._save(request, task_id=task_id, session_id=session_id, cycle_id=cycle_id, status="closed", cursor="close", prompt_count=int((existing or {}).get("prompt_count", 0)), closed_at=_now().isoformat())
+        result["cycle"] = self._save(
+            request,
+            task_id=task_id,
+            session_id=session_id,
+            cycle_id=cycle_id,
+            status="closed",
+            cursor="close",
+            prompt_count=int((existing or {}).get("prompt_count", 0)),
+            closed_at=_now().isoformat(),
+        )
         return result
 
     def prepare(self, request: CycleBaseRequest) -> dict[str, Any]:
         """Expose a bounded, evidence-addressed packet for the current Codex LLM."""
         task_id, session_id, cycle_id = self._ensure_started(request)
         context = ContextAssembler(
-            self.repository, quality_service=self.bridge.quality_service,
-            max_events=150, max_chars=45_000, max_event_chars=4000,
+            self.repository,
+            quality_service=self.bridge.quality_service,
+            max_events=150,
+            max_chars=45_000,
+            max_event_chars=4000,
         ).assemble(task_id, session_id=session_id)
         return {
             "cycle_id": cycle_id,
-            "request": {**request.model_dump(mode="json"), "task_id": task_id, "session_id": session_id},
+            "request": {
+                **request.model_dump(mode="json"),
+                "task_id": task_id,
+                "session_id": session_id,
+            },
             "input_hash": context.input_hash,
             "events": list(context.events),
             "truncated": context.truncated,
+            "maintenance": self.repository.latest_agent_memory_maintenance(cycle_id=cycle_id),
             "instruction": "Submit up to 8 useful coding notes with exact evidence_event_ids and binding.evidence. Empty notes are valid. Do not invent success or current-code verification.",
             "learn_schema": {
                 "project_id": request.project_id,
                 "source_thread_id": request.source_thread_id,
+                "task_id": task_id,
                 "session_id": session_id,
                 "turn_id": "<maintenance-turn-id>",
                 "input_hash": context.input_hash,
@@ -462,36 +567,118 @@ class AgentMemoryCycleService:
             },
         }
 
+    def request_maintenance(
+        self,
+        request: CycleBaseRequest,
+        *,
+        input_hash: str,
+        turn_id: str,
+        max_attempts: int = 2,
+        provider: str = "agent",
+        model: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Persist one bounded current-agent maintenance continuation."""
+
+        task_id, session_id, cycle_id = self._ensure_started(request)
+        maintenance_id = f"maintenance-{_digest((cycle_id, input_hash))}"
+        return self.repository.request_agent_memory_maintenance(
+            maintenance_id=maintenance_id,
+            cycle_id=cycle_id,
+            project_id=request.project_id,
+            task_id=task_id,
+            session_id=session_id,
+            source_thread_id=request.source_thread_id,
+            request_turn_id=turn_id,
+            input_hash=input_hash,
+            max_attempts=max_attempts,
+            provider=provider,
+            model=model,
+            metadata=metadata,
+        )
+
+    def fail_pending_maintenance(
+        self, request: CycleBaseRequest, *, error: str
+    ) -> dict[str, Any] | None:
+        """Mark an unfinished continuation so a later coding turn can retry it."""
+
+        _, _, cycle_id = self._ensure_started(request)
+        return self.repository.fail_pending_agent_memory_maintenance(
+            cycle_id=cycle_id,
+            error=error,
+        )
+
     def learn(self, request: CycleLearnRequest) -> dict[str, Any]:
         """Validate current-agent LLM notes through the existing extraction pipeline."""
         task_id, session_id, cycle_id = self._ensure_started(request)
-        assembler = ContextAssembler(
-            self.repository, quality_service=self.bridge.quality_service,
-            max_events=150, max_chars=45_000, max_event_chars=4000,
-        )
-        current = assembler.assemble(task_id, session_id=session_id)
-        if current.input_hash != request.input_hash:
-            raise ValueError("source evidence changed; run cycle prepare again before learning")
-        extraction = ExtractionService(
-            self.repository,
-            assembler=assembler,
-            store=self.bridge.extraction_store,
-            provider=_AgentSubmittedProvider(request),
-            quality_service=self.bridge.quality_service,
-            extractor_version="agent-memory-submit-v1",
-        ).extract_task(task_id, session_id=session_id)
-        output: dict[str, Any] = {"extraction": extraction.as_dict()}
-        if extraction.status in {"extracted", "duplicate"}:
-            output["consolidation"] = self.bridge.consolidation_service.consolidate(task_id=task_id).as_dict()
-            output["completed_outbox_jobs"] = self.repository.complete_outbox_for_task(task_id)
-            output["feedback_recorded"] = self._record_cards(
-                request, task_id=task_id, session_id=session_id, turn_id=request.turn_id,
-                card_ids=request.used_card_ids, feedback_type="outcome", outcome=request.outcome, used=True,
+        try:
+            assembler = ContextAssembler(
+                self.repository,
+                quality_service=self.bridge.quality_service,
+                max_events=150,
+                max_chars=45_000,
+                max_event_chars=4000,
             )
-            existing = self.repository.get_agent_memory_cycle(source_system="codex", source_thread_id=request.source_thread_id, project_id=request.project_id, session_id=session_id)
-            output["cycle"] = self._save(
-                request, task_id=task_id, session_id=session_id, cycle_id=cycle_id,
-                status="checkpointed", cursor=request.turn_id,
-                prompt_count=int((existing or {}).get("prompt_count", 0)),
+            current = assembler.assemble(task_id, session_id=session_id)
+            if current.input_hash != request.input_hash:
+                raise ValueError("source evidence changed; run cycle prepare again before learning")
+            extraction = ExtractionService(
+                self.repository,
+                assembler=assembler,
+                store=self.bridge.extraction_store,
+                provider=_AgentSubmittedProvider(request),
+                quality_service=self.bridge.quality_service,
+                extractor_version="agent-memory-submit-v1",
+            ).extract_task(task_id, session_id=session_id)
+            output: dict[str, Any] = {"extraction": extraction.as_dict()}
+            if extraction.status in {"extracted", "duplicate"}:
+                output["consolidation"] = self.bridge.consolidation_service.consolidate(
+                    task_id=task_id
+                ).as_dict()
+                output["completed_outbox_jobs"] = self.repository.complete_outbox_for_task(task_id)
+                output["feedback_recorded"] = self._record_cards(
+                    request,
+                    task_id=task_id,
+                    session_id=session_id,
+                    turn_id=request.turn_id,
+                    card_ids=request.used_card_ids,
+                    feedback_type="outcome",
+                    outcome=request.outcome,
+                    used=True,
+                )
+                existing = self.repository.get_agent_memory_cycle(
+                    source_system="codex",
+                    source_thread_id=request.source_thread_id,
+                    project_id=request.project_id,
+                    session_id=session_id,
+                )
+                output["cycle"] = self._save(
+                    request,
+                    task_id=task_id,
+                    session_id=session_id,
+                    cycle_id=cycle_id,
+                    status="checkpointed",
+                    cursor=request.turn_id,
+                    prompt_count=int((existing or {}).get("prompt_count", 0)),
+                )
+                output["maintenance"] = self.repository.complete_agent_memory_maintenance(
+                    cycle_id=cycle_id,
+                    input_hash=request.input_hash,
+                    model=request.model,
+                    note_count=len(request.notes),
+                    candidate_count=int(extraction.candidate_count),
+                )
+            else:
+                output["maintenance"] = self.repository.fail_agent_memory_maintenance(
+                    cycle_id=cycle_id,
+                    input_hash=request.input_hash,
+                    error=f"extraction ended with status {extraction.status}",
+                )
+            return output
+        except Exception as exc:
+            self.repository.fail_agent_memory_maintenance(
+                cycle_id=cycle_id,
+                input_hash=request.input_hash,
+                error=f"{type(exc).__name__}: {exc}",
             )
-        return output
+            raise

@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "py -3 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
+            "command": "py -3 -X utf8 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
             "timeout": 10,
             "statusMessage": "Opening CodeMemory cycle"
           }
@@ -18,8 +18,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "py -3 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
+            "command": "py -3 -X utf8 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
             "timeout": 10,
+            "additionalContextLimit": 4000,
             "statusMessage": "Loading CodeMemory route hints"
           }
         ]
@@ -27,10 +28,11 @@
     ],
     "PostToolUse": [
       {
+        "matcher": "Bash|apply_patch|Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "py -3 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
+            "command": "py -3 -X utf8 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
             "async": true,
             "timeout": 30,
             "statusMessage": "Capturing CodeMemory tool evidence"
@@ -43,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "py -3 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
+            "command": "py -3 -X utf8 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
             "timeout": 20,
             "statusMessage": "Updating CodeMemory"
           }
@@ -55,7 +57,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "py -3 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
+            "command": "py -3 -X utf8 \"D:\\Tool\\codeSementicMemory\\integrations\\codex\\codememory_hook.py\"",
             "timeout": 3,
             "statusMessage": "Closing CodeMemory cycle"
           }

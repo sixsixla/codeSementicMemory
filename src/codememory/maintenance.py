@@ -19,6 +19,7 @@ class ProjectionMaintenance:
 
     _TABLES = (
         # Children first to satisfy the database's foreign-key contract.
+        "agent_memory_maintenance",
         "candidate_quality_reviews",
         "event_quality_evaluations",
         "project_aliases",

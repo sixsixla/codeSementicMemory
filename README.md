@@ -11,7 +11,7 @@ captures trustworthy coding evidence through a stable event contract, persists
 it idempotently, extracts auditable candidate memories, validates their
 evidence deterministically, and exposes their evidence graph locally.
 
-## Current status (Phase 0–1 + Phase 2A + Phase 3 + Phase 4A + Phase 4B + Phase 5A + Phase 6)
+## Current status (Phase 0–1 + Phase 2A + Phase 3 + Phase 4A + Phase 4B + Phase 5A + Phase 6 + logical scope/backlog)
 
 Implemented:
 
@@ -33,6 +33,12 @@ Implemented:
 - Bounded replay of the complete locally indexed visible Codex history export, with source-time ordering, host-block filtering, and partial provenance.
 - A deterministic, versioned quality gate for events and extracted candidates, with accepted/review/quarantine decisions and auditable reasons.
 - Logical project scopes and explicit aliases, including a reviewed Project_J mapping across raw Codex project ids.
+- Logical-scope retrieval for events, candidates, cards, AgentBridge, and graph
+  projections; cross-raw duplicate route cards retain their source card IDs.
+- Task-coalesced historical backlog planner/processor: one representative
+  outbox lease per task, one idempotent extraction/consolidation pass, and
+  task-level outbox completion only after success; message history with concrete
+  code paths/symbols is recognized as coding evidence by the quality projection.
 - Idempotent dry-run/write quality replay with bounded transactions, input hashes, and stale-run recovery after interrupted processes.
 - Route-first retrieval: non-quarantined proposed/review cards remain available as low-confidence coding entry hints, while verified/stable cards rank first; quarantine remains hidden by default.
 - Quality reports and API/CLI surfaces for project scope, candidate review, replay, and operational diagnosis.
@@ -53,6 +59,9 @@ Implemented:
 - Incremental `AgentMemoryCycleService` with durable cycle cursors, prompt/tool
   observations, stop-time extraction, close-time lifecycle updates, and idempotent
   card-use/outcome feedback.
+- Durable `agent_memory_maintenance` requests make the current-Agent stop
+  continuation observable, evidence-hash idempotent, bounded to two attempts by
+  default, and explicitly `completed`, `failed`, or `superseded`.
 - Localhost `/v1/agent/cycle/{open,prompt,checkpoint,close}` routes and matching
   CLI payload commands for adapters that do not have native hooks.
 - Codex lifecycle hook adapter in [`integrations/codex/codememory_hook.py`](integrations/codex/codememory_hook.py):
@@ -60,6 +69,12 @@ Implemented:
   one bounded current-LLM maintenance continuation at stop, followed by validated
   extraction/consolidation. It fails open and never reads hidden reasoning or
   private Codex databases.
+- UTF-8/surrogate-safe hook input decoding, project-scoped task/session IDs, and
+  canonical mapping of `D:\P4Workspace\client\mainline` to `project_j`; custom
+  root mappings can be supplied with `CODEMEMORY_PROJECT_ROOTS_JSON`.
+- `codememory hook-health` reports recent hook activity, current-Agent maintenance,
+  extraction/card freshness, root-to-project mismatches, hook outbox state, and
+  structured fail-open errors.
 - A Codex manual Skill guide and sanitized Project_J evidence fixtures at
   [`src/codememory/docs/codex-manual-agent-skill.md`](src/codememory/docs/codex-manual-agent-skill.md)
   and [`fixtures/agent-bridge/`](fixtures/agent-bridge/).
@@ -180,6 +195,23 @@ Manual-first Agent smoke flow:
 .venv\Scripts\codememory agent finish fixtures/agent-bridge/project-j-finish.json --db $db
 ```
 
+Logical Project_J scope and historical backlog operations use the reviewed
+logical ID:
+
+```powershell
+.venv\Scripts\codememory agent query "NPC 分享" `
+  --logical-project-id logical-319e6e98c97340e7807d6bb7 --db $db
+.venv\Scripts\codememory backlog plan `
+  --logical-project-id logical-319e6e98c97340e7807d6bb7 --limit-tasks 50 --db $db
+.venv\Scripts\codememory backlog process `
+  --logical-project-id logical-319e6e98c97340e7807d6bb7 --limit-tasks 50 `
+  --provider mock --db $db
+```
+
+`backlog plan` is read-only. `backlog process` is bounded and task-coalesced;
+use `--dry-run` before writing. It never rewrites canonical events or silently
+promotes proposed route cards.
+
 The same lifecycle is available over `/v1/agent/start`, `/v1/agent/query`,
 `/v1/agent/capture`, and `/v1/agent/finish`. See the Codex-specific manual
 instructions in [`src/codememory/docs/codex-manual-agent-skill.md`](src/codememory/docs/codex-manual-agent-skill.md).
@@ -189,7 +221,23 @@ Automatic Codex integration is installed from the repository's
 current user profile also has the equivalent global hook configuration. Codex
 may require a one-time review/approval in the app's Hooks settings. The hook
 uses the platform-local database unless `CODEMEMORY_DB` is set, and maps
-`Project_J` to `project_j` (override with `CODEMEMORY_PROJECT_ID`).
+`Project_J` and the enclosing `D:\P4Workspace\client\mainline` workspace to
+`project_j` (override with `CODEMEMORY_PROJECT_ID`). Hook commands force UTF-8;
+`PostToolUse` is asynchronous and matched to coding shell/edit tools, while the
+adapter discards calls that contain neither paths nor validation evidence.
+
+Inspect the automatic loop without opening SQLite manually:
+
+```powershell
+py -3 -X utf8 -m codememory hook-health --hours 24
+py -3 -X utf8 -m codememory hook-health --hours 24 --strict
+```
+
+`--strict` returns a non-zero exit code when recent capture has no corresponding
+memory construction, maintenance is failed/stale, current project rules differ
+from stored IDs, or structured hook errors are present. Historical events are
+not rewritten automatically; the report exposes old fragmented IDs for a later
+explicit replay or migration decision.
 
 For Codex-driven historical extraction and memory maintenance, use the installed
 `$codememory-memory` Skill instead of manually typing the lifecycle commands. Its
@@ -239,6 +287,8 @@ that every omitted file is missing.
 | `POST` | `/v1/agent/cycle/learn` | Validate and persist current-agent structured memory notes |
 | `GET` | `/v1/tasks/{task_id}/timeline` | Inspect the ordered evidence timeline |
 | `GET` | `/v1/search?q=...` | Query the rebuildable FTS5 projection |
+| `GET` | `/v1/backlog/plan` | Plan unique pending extraction tasks by raw or logical project (read-only) |
+| `POST` | `/v1/backlog/process` | Process one bounded task-coalesced extraction/consolidation batch |
 | `GET` | `/v1/outbox` | Inspect durable downstream jobs |
 | `POST` | `/v1/outbox/claim` | Lease jobs for the extraction worker |
 | `POST` | `/v1/outbox/{job_id}/complete` | Acknowledge a leased job |
@@ -261,11 +311,11 @@ that every omitted file is missing.
 | `GET` | `/v1/quality/projects` | List logical projects and effective raw-project aliases |
 | `POST` | `/v1/quality/projects/aliases` | Register a reviewed raw-project alias |
 | `GET` | `/v1/quality/candidates/{candidate_id}` | Inspect candidate quality reasons, dimensions, and evidence |
-| `GET` | `/v1/cards` | List versioned cards with status/task/kind and `retrieval_mode=route|trusted|audit` filters |
-| `GET` | `/v1/cards/search?q=...` | Search card statements, aliases, and bindings; `route` is recall-first, `trusted` is precision-first |
+| `GET` | `/v1/cards` | List versioned cards with status/task/kind, raw `project_id`, or `logical_project_id` scope |
+| `GET` | `/v1/cards/search?q=...` | Search card statements, aliases, and bindings across a raw or logical scope; `route` is recall-first, `trusted` is precision-first |
 | `GET` | `/v1/cards/{card_id}` | Inspect versions, evidence, links, decisions, and lifecycle |
 | `POST` | `/v1/cards/{card_id}/transition` | Apply an audited lifecycle transition |
-| `GET` | `/v1/graph` | Return bounded nodes/edges for the 3D UI (`include_quarantine` is an explicit debug opt-in) |
+| `GET` | `/v1/graph` | Return bounded nodes/edges for the 3D UI by raw or logical scope (`include_quarantine` is an explicit debug opt-in) |
 
 An accepted event returns HTTP `201`; an exact duplicate returns `200` and the original outbox id; a reused identity with changed content returns `409`.
 

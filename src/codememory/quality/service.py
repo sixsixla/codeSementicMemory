@@ -85,11 +85,17 @@ class QualityService:
                     "alias_type": "effective",
                     "inferred": False,
                 }
+        canonical_project_name = project_id.strip().casefold() in {"project_j", "projectj"}
         if explicit_logical_project_id:
             identity = f"explicit:{explicit_logical_project_id}"
             # Keep the explicit id stable by making the generated id an
             # alias only when it already exists.  The store's deterministic id
             # remains the canonical value for new mappings.
+        elif canonical_project_name:
+            # The hook adapter emits the stable raw ``project_j`` identity for
+            # known Project_J roots.  Keep quality aliases on the canonical
+            # name scope even when an optional repo_id is present.
+            identity = "name:project_j"
         else:
             identity = logical_identity_key(
                 root_path=root,
@@ -97,10 +103,24 @@ class QualityService:
                 display_name=name,
                 infer_common_name=True,
             )
-        alias_type = "explicit" if explicit_logical_project_id else (
-            "repo" if repo_id else "basename" if root_basename(root) in {"project_j", "projectj"} else "root"
+        alias_type = (
+            "explicit"
+            if explicit_logical_project_id or canonical_project_name
+            else (
+                "repo"
+                if repo_id
+                else "basename"
+                if root_basename(root) in {"project_j", "projectj"}
+                else "root"
+            )
         )
-        confidence = 1.0 if explicit_logical_project_id or repo_id else 0.92 if alias_type == "basename" else 1.0
+        confidence = (
+            1.0
+            if explicit_logical_project_id or repo_id
+            else 0.92
+            if alias_type == "basename"
+            else 1.0
+        )
         if persist:
             resolution = self.store.ensure_logical_project(
                 raw_project_id=project_id,
@@ -148,17 +168,22 @@ class QualityService:
             )
         return evaluation
 
-    def evaluate_event_id(self, event_id: str, *, persist: bool = True) -> EventQualityEvaluation | None:
+    def evaluate_event_id(
+        self, event_id: str, *, persist: bool = True
+    ) -> EventQualityEvaluation | None:
         with self.repository.db.connection() as conn:
             row = conn.execute("SELECT * FROM events WHERE event_id=?", (event_id,)).fetchone()
         if row is None:
             return None
         return self.evaluate_event(self._event_from_row(row), persist=persist)
 
-    def evaluate_events(self, events: Iterable[Mapping[str, Any]], *, persist: bool = True) -> list[EventQualityEvaluation]:
+    def evaluate_events(
+        self, events: Iterable[Mapping[str, Any]], *, persist: bool = True
+    ) -> list[EventQualityEvaluation]:
         event_rows = list(events)
         evaluations = [
-            classify_event(event, classifier_version=self.classifier_version) for event in event_rows
+            classify_event(event, classifier_version=self.classifier_version)
+            for event in event_rows
         ]
         if persist and evaluations:
             self.store.upsert_event_evaluations(evaluations)
@@ -184,7 +209,9 @@ class QualityService:
                 )
         return evaluations
 
-    def _events_for_candidate_ids(self, candidates: Iterable[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
+    def _events_for_candidate_ids(
+        self, candidates: Iterable[Mapping[str, Any]]
+    ) -> dict[str, dict[str, Any]]:
         ids = sorted(
             {
                 str(event_id)
@@ -383,7 +410,15 @@ class QualityService:
             },
         }
         input_hash = hashlib.sha256(json_text(canonical).encode("utf-8")).hexdigest()
-        scope = "task" if task_id else "project" if project_id else "logical_project" if logical_project_id_value else "all"
+        scope = (
+            "task"
+            if task_id
+            else "project"
+            if project_id
+            else "logical_project"
+            if logical_project_id_value
+            else "all"
+        )
         mode = "write" if write else "dry_run"
         run_id = self.store.start_run(
             scope=scope,
@@ -446,7 +481,9 @@ class QualityService:
                 input_hash=input_hash,
             )
         except Exception as exc:
-            self.store.finish_run(run_id, status="failed", counts={}, error=f"{type(exc).__name__}: {exc}")
+            self.store.finish_run(
+                run_id, status="failed", counts={}, error=f"{type(exc).__name__}: {exc}"
+            )
             raise
 
     @staticmethod

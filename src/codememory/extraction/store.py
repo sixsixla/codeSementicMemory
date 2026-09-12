@@ -11,6 +11,7 @@ from typing import Any
 
 from ..storage.database import Database
 from ..storage.repository import json_text, json_value
+from ..storage.scope import raw_project_ids_for_logical
 from .context import AssembledContext
 from .models import Candidate, ExtractionBatch
 
@@ -88,7 +89,9 @@ class ExtractionStore:
                     "provider=?, model=? WHERE run_id=?",
                     (next_attempts, now, provider, model, existing_id),
                 )
-                return RunStart(existing_id, "running", False, True, next_attempts, context.input_hash)
+                return RunStart(
+                    existing_id, "running", False, True, next_attempts, context.input_hash
+                )
             conn.execute(
                 "INSERT INTO extraction_runs(run_id,project_id,task_id,session_id,input_hash,"
                 "extractor_version,prompt_version,schema_version,provider,model,status,input_json,attempts,created_at,updated_at) "
@@ -176,7 +179,9 @@ class ExtractionStore:
                         candidate.kind.value,
                         candidate.statement,
                         json_text(candidate.aliases),
-                        json_text([binding.model_dump(mode="json") for binding in candidate.bindings]),
+                        json_text(
+                            [binding.model_dump(mode="json") for binding in candidate.bindings]
+                        ),
                         json_text(candidate.evidence_event_ids),
                         candidate.confidence,
                         candidate.uncertainty,
@@ -227,11 +232,23 @@ class ExtractionStore:
                     target_id = hint.get("target_id")
                     target_type = hint.get("target_type", "candidate")
                     relation = hint.get("relation", "related_to")
-                    if target_id and target_type in {"event", "candidate", "task", "file", "symbol"}:
+                    if target_id and target_type in {
+                        "event",
+                        "candidate",
+                        "task",
+                        "file",
+                        "symbol",
+                    }:
                         conn.execute(
                             "INSERT OR IGNORE INTO memory_candidate_links(candidate_id,target_type,target_id,relation_type,metadata_json) "
                             "VALUES (?,?,?,?,?)",
-                            (candidate_id, str(target_type), str(target_id), str(relation), json_text(hint)),
+                            (
+                                candidate_id,
+                                str(target_type),
+                                str(target_id),
+                                str(relation),
+                                json_text(hint),
+                            ),
                         )
                 search_text = " ".join(
                     [
@@ -267,7 +284,9 @@ class ExtractionStore:
     def record_failure(self, run_id: str, error: str, *, dead: bool = False) -> bool:
         now = _now()
         with self.db.transaction() as conn:
-            row = conn.execute("SELECT attempts FROM extraction_runs WHERE run_id=?", (run_id,)).fetchone()
+            row = conn.execute(
+                "SELECT attempts FROM extraction_runs WHERE run_id=?", (run_id,)
+            ).fetchone()
             if row is None:
                 return False
             status = "dead" if dead else "retry"
@@ -301,6 +320,8 @@ class ExtractionStore:
     def list_candidates(
         self,
         *,
+        project_id: str | None = None,
+        logical_project_id: str | None = None,
         task_id: str | None = None,
         run_id: str | None = None,
         kind: str | None = None,
@@ -318,6 +339,17 @@ class ExtractionStore:
         limit = max(1, min(int(limit), 1000))
         clauses = []
         params: list[Any] = []
+        logical_raw_ids = raw_project_ids_for_logical(self.db, logical_project_id)
+        if project_id:
+            clauses.append("project_id=?")
+            params.append(project_id)
+        if logical_project_id:
+            if logical_raw_ids:
+                placeholders = ",".join("?" for _ in logical_raw_ids)
+                clauses.append(f"project_id IN ({placeholders})")
+                params.extend(logical_raw_ids)
+            else:
+                clauses.append("1=0")
         if task_id:
             clauses.append("task_id=?")
             params.append(task_id)
@@ -338,7 +370,12 @@ class ExtractionStore:
                 f"SELECT * FROM memory_candidates {where} ORDER BY created_at DESC LIMIT ?",
                 (*params, limit),
             ).fetchall()
-            return [self._candidate_dict(row, conn) for row in rows]
+            result = [self._candidate_dict(row, conn) for row in rows]
+            if logical_project_id:
+                for item in result:
+                    item["logical_project_id"] = logical_project_id
+                    item["logical_scope_raw_project_ids"] = logical_raw_ids
+            return result
 
     def get_candidate(self, candidate_id: str) -> dict[str, Any] | None:
         """Return one candidate with bounded source-event excerpts."""
@@ -360,7 +397,12 @@ class ExtractionStore:
                     continue
                 payload = json_value(event["payload_json"], {})
                 if isinstance(payload, dict):
-                    text = str(payload.get("text") or payload.get("message") or payload.get("summary") or "")
+                    text = str(
+                        payload.get("text")
+                        or payload.get("message")
+                        or payload.get("summary")
+                        or ""
+                    )
                     if len(text) > 2000:
                         payload = {"text": text[:1999] + "…", "truncated": True}
                 evidence.append(
@@ -381,6 +423,8 @@ class ExtractionStore:
         self,
         query: str,
         *,
+        project_id: str | None = None,
+        logical_project_id: str | None = None,
         task_id: str | None = None,
         limit: int = 20,
         include_quarantine: bool = True,
@@ -392,40 +436,65 @@ class ExtractionStore:
             return []
         limit = max(1, min(int(limit), 200))
         with self.db.connection() as conn:
-            quality_suffix = "" if include_quarantine else (
-                " AND NOT EXISTS (SELECT 1 FROM candidate_quality_reviews cq "
-                "WHERE cq.candidate_id=c.candidate_id AND cq.decision='quarantine')"
+            logical_raw_ids = raw_project_ids_for_logical(self.db, logical_project_id)
+            scope_suffix = ""
+            scope_params: list[Any] = []
+            if project_id:
+                scope_suffix += " AND c.project_id=?"
+                scope_params.append(project_id)
+            if logical_project_id:
+                if logical_raw_ids:
+                    placeholders = ",".join("?" for _ in logical_raw_ids)
+                    scope_suffix += f" AND c.project_id IN ({placeholders})"
+                    scope_params.extend(logical_raw_ids)
+                else:
+                    scope_suffix += " AND 1=0"
+            quality_suffix = (
+                ""
+                if include_quarantine
+                else (
+                    " AND NOT EXISTS (SELECT 1 FROM candidate_quality_reviews cq "
+                    "WHERE cq.candidate_id=c.candidate_id AND cq.decision='quarantine')"
+                )
             )
             try:
                 if task_id:
                     rows = conn.execute(
                         "SELECT c.* FROM memory_candidate_fts f JOIN memory_candidates c ON c.candidate_id=f.candidate_id "
-                        "WHERE memory_candidate_fts MATCH ? AND f.task_id=?" + quality_suffix
+                        "WHERE memory_candidate_fts MATCH ? AND f.task_id=?"
+                        + scope_suffix
+                        + quality_suffix
                         + " ORDER BY c.created_at DESC LIMIT ?",
-                        (query, task_id, limit),
+                        (query, task_id, *scope_params, limit),
                     ).fetchall()
                 else:
                     rows = conn.execute(
                         "SELECT c.* FROM memory_candidate_fts f JOIN memory_candidates c ON c.candidate_id=f.candidate_id "
-                        "WHERE memory_candidate_fts MATCH ?" + quality_suffix
+                        "WHERE memory_candidate_fts MATCH ?"
+                        + scope_suffix
+                        + quality_suffix
                         + " ORDER BY c.created_at DESC LIMIT ?",
-                        (query, limit),
+                        (query, *scope_params, limit),
                     ).fetchall()
             except sqlite3.OperationalError:
                 literal = '"' + query.replace('"', '""') + '"'
                 if task_id:
                     rows = conn.execute(
                         "SELECT c.* FROM memory_candidate_fts f JOIN memory_candidates c ON c.candidate_id=f.candidate_id "
-                        "WHERE memory_candidate_fts MATCH ? AND f.task_id=?" + quality_suffix
+                        "WHERE memory_candidate_fts MATCH ? AND f.task_id=?"
+                        + scope_suffix
+                        + quality_suffix
                         + " ORDER BY c.created_at DESC LIMIT ?",
-                        (literal, task_id, limit),
+                        (literal, task_id, *scope_params, limit),
                     ).fetchall()
                 else:
                     rows = conn.execute(
                         "SELECT c.* FROM memory_candidate_fts f JOIN memory_candidates c ON c.candidate_id=f.candidate_id "
-                        "WHERE memory_candidate_fts MATCH ?" + quality_suffix
+                        "WHERE memory_candidate_fts MATCH ?"
+                        + scope_suffix
+                        + quality_suffix
                         + " ORDER BY c.created_at DESC LIMIT ?",
-                        (literal, limit),
+                        (literal, *scope_params, limit),
                     ).fetchall()
             # unicode61 treats a contiguous Chinese phrase as one token, so a
             # short substring such as "归属" may legitimately miss FTS.  Keep
@@ -433,32 +502,47 @@ class ExtractionStore:
             # than requiring an embedding model in the Phase 2A baseline.
             if not rows:
                 if task_id:
-                    quality_suffix = "" if include_quarantine else (
-                        " AND NOT EXISTS (SELECT 1 FROM candidate_quality_reviews cq "
-                        "WHERE cq.candidate_id=memory_candidates.candidate_id AND cq.decision='quarantine')"
+                    quality_suffix = (
+                        ""
+                        if include_quarantine
+                        else (
+                            " AND NOT EXISTS (SELECT 1 FROM candidate_quality_reviews cq "
+                            "WHERE cq.candidate_id=memory_candidates.candidate_id AND cq.decision='quarantine')"
+                        )
                     )
                     rows = conn.execute(
                         "SELECT * FROM memory_candidates WHERE task_id=? AND "
                         "(instr(statement, ?) > 0 OR instr(aliases_json, ?) > 0 OR instr(bindings_json, ?) > 0)"
-                        + quality_suffix
+                        + scope_suffix.replace("c.project_id", "project_id")
+                        + quality_suffix.replace("c.candidate_id", "candidate_id")
                         + " "
                         "ORDER BY created_at DESC LIMIT ?",
-                        (task_id, query, query, query, limit),
+                        (task_id, query, query, query, *scope_params, limit),
                     ).fetchall()
                 else:
                     rows = conn.execute(
                         "SELECT * FROM memory_candidates WHERE "
                         "(instr(statement, ?) > 0 OR instr(aliases_json, ?) > 0 OR instr(bindings_json, ?) > 0)"
-                        + quality_suffix
+                        + scope_suffix.replace("c.project_id", "project_id").replace(
+                            "c.candidate_id", "candidate_id"
+                        )
+                        + quality_suffix.replace("c.candidate_id", "candidate_id")
                         + " "
                         "ORDER BY created_at DESC LIMIT ?",
-                        (query, query, query, limit),
+                        (query, query, query, *scope_params, limit),
                     ).fetchall()
-            return [self._candidate_dict(row, conn) for row in rows]
+            result = [self._candidate_dict(row, conn) for row in rows]
+            if logical_project_id:
+                for item in result:
+                    item["logical_project_id"] = logical_project_id
+                    item["logical_scope_raw_project_ids"] = logical_raw_ids
+            return result
 
     def graph(
         self,
         *,
+        project_id: str | None = None,
+        logical_project_id: str | None = None,
         task_id: str | None = None,
         limit: int = 300,
         include_quarantine: bool = False,
@@ -473,6 +557,7 @@ class ExtractionStore:
         limit = max(20, min(int(limit), 2000))
         nodes: dict[str, dict[str, Any]] = {}
         edges: dict[tuple[str, str, str], dict[str, Any]] = {}
+        logical_raw_ids = raw_project_ids_for_logical(self.db, logical_project_id)
 
         def add_node(node_id: str, kind: str, label: str, **metadata: Any) -> None:
             if node_id not in nodes:
@@ -480,19 +565,43 @@ class ExtractionStore:
 
         def add_edge(source: str, target: str, relation: str, **metadata: Any) -> None:
             key = (source, target, relation)
-            edges.setdefault(key, {"source": source, "target": target, "relation": relation, **metadata})
+            edges.setdefault(
+                key, {"source": source, "target": target, "relation": relation, **metadata}
+            )
 
         with self.db.connection() as conn:
-            task_params: tuple[Any, ...] = (task_id,) if task_id else ()
+            task_params_list: list[Any] = []
+            task_clauses: list[str] = []
+            if task_id:
+                task_clauses.append("task_id=?")
+                task_params_list.append(task_id)
+            if project_id:
+                task_clauses.append("project_id=?")
+                task_params_list.append(project_id)
+            if logical_project_id:
+                if logical_raw_ids:
+                    placeholders = ",".join("?" for _ in logical_raw_ids)
+                    task_clauses.append(f"project_id IN ({placeholders})")
+                    task_params_list.extend(logical_raw_ids)
+                else:
+                    task_clauses.append("1=0")
+            task_params: tuple[Any, ...] = tuple(task_params_list)
             task_rows = conn.execute(
                 "SELECT task_id,project_id,title,status FROM tasks "
-                + ("WHERE task_id=? " if task_id else "")
+                + (f"WHERE {' AND '.join(task_clauses)} " if task_clauses else "")
                 + "ORDER BY updated_at DESC LIMIT 100",
                 task_params,
             ).fetchall()
             selected_task_ids = [str(row["task_id"]) for row in task_rows]
             if not selected_task_ids:
-                return {"nodes": [], "edges": [], "truncated": False, "task_id": task_id}
+                return {
+                    "nodes": [],
+                    "edges": [],
+                    "truncated": False,
+                    "task_id": task_id,
+                    "project_id": project_id,
+                    "logical_project_id": logical_project_id,
+                }
             for row in task_rows:
                 tid = str(row["task_id"])
                 add_node(
@@ -517,7 +626,12 @@ class ExtractionStore:
                 payload = json_value(row["payload_json"], {})
                 text = ""
                 if isinstance(payload, dict):
-                    text = str(payload.get("text") or payload.get("message") or payload.get("summary") or "")
+                    text = str(
+                        payload.get("text")
+                        or payload.get("message")
+                        or payload.get("summary")
+                        or ""
+                    )
                 add_node(
                     event_node,
                     "event",
@@ -556,8 +670,7 @@ class ExtractionStore:
                     add_edge(event_node, file_node, "mentions")
 
             candidate_query = (
-                f"SELECT c.* FROM memory_candidates c "
-                f"WHERE c.task_id IN ({placeholders})"
+                f"SELECT c.* FROM memory_candidates c WHERE c.task_id IN ({placeholders})"
             )
             if not include_quarantine:
                 candidate_query += (
@@ -630,6 +743,8 @@ class ExtractionStore:
             "edges": list(edges.values()),
             "truncated": len(event_rows) >= limit if "event_rows" in locals() else False,
             "task_id": task_id,
+            "project_id": project_id,
+            "logical_project_id": logical_project_id,
         }
 
     @staticmethod
@@ -642,7 +757,9 @@ class ExtractionStore:
             "SELECT 1 FROM memory_candidates WHERE candidate_id=?", (candidate_id,)
         ).fetchone():
             attempt += 1
-            candidate_id = f"{base_id}-{suffix}" if attempt == 1 else f"{base_id}-{suffix}-{attempt}"
+            candidate_id = (
+                f"{base_id}-{suffix}" if attempt == 1 else f"{base_id}-{suffix}-{attempt}"
+            )
         return candidate_id
 
     @staticmethod

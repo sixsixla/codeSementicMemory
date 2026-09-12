@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 from typing import Any, Iterable
 
 from ..storage.database import Database
+from ..storage.scope import raw_project_ids_for_logical
 
 
 CARD_KINDS = {
@@ -64,7 +65,9 @@ def _now() -> str:
 
 
 def _json(value: Any) -> str:
-    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+    return json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
+    )
 
 
 def _value(raw: str | None, default: Any) -> Any:
@@ -434,9 +437,7 @@ class CardStore:
             "quarantine": 0.0,
         }.get(quality_decision, 0.35)
         status = str(summary.get("status") or "proposed")
-        text_score = cls._text_match_score(
-            query, summary.get("statement"), summary.get("aliases")
-        )
+        text_score = cls._text_match_score(query, summary.get("statement"), summary.get("aliases"))
         confidence = max(0.0, min(float(summary.get("confidence") or 0.0), 1.0))
         feedback_row = conn.execute(
             "SELECT COUNT(*) AS total, "
@@ -452,9 +453,7 @@ class CardStore:
         feedback_success = int(feedback_row["success"] or 0) if feedback_row else 0
         feedback_failed = int(feedback_row["failed"] or 0) if feedback_row else 0
         feedback_rate = (
-            (feedback_success - feedback_failed) / max(1, feedback_used)
-            if feedback_used
-            else 0.0
+            (feedback_success - feedback_failed) / max(1, feedback_used) if feedback_used else 0.0
         )
         route_score = round(
             0.40 * _ROUTE_STATUS_SCORE.get(status, 0.35)
@@ -498,6 +497,7 @@ class CardStore:
         self,
         *,
         project_id: str | None = None,
+        logical_project_id: str | None = None,
         task_id: str | None = None,
         status: str | None = None,
         kind: str | None = None,
@@ -507,14 +507,24 @@ class CardStore:
     ) -> list[dict[str, Any]]:
         clauses: list[str] = []
         params: list[Any] = []
+        logical_raw_ids = raw_project_ids_for_logical(self.db, logical_project_id)
         if project_id:
             clauses.append("c.project_id=?")
             params.append(project_id)
+        if logical_project_id:
+            if logical_raw_ids:
+                placeholders = ",".join("?" for _ in logical_raw_ids)
+                clauses.append(f"c.project_id IN ({placeholders})")
+                params.extend(logical_raw_ids)
+            else:
+                clauses.append("1=0")
         if task_id:
-            clauses.append("(c.task_id=? OR EXISTS (SELECT 1 FROM memory_card_evidence e "
-                           "JOIN memory_card_versions ev ON ev.card_version_id=e.card_version_id "
-                           "WHERE ev.card_id=c.card_id AND e.candidate_id IN "
-                           "(SELECT candidate_id FROM memory_candidates WHERE task_id=?)))")
+            clauses.append(
+                "(c.task_id=? OR EXISTS (SELECT 1 FROM memory_card_evidence e "
+                "JOIN memory_card_versions ev ON ev.card_version_id=e.card_version_id "
+                "WHERE ev.card_id=c.card_id AND e.candidate_id IN "
+                "(SELECT candidate_id FROM memory_candidates WHERE task_id=?)))"
+            )
             params.extend([task_id, task_id])
         if status:
             if status not in CARD_STATUSES:
@@ -546,12 +556,49 @@ class CardStore:
             result = []
             for row in rows:
                 summary = self._card_summary(row)
+                if logical_project_id:
+                    summary["logical_project_id"] = logical_project_id
+                    summary["logical_scope_raw_project_ids"] = logical_raw_ids
                 summary["quality"] = self._card_quality(conn, summary["card_id"])
                 summary, _ = self._route_projection(
                     conn, summary, summary["quality"], "", retrieval_mode
                 )
                 result.append(summary)
-            return result
+            return self._deduplicate_logical_cards(result) if logical_project_id else result
+
+    @staticmethod
+    def _deduplicate_logical_cards(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Collapse same logical card keys while retaining raw provenance."""
+
+        grouped: dict[tuple[str, str], dict[str, Any]] = {}
+        for card in cards:
+            key = (str(card.get("kind") or ""), str(card.get("canonical_key") or ""))
+            current = grouped.get(key)
+            if current is None:
+                copy = dict(card)
+                copy["source_card_ids"] = [str(card.get("card_id"))]
+                copy["source_project_ids"] = [str(card.get("project_id"))]
+                grouped[key] = copy
+                continue
+            current["source_card_ids"] = list(
+                dict.fromkeys([*current.get("source_card_ids", []), str(card.get("card_id"))])
+            )
+            current["source_project_ids"] = list(
+                dict.fromkeys([*current.get("source_project_ids", []), str(card.get("project_id"))])
+            )
+            current["route_score"] = max(
+                float(current.get("route_score") or 0), float(card.get("route_score") or 0)
+            )
+        result = list(grouped.values())
+        result.sort(
+            key=lambda item: (
+                -float(item.get("route_score") or 0.0),
+                -float(item.get("confidence") or 0.0),
+                str(item.get("updated_at") or ""),
+                str(item.get("card_id") or ""),
+            )
+        )
+        return result
 
     def get_card(self, card_id: str) -> dict[str, Any] | None:
         with self.db.connection() as conn:
@@ -628,7 +675,14 @@ class CardStore:
                     (card_id,),
                 ).fetchall()
             ]
-            summary.update({"versions": versions, "links": links, "lifecycle": lifecycle, "decisions": decisions})
+            summary.update(
+                {
+                    "versions": versions,
+                    "links": links,
+                    "lifecycle": lifecycle,
+                    "decisions": decisions,
+                }
+            )
             return summary
 
     def card_history(self, card_id: str) -> list[dict[str, Any]]:
@@ -644,6 +698,7 @@ class CardStore:
         query: str,
         *,
         project_id: str | None = None,
+        logical_project_id: str | None = None,
         task_id: str | None = None,
         status: str | None = None,
         limit: int = 20,
@@ -656,9 +711,17 @@ class CardStore:
         limit = max(1, min(int(limit), 200))
         clauses = []
         params: list[Any] = [query]
+        logical_raw_ids = raw_project_ids_for_logical(self.db, logical_project_id)
         if project_id:
             clauses.append("c.project_id=?")
             params.append(project_id)
+        if logical_project_id:
+            if logical_raw_ids:
+                placeholders = ",".join("?" for _ in logical_raw_ids)
+                clauses.append(f"c.project_id IN ({placeholders})")
+                params.extend(logical_raw_ids)
+            else:
+                clauses.append("1=0")
         if task_id:
             clauses.append(
                 "(c.task_id=? OR EXISTS (SELECT 1 FROM memory_card_evidence e "
@@ -711,7 +774,9 @@ class CardStore:
                     if len(item) > 1
                 ]
                 if len(tokens) > 1:
-                    token_query = " OR ".join(f'"{item.replace(chr(34), chr(34) * 2)}"' for item in tokens)
+                    token_query = " OR ".join(
+                        f'"{item.replace(chr(34), chr(34) * 2)}"' for item in tokens
+                    )
                     token_params = list(params)
                     token_params[0] = token_query
                     try:
@@ -737,6 +802,8 @@ class CardStore:
                 fallback_params: list[Any] = [query, query, query, query]
                 if project_id:
                     fallback_params.append(project_id)
+                if logical_project_id and logical_raw_ids:
+                    fallback_params.extend(logical_raw_ids)
                 if task_id:
                     fallback_params.extend([task_id, task_id])
                 if status:
@@ -745,6 +812,12 @@ class CardStore:
                 extra = ""
                 if project_id:
                     extra += " AND c.project_id=?"
+                if logical_project_id:
+                    if logical_raw_ids:
+                        placeholders = ",".join("?" for _ in logical_raw_ids)
+                        extra += f" AND c.project_id IN ({placeholders})"
+                    else:
+                        extra += " AND 1=0"
                 if task_id:
                     extra += (
                         " AND (c.task_id=? OR EXISTS (SELECT 1 FROM memory_card_evidence e "
@@ -759,13 +832,19 @@ class CardStore:
                 rows = conn.execute(
                     "SELECT c.*, v.version_no, v.statement, v.aliases_json "
                     "FROM memory_cards c LEFT JOIN memory_card_versions v ON v.card_version_id=c.current_version_id "
-                    "WHERE (" + " OR ".join(like_clauses) + ")" + extra
+                    "WHERE ("
+                    + " OR ".join(like_clauses)
+                    + ")"
+                    + extra
                     + " ORDER BY c.updated_at DESC LIMIT ?",
                     tuple(fallback_params),
                 ).fetchall()
             result = []
             for row in rows:
                 summary = self._card_summary(row)
+                if logical_project_id:
+                    summary["logical_project_id"] = logical_project_id
+                    summary["logical_scope_raw_project_ids"] = logical_raw_ids
                 summary["quality"] = self._card_quality(conn, summary["card_id"])
                 summary, score = self._route_projection(
                     conn, summary, summary["quality"], query, retrieval_mode
@@ -778,7 +857,10 @@ class CardStore:
                     str(item[1].get("updated_at") or ""),
                 )
             )
-            return [item[1] for item in result[:limit]]
+            cards = [item[1] for item in result]
+            if logical_project_id:
+                cards = self._deduplicate_logical_cards(cards)
+            return cards[:limit]
 
     # ---- transactional write helpers used by ConsolidationService ----
 
@@ -798,7 +880,9 @@ class CardStore:
     @staticmethod
     def decision_key(candidate: dict[str, Any], policy_version: str) -> str:
         return hashlib.sha256(
-            f"{policy_version}\n{candidate['candidate_id']}\n{CardStore.candidate_fingerprint(candidate)}".encode("utf-8")
+            f"{policy_version}\n{candidate['candidate_id']}\n{CardStore.candidate_fingerprint(candidate)}".encode(
+                "utf-8"
+            )
         ).hexdigest()
 
     @staticmethod
@@ -939,7 +1023,14 @@ class CardStore:
         self.add_bindings(conn, version_id, bindings)
         conn.execute(
             "INSERT OR IGNORE INTO memory_card_links(card_version_id,target_type,target_id,relation_type,metadata_json,created_at) VALUES (?,?,?,?,?,?)",
-            (version_id, "card_version", str(current_version["card_version_id"]), "supersedes", "{}", now),
+            (
+                version_id,
+                "card_version",
+                str(current_version["card_version_id"]),
+                "supersedes",
+                "{}",
+                now,
+            ),
         )
         conn.execute(
             "UPDATE memory_cards SET current_version_id=?, confidence=?, updated_at=? WHERE card_id=?",
@@ -957,7 +1048,9 @@ class CardStore:
         *,
         relation_type: str = "supports",
     ) -> None:
-        for ordinal, event_id in enumerate(dict.fromkeys(str(item) for item in event_ids if str(item))):
+        for ordinal, event_id in enumerate(
+            dict.fromkeys(str(item) for item in event_ids if str(item))
+        ):
             conn.execute(
                 "INSERT OR IGNORE INTO memory_card_evidence(card_version_id,candidate_id,event_id,relation_type,ordinal) VALUES (?,?,?,?,?)",
                 (version_id, candidate_id, event_id, relation_type, ordinal),
@@ -991,7 +1084,9 @@ class CardStore:
             if status not in BOUNDING_STATUSES:
                 status = "unverified"
             binding_id = _short_id("binding", version_id, role, target)
-            evidence = _unique_strings(binding.get("evidence") or binding.get("evidence_event_ids") or [])
+            evidence = _unique_strings(
+                binding.get("evidence") or binding.get("evidence_event_ids") or []
+            )
             now = _now()
             conn.execute(
                 "INSERT OR IGNORE INTO memory_card_bindings(binding_id,card_version_id,role,path,symbol,qualified_symbol,normalized_target,status,snapshot_id,evidence_event_ids_json,metadata_json,created_at,updated_at) "
@@ -1029,7 +1124,15 @@ class CardStore:
         relation_type: str,
         metadata: dict[str, Any] | None = None,
     ) -> None:
-        if target_type not in {"card", "card_version", "candidate", "event", "file", "symbol", "task"}:
+        if target_type not in {
+            "card",
+            "card_version",
+            "candidate",
+            "event",
+            "file",
+            "symbol",
+            "task",
+        }:
             raise ValueError(f"unsupported card link target type: {target_type}")
         conn.execute(
             "INSERT OR IGNORE INTO memory_card_links(card_version_id,target_type,target_id,relation_type,metadata_json,created_at) VALUES (?,?,?,?,?,?)",
@@ -1086,7 +1189,11 @@ class CardStore:
             "SELECT path,symbol,qualified_symbol FROM memory_card_bindings WHERE card_version_id=?",
             (version_id,),
         ).fetchall()
-        pieces = [str(row["status"]), str(row["statement"] or ""), str(_value(row["aliases_json"], []))]
+        pieces = [
+            str(row["status"]),
+            str(row["statement"] or ""),
+            str(_value(row["aliases_json"], [])),
+        ]
         pieces.extend(
             str(value)
             for binding in bindings
@@ -1110,6 +1217,8 @@ class CardStore:
         self,
         graph: dict[str, Any],
         *,
+        project_id: str | None = None,
+        logical_project_id: str | None = None,
         task_id: str | None = None,
         limit: int = 300,
         include_quarantine: bool = False,
@@ -1122,9 +1231,14 @@ class CardStore:
             if isinstance(node, dict) and node.get("id")
         }
         edges: dict[tuple[str, str, str], dict[str, Any]] = {
-            (str(edge.get("source")), str(edge.get("target")), str(edge.get("relation"))): dict(edge)
+            (str(edge.get("source")), str(edge.get("target")), str(edge.get("relation"))): dict(
+                edge
+            )
             for edge in graph.get("edges", [])
-            if isinstance(edge, dict) and edge.get("source") and edge.get("target") and edge.get("relation")
+            if isinstance(edge, dict)
+            and edge.get("source")
+            and edge.get("target")
+            and edge.get("relation")
         }
 
         binding_status_priority = {
@@ -1160,15 +1274,28 @@ class CardStore:
 
         def add_edge(source: str, target: str, relation: str, **metadata: Any) -> None:
             key = (source, target, relation)
-            edges.setdefault(key, {"source": source, "target": target, "relation": relation, **metadata})
+            edges.setdefault(
+                key, {"source": source, "target": target, "relation": relation, **metadata}
+            )
 
         limit = max(1, min(int(limit), 2000))
+        logical_raw_ids = raw_project_ids_for_logical(self.db, logical_project_id)
         with self.db.connection() as conn:
             params: list[Any] = []
-            where = ""
+            clauses: list[str] = []
+            if project_id:
+                clauses.append("c.project_id=?")
+                params.append(project_id)
+            if logical_project_id:
+                if logical_raw_ids:
+                    placeholders = ",".join("?" for _ in logical_raw_ids)
+                    clauses.append(f"c.project_id IN ({placeholders})")
+                    params.extend(logical_raw_ids)
+                else:
+                    clauses.append("1=0")
             if task_id:
-                where = (
-                    "WHERE (c.task_id=? OR EXISTS (SELECT 1 FROM memory_card_versions ev "
+                clauses.append(
+                    "(c.task_id=? OR EXISTS (SELECT 1 FROM memory_card_versions ev "
                     "JOIN memory_card_evidence ce ON ce.card_version_id=ev.card_version_id "
                     "JOIN memory_candidates mc ON mc.candidate_id=ce.candidate_id "
                     "WHERE ev.card_id=c.card_id AND mc.task_id=?))"
@@ -1178,7 +1305,8 @@ class CardStore:
                 card_alias="c", include_quarantine=include_quarantine
             )
             if quality_clause:
-                where = (where + " AND " if where else "WHERE ") + quality_clause
+                clauses.append(quality_clause)
+            where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
             cards = conn.execute(
                 "SELECT c.*,v.version_no,v.statement,v.aliases_json "
                 "FROM memory_cards c LEFT JOIN memory_card_versions v ON v.card_version_id=c.current_version_id "
@@ -1200,6 +1328,9 @@ class CardStore:
                     aliases=_value(card["aliases_json"], []),
                     quality=self._card_quality(conn, cid),
                 )
+                if logical_project_id:
+                    nodes[node_id]["logical_project_id"] = logical_project_id
+                    nodes[node_id]["logical_scope_raw_project_ids"] = logical_raw_ids
                 if card["task_id"]:
                     task_node = f"task:{card['task_id']}"
                     if task_node in nodes:
@@ -1241,7 +1372,13 @@ class CardStore:
                     symbol = binding["qualified_symbol"] or binding["symbol"]
                     if symbol:
                         target = f"symbol:{symbol}"
-                        add_node(target, "symbol", str(symbol), symbol=str(symbol), binding_status=str(binding["status"]))
+                        add_node(
+                            target,
+                            "symbol",
+                            str(symbol),
+                            symbol=str(symbol),
+                            binding_status=str(binding["status"]),
+                        )
                         add_edge(node_id, target, str(binding["role"]))
                 links = conn.execute(
                     "SELECT target_type,target_id,relation_type,metadata_json FROM memory_card_links WHERE card_version_id=?",
@@ -1300,12 +1437,19 @@ class CardStore:
         if not reason.strip():
             raise ValueError("transition reason is required")
         with self.db.transaction() as conn:
-            row = conn.execute("SELECT status FROM memory_cards WHERE card_id=?", (card_id,)).fetchone()
+            row = conn.execute(
+                "SELECT status FROM memory_cards WHERE card_id=?", (card_id,)
+            ).fetchone()
             if row is None:
                 return {"updated": False, "card_id": card_id, "reason": "not_found"}
             from_status = str(row["status"])
             if from_status == to_status:
-                return {"updated": False, "card_id": card_id, "status": to_status, "reason": "already_in_state"}
+                return {
+                    "updated": False,
+                    "card_id": card_id,
+                    "status": to_status,
+                    "reason": "already_in_state",
+                }
             allowed = {
                 "proposed": {"verified", "stable", "uncertain", "rejected", "stale"},
                 "verified": {"stable", "stale", "superseded", "uncertain", "rejected"},
@@ -1324,10 +1468,25 @@ class CardStore:
             )
             conn.execute(
                 "INSERT INTO memory_card_lifecycle_events(lifecycle_event_id,card_id,from_status,to_status,actor,reason,metadata_json,created_at) VALUES (?,?,?,?,?,?,?,?)",
-                (str(uuid.uuid4()), card_id, from_status, to_status, actor, reason, _json(metadata or {}), now),
+                (
+                    str(uuid.uuid4()),
+                    card_id,
+                    from_status,
+                    to_status,
+                    actor,
+                    reason,
+                    _json(metadata or {}),
+                    now,
+                ),
             )
             self.refresh_fts(conn, card_id)
-            return {"updated": True, "card_id": card_id, "from_status": from_status, "status": to_status, "reason": reason}
+            return {
+                "updated": True,
+                "card_id": card_id,
+                "from_status": from_status,
+                "status": to_status,
+                "reason": reason,
+            }
 
 
 def _unique_strings(values: Iterable[Any]) -> list[str]:

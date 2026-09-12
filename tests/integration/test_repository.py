@@ -17,7 +17,14 @@ def test_migration_is_repeatable_and_wal(tmp_path):
     db.initialize()
     db.initialize()
     assert db.journal_mode() == "wal"
-    assert db.migration_version() == "0009_agent_memory_cycle.sql"
+    assert db.migration_version() == "0011_backlog_scope_indexes.sql"
+    with db.connection() as conn:
+        indexes = {str(row["name"]) for row in conn.execute("PRAGMA index_list(outbox)")}
+        extraction_indexes = {
+            str(row["name"]) for row in conn.execute("PRAGMA index_list(extraction_runs)")
+        }
+    assert "idx_outbox_task_status" in indexes
+    assert "idx_extraction_runs_task_status" in extraction_indexes
     assert db.integrity_check() == "ok"
 
 

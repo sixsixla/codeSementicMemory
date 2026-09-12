@@ -18,6 +18,7 @@ from ..agent_bridge import (
     MemoryQueryRequest,
     SessionStartRequest,
 )
+from ..backlog import BacklogService
 from ..cycle import (
     AgentMemoryCycleService,
     CycleCheckpointRequest,
@@ -60,6 +61,18 @@ class OutboxFailRequest(BaseModel):
     retry_at: str | None = None
     retry_delay_seconds: int | None = Field(default=None, ge=0, le=86_400)
     dead: bool = False
+
+
+class BacklogProcessRequest(BaseModel):
+    project_id: str | None = Field(default=None, max_length=300)
+    logical_project_id: str | None = Field(default=None, max_length=300)
+    limit_tasks: int = Field(default=25, ge=1, le=1000)
+    min_events: int = Field(default=2, ge=0, le=100_000)
+    provider: str = Field(default="mock", min_length=1, max_length=100)
+    consolidate: bool = True
+    complete_outbox: bool = True
+    dry_run: bool = False
+    include_non_coding: bool = False
 
 
 class ExtractRequest(BaseModel):
@@ -127,9 +140,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     consolidation_service = ConsolidationService(
         repository, store=card_store, quality_service=quality_service
     )
-    verification_service = VerificationService(
-        repository, quality_service=quality_service
-    )
+    verification_service = VerificationService(repository, quality_service=quality_service)
     agent_bridge = AgentBridgeService(
         repository,
         ingest_service=service,
@@ -366,7 +377,10 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     async def task_extraction_runs(
         task_id: str, limit: int = Query(default=100, ge=1, le=1000)
     ) -> dict[str, Any]:
-        return {"task_id": task_id, "runs": extraction_store.list_runs(task_id=task_id, limit=limit)}
+        return {
+            "task_id": task_id,
+            "runs": extraction_store.list_runs(task_id=task_id, limit=limit),
+        }
 
     @app.get("/v1/tasks/{task_id}/quality")
     async def task_quality(task_id: str) -> dict[str, Any]:
@@ -380,7 +394,11 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         except ValueError as exc:
             return JSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                content={"error": "unsupported_provider", "provider": request.provider, "message": str(exc)},
+                content={
+                    "error": "unsupported_provider",
+                    "provider": request.provider,
+                    "message": str(exc),
+                },
             )
         task_extraction = ExtractionService(
             repository,
@@ -394,7 +412,9 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         return result.as_dict()
 
     @app.post("/v1/tasks/{task_id}/consolidate")
-    async def consolidate_task(task_id: str, request: ConsolidateRequest | None = None) -> dict[str, Any]:
+    async def consolidate_task(
+        task_id: str, request: ConsolidateRequest | None = None
+    ) -> dict[str, Any]:
         request = request or ConsolidateRequest()
         result = consolidation_service.consolidate(
             task_id=task_id,
@@ -522,6 +542,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     async def search_cards(
         q: str = Query(min_length=1, max_length=500),
         project_id: str | None = Query(default=None),
+        logical_project_id: str | None = Query(default=None),
         task_id: str | None = Query(default=None),
         status_filter: str | None = Query(default=None, alias="status"),
         limit: int = Query(default=20, ge=1, le=200),
@@ -536,6 +557,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
             "results": card_store.search(
                 q,
                 project_id=project_id,
+                logical_project_id=logical_project_id,
                 task_id=task_id,
                 status=status_filter,
                 limit=limit,
@@ -548,6 +570,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     @app.get("/v1/cards")
     async def cards(
         project_id: str | None = Query(default=None),
+        logical_project_id: str | None = Query(default=None),
         task_id: str | None = Query(default=None),
         status_filter: str | None = Query(default=None, alias="status"),
         kind: str | None = Query(default=None),
@@ -561,6 +584,7 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         return {
             "cards": card_store.list_cards(
                 project_id=project_id,
+                logical_project_id=logical_project_id,
                 task_id=task_id,
                 status=status_filter,
                 kind=kind,
@@ -580,7 +604,9 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
                 actor=request.actor,
             )
         except ValueError as exc:
-            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": str(exc)})
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST, content={"error": str(exc)}
+            )
         if not result.get("updated") and result.get("reason") == "not_found":
             return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=result)
         return JSONResponse(content=result)
@@ -589,19 +615,27 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     async def card_history(card_id: str) -> JSONResponse:
         card = card_store.get_card(card_id)
         if card is None:
-            return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"error": "card_not_found", "card_id": card_id})
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND,
+                content={"error": "card_not_found", "card_id": card_id},
+            )
         return JSONResponse(content={"card_id": card_id, "versions": card["versions"]})
 
     @app.get("/v1/cards/{card_id}/relations")
     async def card_relations(card_id: str) -> JSONResponse:
         card = card_store.get_card(card_id)
         if card is None:
-            return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"error": "card_not_found", "card_id": card_id})
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND,
+                content={"error": "card_not_found", "card_id": card_id},
+            )
         return JSONResponse(content={"card_id": card_id, "relations": card["links"]})
 
     @app.get("/v1/memories/search")
     async def search_memories(
         q: str = Query(min_length=1, max_length=500),
+        project_id: str | None = Query(default=None),
+        logical_project_id: str | None = Query(default=None),
         task_id: str | None = Query(default=None),
         limit: int = Query(default=20, ge=1, le=200),
         include_quarantine: bool = Query(
@@ -611,9 +645,13 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     ) -> dict[str, Any]:
         return {
             "query": q,
+            "project_id": project_id,
+            "logical_project_id": logical_project_id,
             "task_id": task_id,
             "results": extraction_store.search(
                 q,
+                project_id=project_id,
+                logical_project_id=logical_project_id,
                 task_id=task_id,
                 limit=limit,
                 include_quarantine=include_quarantine,
@@ -645,6 +683,8 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
 
     @app.get("/v1/graph")
     async def graph(
+        project_id: str | None = Query(default=None),
+        logical_project_id: str | None = Query(default=None),
         task_id: str | None = Query(default=None),
         limit: int = Query(default=300, ge=20, le=2000),
         include_quarantine: bool = Query(
@@ -653,10 +693,16 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
         ),
     ) -> dict[str, Any]:
         graph_payload = extraction_store.graph(
-            task_id=task_id, limit=limit, include_quarantine=include_quarantine
+            project_id=project_id,
+            logical_project_id=logical_project_id,
+            task_id=task_id,
+            limit=limit,
+            include_quarantine=include_quarantine,
         )
         return card_store.extend_graph(
             graph_payload,
+            project_id=project_id,
+            logical_project_id=logical_project_id,
             task_id=task_id,
             limit=limit,
             include_quarantine=include_quarantine,
@@ -666,9 +712,45 @@ def create_app(db_path: str | Path | None = None) -> FastAPI:
     async def search(
         q: str = Query(min_length=1, max_length=500),
         project_id: str | None = Query(default=None),
+        logical_project_id: str | None = Query(default=None),
         limit: int = Query(default=20, ge=1, le=200),
     ) -> dict[str, Any]:
-        return {"query": q, "results": repository.search(q, project_id=project_id, limit=limit)}
+        return {
+            "query": q,
+            "results": repository.search(
+                q,
+                project_id=project_id,
+                logical_project_id=logical_project_id,
+                limit=limit,
+            ),
+        }
+
+    @app.get("/v1/backlog/plan")
+    async def backlog_plan(
+        project_id: str | None = Query(default=None),
+        logical_project_id: str | None = Query(default=None),
+        limit_tasks: int = Query(default=25, ge=1, le=1000),
+        min_events: int = Query(default=2, ge=0, le=100_000),
+        include_extracted: bool = Query(default=False),
+    ) -> dict[str, Any]:
+        tasks = BacklogService(repository).plan(
+            project_id=project_id,
+            logical_project_id=logical_project_id,
+            limit_tasks=limit_tasks,
+            min_events=min_events,
+            include_extracted=include_extracted,
+        )
+        return {
+            "project_id": project_id,
+            "logical_project_id": logical_project_id,
+            "planned_tasks": len(tasks),
+            "tasks": [item.as_dict() for item in tasks],
+        }
+
+    @app.post("/v1/backlog/process")
+    async def backlog_process(request: BacklogProcessRequest) -> dict[str, Any]:
+        result = BacklogService(repository).process(**request.model_dump())
+        return result.as_dict() if hasattr(result, "as_dict") else result
 
     @app.get("/v1/outbox")
     async def outbox(

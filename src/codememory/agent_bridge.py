@@ -66,6 +66,7 @@ class SessionStartRequest(_BridgeModel):
 class MemoryQueryRequest(_BridgeModel):
     query: str = Field(min_length=1, max_length=500)
     project_id: str | None = Field(default=None, max_length=300)
+    logical_project_id: str | None = Field(default=None, max_length=300)
     task_id: str | None = Field(default=None, max_length=300)
     limit: int = Field(default=20, ge=1, le=200)
     retrieval_mode: Literal["route", "trusted", "audit"] = "route"
@@ -102,7 +103,9 @@ class CaptureRequest(_BridgeModel):
                 self.summary,
             )
         ):
-            raise ValueError("capture evidence must contain intent, files, symbols, validation, or summary")
+            raise ValueError(
+                "capture evidence must contain intent, files, symbols, validation, or summary"
+            )
         return self
 
 
@@ -194,7 +197,9 @@ class AgentBridgeService:
             )
         return existing
 
-    def _context(self, request_context: dict[str, Any], timeline: list[dict[str, Any]]) -> dict[str, Any]:
+    def _context(
+        self, request_context: dict[str, Any], timeline: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         context: dict[str, Any] = {}
         for item in reversed(timeline):
             value = item.get("context")
@@ -209,7 +214,11 @@ class AgentBridgeService:
         if not timeline:
             return 0, None, {}
         last = max(timeline, key=lambda item: int(item.get("seq", 0)))
-        return int(last.get("seq", 0)) + 1, str(last.get("event_id")), dict(last.get("context") or {})
+        return (
+            int(last.get("seq", 0)) + 1,
+            str(last.get("event_id")),
+            dict(last.get("context") or {}),
+        )
 
     def _build_event(
         self,
@@ -290,6 +299,7 @@ class AgentBridgeService:
         cards = self.card_store.search(
             request.query,
             project_id=request.project_id,
+            logical_project_id=request.logical_project_id,
             task_id=request.task_id,
             limit=request.limit,
             retrieval_mode=request.retrieval_mode,
@@ -298,6 +308,7 @@ class AgentBridgeService:
         events = self.repository.search(
             request.query,
             project_id=request.project_id,
+            logical_project_id=request.logical_project_id,
             limit=request.limit,
         )
         if request.task_id:
@@ -322,7 +333,9 @@ class AgentBridgeService:
             "outcome": request.outcome,
         }
         capture_id = request.capture_id or f"capture-{_digest(evidence)}"
-        timeline = self.repository.timeline(request.task_id, session_id=request.session_id, limit=5000)
+        timeline = self.repository.timeline(
+            request.task_id, session_id=request.session_id, limit=5000
+        )
         existing_capture = [
             item for item in timeline if (item.get("payload") or {}).get("capture_id") == capture_id
         ]

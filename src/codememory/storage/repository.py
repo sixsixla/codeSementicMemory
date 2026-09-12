@@ -15,6 +15,7 @@ from typing import Any, Iterable, Mapping
 
 from ..domain.events import EventEnvelope, EventType
 from .database import Database
+from .scope import raw_project_ids_for_logical
 
 
 def utc_now() -> datetime:
@@ -193,9 +194,7 @@ class MemoryRepository:
 
     def _prepare_artifact(self, event: EventEnvelope, artifact: Any) -> dict[str, Any]:
         data = (
-            artifact.model_dump(mode="json")
-            if hasattr(artifact, "model_dump")
-            else dict(artifact)
+            artifact.model_dump(mode="json") if hasattr(artifact, "model_dump") else dict(artifact)
         )
         digest, artifact_id = self._artifact_identity(event, artifact)
         metadata = dict(data.get("metadata") or {})
@@ -679,6 +678,223 @@ class MemoryRepository:
             raise RuntimeError("agent memory cycle was not persisted")
         return result
 
+    @staticmethod
+    def _maintenance_from_row(row: sqlite3.Row) -> dict[str, Any]:
+        attempts = int(row["attempts"])
+        max_attempts = int(row["max_attempts"])
+        status = str(row["status"])
+        return {
+            "maintenance_id": str(row["maintenance_id"]),
+            "cycle_id": str(row["cycle_id"]),
+            "project_id": str(row["project_id"]),
+            "task_id": str(row["task_id"]),
+            "session_id": str(row["session_id"]),
+            "source_thread_id": str(row["source_thread_id"]),
+            "request_turn_id": str(row["request_turn_id"]),
+            "input_hash": str(row["input_hash"]),
+            "status": status,
+            "attempts": attempts,
+            "max_attempts": max_attempts,
+            "retry_allowed": status != "completed" and attempts < max_attempts,
+            "exhausted": status != "completed" and attempts >= max_attempts,
+            "provider": str(row["provider"]),
+            "model": row["model"],
+            "note_count": int(row["note_count"]),
+            "candidate_count": int(row["candidate_count"]),
+            "last_error": row["last_error"],
+            "metadata": json_value(row["metadata_json"], {}),
+            "requested_at": str(row["requested_at"]),
+            "updated_at": str(row["updated_at"]),
+            "completed_at": row["completed_at"],
+        }
+
+    def get_agent_memory_maintenance(
+        self, *, cycle_id: str, input_hash: str
+    ) -> dict[str, Any] | None:
+        with self.db.connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM agent_memory_maintenance WHERE cycle_id=? AND input_hash=?",
+                (cycle_id, input_hash),
+            ).fetchone()
+            return self._maintenance_from_row(row) if row is not None else None
+
+    def latest_agent_memory_maintenance(self, *, cycle_id: str) -> dict[str, Any] | None:
+        with self.db.connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM agent_memory_maintenance WHERE cycle_id=? "
+                "ORDER BY updated_at DESC, requested_at DESC LIMIT 1",
+                (cycle_id,),
+            ).fetchone()
+            return self._maintenance_from_row(row) if row is not None else None
+
+    def request_agent_memory_maintenance(
+        self,
+        *,
+        maintenance_id: str,
+        cycle_id: str,
+        project_id: str,
+        task_id: str,
+        session_id: str,
+        source_thread_id: str,
+        request_turn_id: str,
+        input_hash: str,
+        max_attempts: int = 2,
+        provider: str = "agent",
+        model: str | None = None,
+        metadata: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Create or retry one evidence-addressed maintenance request."""
+
+        now = iso_now()
+        maximum = max(1, int(max_attempts))
+        with self.db.transaction() as conn:
+            existing = conn.execute(
+                "SELECT * FROM agent_memory_maintenance WHERE cycle_id=? AND input_hash=?",
+                (cycle_id, input_hash),
+            ).fetchone()
+            if existing is not None:
+                current = self._maintenance_from_row(existing)
+                maximum = max(maximum, int(current["max_attempts"]))
+                if current["status"] == "completed" or current["attempts"] >= maximum:
+                    return current
+                attempts = int(current["attempts"]) + 1
+                conn.execute(
+                    "UPDATE agent_memory_maintenance SET status='pending', attempts=?, max_attempts=?, "
+                    "request_turn_id=?, provider=?, model=COALESCE(?,model), last_error=NULL, "
+                    "metadata_json=?, updated_at=? WHERE maintenance_id=?",
+                    (
+                        attempts,
+                        maximum,
+                        request_turn_id,
+                        provider,
+                        model,
+                        json_text(dict(metadata or current["metadata"])),
+                        now,
+                        current["maintenance_id"],
+                    ),
+                )
+                maintenance_id = str(current["maintenance_id"])
+            else:
+                conn.execute(
+                    "UPDATE agent_memory_maintenance SET status='superseded', updated_at=? "
+                    "WHERE cycle_id=? AND status='pending' AND input_hash<>?",
+                    (now, cycle_id, input_hash),
+                )
+                conn.execute(
+                    "INSERT INTO agent_memory_maintenance "
+                    "(maintenance_id,cycle_id,project_id,task_id,session_id,source_thread_id,"
+                    "request_turn_id,input_hash,status,attempts,max_attempts,provider,model,"
+                    "metadata_json,requested_at,updated_at) "
+                    "VALUES (?,?,?,?,?,?,?,?, 'pending',1,?,?,?,?,?,?)",
+                    (
+                        maintenance_id,
+                        cycle_id,
+                        project_id,
+                        task_id,
+                        session_id,
+                        source_thread_id,
+                        request_turn_id,
+                        input_hash,
+                        maximum,
+                        provider,
+                        model,
+                        json_text(dict(metadata or {})),
+                        now,
+                        now,
+                    ),
+                )
+        result = self.get_agent_memory_maintenance(cycle_id=cycle_id, input_hash=input_hash)
+        if result is None:  # pragma: no cover - transaction guard
+            raise RuntimeError("agent memory maintenance request was not persisted")
+        return result
+
+    def complete_agent_memory_maintenance(
+        self,
+        *,
+        cycle_id: str,
+        input_hash: str,
+        model: str,
+        note_count: int,
+        candidate_count: int,
+    ) -> dict[str, Any] | None:
+        now = iso_now()
+        with self.db.transaction() as conn:
+            conn.execute(
+                "UPDATE agent_memory_maintenance SET status='completed', model=?, note_count=?, "
+                "candidate_count=?, last_error=NULL, updated_at=?, completed_at=? "
+                "WHERE cycle_id=? AND input_hash=?",
+                (
+                    model,
+                    max(0, int(note_count)),
+                    max(0, int(candidate_count)),
+                    now,
+                    now,
+                    cycle_id,
+                    input_hash,
+                ),
+            )
+        return self.get_agent_memory_maintenance(cycle_id=cycle_id, input_hash=input_hash)
+
+    def fail_agent_memory_maintenance(
+        self, *, cycle_id: str, input_hash: str, error: str
+    ) -> dict[str, Any] | None:
+        with self.db.transaction() as conn:
+            conn.execute(
+                "UPDATE agent_memory_maintenance SET status='failed', last_error=?, updated_at=? "
+                "WHERE cycle_id=? AND input_hash=? AND status<>'completed'",
+                (str(error)[:2000], iso_now(), cycle_id, input_hash),
+            )
+        return self.get_agent_memory_maintenance(cycle_id=cycle_id, input_hash=input_hash)
+
+    def fail_pending_agent_memory_maintenance(
+        self, *, cycle_id: str, error: str
+    ) -> dict[str, Any] | None:
+        latest = self.latest_agent_memory_maintenance(cycle_id=cycle_id)
+        if latest is None or latest["status"] != "pending":
+            return latest
+        return self.fail_agent_memory_maintenance(
+            cycle_id=cycle_id,
+            input_hash=str(latest["input_hash"]),
+            error=error,
+        )
+
+    def list_agent_memory_maintenance(
+        self,
+        *,
+        project_id: str | None = None,
+        status: str | None = None,
+        updated_since: str | None = None,
+        limit: int = 100,
+    ) -> list[dict[str, Any]]:
+        clauses: list[str] = []
+        params: list[Any] = []
+        if project_id:
+            clauses.append("project_id=?")
+            params.append(project_id)
+        if status:
+            clauses.append("status=?")
+            params.append(status)
+        if updated_since:
+            clauses.append("updated_at>=?")
+            params.append(updated_since)
+        where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        with self.db.connection() as conn:
+            rows = conn.execute(
+                f"SELECT * FROM agent_memory_maintenance {where} "
+                "ORDER BY updated_at DESC, requested_at DESC LIMIT ?",
+                (*params, max(1, min(int(limit), 5000))),
+            ).fetchall()
+            return [self._maintenance_from_row(row) for row in rows]
+
+    def agent_memory_maintenance_count(self) -> dict[str, int]:
+        with self.db.connection() as conn:
+            rows = conn.execute(
+                "SELECT status,COUNT(*) AS n FROM agent_memory_maintenance GROUP BY status"
+            ).fetchall()
+        counts = {"pending": 0, "completed": 0, "failed": 0, "superseded": 0}
+        counts.update({str(row["status"]): int(row["n"]) for row in rows})
+        return counts
+
     def record_memory_card_feedback(
         self,
         *,
@@ -744,9 +960,7 @@ class MemoryRepository:
                 clauses.append("t.updated_at>=?")
                 params.append(updated_since)
             if min_events:
-                clauses.append(
-                    "(SELECT COUNT(*) FROM events e WHERE e.task_id=t.task_id)>=?"
-                )
+                clauses.append("(SELECT COUNT(*) FROM events e WHERE e.task_id=t.task_id)>=?")
                 params.append(min_events)
             where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
             rows = conn.execute(
@@ -818,41 +1032,45 @@ class MemoryRepository:
         return records
 
     def search(
-        self, query: str, *, project_id: str | None = None, limit: int = 20
+        self,
+        query: str,
+        *,
+        project_id: str | None = None,
+        logical_project_id: str | None = None,
+        limit: int = 20,
     ) -> list[dict[str, Any]]:
         query = query.strip()
         if not query:
             return []
         limit = max(1, min(int(limit), 200))
+        logical_raw_ids = raw_project_ids_for_logical(self.db, logical_project_id)
         with self.db.connection() as conn:
-            try:
-                if project_id:
-                    rows = conn.execute(
-                        "SELECT e.* FROM event_fts f JOIN events e ON e.event_id=f.event_id "
-                        "WHERE event_fts MATCH ? AND f.project_id=? ORDER BY e.occurred_at DESC LIMIT ?",
-                        (query, project_id, limit),
-                    ).fetchall()
+            scope_sql = ""
+            scope_params: list[Any] = []
+            if project_id:
+                scope_sql += " AND f.project_id=?"
+                scope_params.append(project_id)
+            if logical_project_id:
+                if logical_raw_ids:
+                    placeholders = ",".join("?" for _ in logical_raw_ids)
+                    scope_sql += f" AND f.project_id IN ({placeholders})"
+                    scope_params.extend(logical_raw_ids)
                 else:
-                    rows = conn.execute(
-                        "SELECT e.* FROM event_fts f JOIN events e ON e.event_id=f.event_id "
-                        "WHERE event_fts MATCH ? ORDER BY e.occurred_at DESC LIMIT ?",
-                        (query, limit),
-                    ).fetchall()
+                    scope_sql += " AND 1=0"
+            try:
+                rows = conn.execute(
+                    "SELECT e.* FROM event_fts f JOIN events e ON e.event_id=f.event_id "
+                    "WHERE event_fts MATCH ?" + scope_sql + " ORDER BY e.occurred_at DESC LIMIT ?",
+                    (query, *scope_params, limit),
+                ).fetchall()
             except sqlite3.OperationalError:
                 # Treat punctuation-heavy user input as a literal phrase.
                 literal = '"' + query.replace('"', '""') + '"'
-                if project_id:
-                    rows = conn.execute(
-                        "SELECT e.* FROM event_fts f JOIN events e ON e.event_id=f.event_id "
-                        "WHERE event_fts MATCH ? AND f.project_id=? ORDER BY e.occurred_at DESC LIMIT ?",
-                        (literal, project_id, limit),
-                    ).fetchall()
-                else:
-                    rows = conn.execute(
-                        "SELECT e.* FROM event_fts f JOIN events e ON e.event_id=f.event_id "
-                        "WHERE event_fts MATCH ? ORDER BY e.occurred_at DESC LIMIT ?",
-                        (literal, limit),
-                    ).fetchall()
+                rows = conn.execute(
+                    "SELECT e.* FROM event_fts f JOIN events e ON e.event_id=f.event_id "
+                    "WHERE event_fts MATCH ?" + scope_sql + " ORDER BY e.occurred_at DESC LIMIT ?",
+                    (literal, *scope_params, limit),
+                ).fetchall()
             return [self._event_from_row(row) for row in rows]
 
     def rebuild_search_index(self) -> int:
@@ -948,11 +1166,84 @@ class MemoryRepository:
             ).fetchall()
             return [OutboxJob.from_row(row) for row in claimed]
 
+    def claim_outbox_for_task(
+        self,
+        task_id: str,
+        *,
+        lease_seconds: int = 120,
+        job_type: str = "event.ingested",
+    ) -> OutboxJob | None:
+        """Lease one representative job for a task-level projection run."""
+
+        now = utc_now()
+        now_text = now.isoformat()
+        lease_until = (now + timedelta(seconds=max(1, int(lease_seconds)))).isoformat()
+        with self.db.transaction() as conn:
+            conn.execute(
+                "UPDATE outbox SET status=CASE WHEN attempts >= max_attempts THEN 'dead' ELSE 'retry' END, "
+                "available_at=?, lease_until=NULL, updated_at=? "
+                "WHERE status='processing' AND lease_until IS NOT NULL AND lease_until <= ?",
+                (now_text, now_text, now_text),
+            )
+            row = conn.execute(
+                "SELECT job_id FROM outbox WHERE status IN ('pending','retry') "
+                "AND available_at<=? AND job_type=? "
+                "AND json_extract(payload_json,'$.task_id')=? "
+                "ORDER BY created_at,job_id LIMIT 1",
+                (now_text, job_type, task_id),
+            ).fetchone()
+            if row is None:
+                return None
+            job_id = str(row["job_id"])
+            conn.execute(
+                "UPDATE outbox SET status='processing',attempts=attempts+1,lease_until=?,updated_at=? "
+                "WHERE job_id=? AND status IN ('pending','retry')",
+                (lease_until, now_text, job_id),
+            )
+            leased = conn.execute("SELECT * FROM outbox WHERE job_id=?", (job_id,)).fetchone()
+            return OutboxJob.from_row(leased) if leased is not None else None
+
+    def fail_outbox_for_task(
+        self,
+        task_id: str,
+        error: str,
+        *,
+        job_type: str = "event.ingested",
+        dead: bool = False,
+        retry_delay_seconds: int = 60,
+    ) -> int:
+        """Park every unleased task job after a task-level extraction failure."""
+
+        now = utc_now()
+        now_text = now.isoformat()
+        available = (now + timedelta(seconds=max(0, int(retry_delay_seconds)))).isoformat()
+        status = "dead" if dead else "retry"
+        with self.db.transaction() as conn:
+            result = conn.execute(
+                "UPDATE outbox SET status=?,available_at=?,lease_until=NULL,last_error=?,updated_at=? "
+                "WHERE job_type=? AND status IN ('pending','retry') "
+                "AND json_extract(payload_json,'$.task_id')=?",
+                (status, available, str(error)[:2000], now_text, job_type, task_id),
+            )
+            return int(result.rowcount)
+
     def complete_outbox(self, job_id: str) -> bool:
         now = iso_now()
         with self.db.transaction() as conn:
             result = conn.execute(
                 "UPDATE outbox SET status='completed', lease_until=NULL, updated_at=? "
+                "WHERE job_id=? AND status='processing'",
+                (now, job_id),
+            )
+            return result.rowcount == 1
+
+    def release_outbox(self, job_id: str) -> bool:
+        """Return a leased job to pending without pretending projection succeeded."""
+
+        now = iso_now()
+        with self.db.transaction() as conn:
+            result = conn.execute(
+                "UPDATE outbox SET status='pending',lease_until=NULL,updated_at=? "
                 "WHERE job_id=? AND status='processing'",
                 (now, job_id),
             )
@@ -1004,6 +1295,9 @@ class MemoryRepository:
                 "sessions": int(conn.execute("SELECT COUNT(*) FROM sessions").fetchone()[0]),
                 "agent_memory_cycles": int(
                     conn.execute("SELECT COUNT(*) FROM agent_memory_cycles").fetchone()[0]
+                ),
+                "agent_memory_maintenance": int(
+                    conn.execute("SELECT COUNT(*) FROM agent_memory_maintenance").fetchone()[0]
                 ),
                 "memory_card_feedback": int(
                     conn.execute("SELECT COUNT(*) FROM memory_card_feedback").fetchone()[0]
@@ -1076,4 +1370,5 @@ class MemoryRepository:
             "counts": counts,
             "unresolved_parent_links": unresolved_parents,
             "outbox": self.outbox_count(),
+            "agent_memory_maintenance": self.agent_memory_maintenance_count(),
         }

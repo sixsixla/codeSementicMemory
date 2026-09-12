@@ -29,6 +29,7 @@ from .cycle import (
 )
 from .api.app import create_app
 from .adapters import CliProducer
+from .backlog import BacklogService
 from .config import default_db_path, event_schema_path
 from .consolidation.service import ConsolidationService
 from .consolidation.store import CardStore
@@ -37,6 +38,7 @@ from .extraction.service import ExtractionService
 from .extraction.store import ExtractionStore
 from .extraction.providers import provider_from_name
 from .history.codex import CodexHistoryImporter
+from .hook_health import HookHealthService
 from .ingest.service import IngestService, replay_jsonl
 from .maintenance import ProjectionMaintenance
 from .quality.service import QualityService
@@ -105,6 +107,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="run the exhaustive SQLite integrity check (slow on large archives)",
     )
 
+    hook_health = sub.add_parser(
+        "hook-health", help="show Codex hook capture and memory-loop health"
+    )
+    hook_health.add_argument("--db", help="database path")
+    hook_health.add_argument("--hours", type=int, default=24)
+    hook_health.add_argument("--stale-minutes", type=int, default=30)
+    hook_health.add_argument("--hook-log", type=Path)
+    hook_health.add_argument(
+        "--strict",
+        action="store_true",
+        help="return a non-zero exit code when the loop is degraded",
+    )
+
     doctor = sub.add_parser("doctor", help="run local installation and schema checks")
     doctor.add_argument("--db", help="database path")
 
@@ -155,6 +170,7 @@ def build_parser() -> argparse.ArgumentParser:
     search = sub.add_parser("search", help="search the local FTS projection")
     search.add_argument("query")
     search.add_argument("--project-id")
+    search.add_argument("--logical-project-id")
     search.add_argument("--limit", type=int, default=20)
     search.add_argument("--db", help="database path")
 
@@ -190,9 +206,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     import_history.add_argument("--batch-size", type=int, default=250)
     import_history.add_argument("--max-threads", type=int)
-    import_history.add_argument("--since", help="only import threads updated at/after ISO timestamp")
-    import_history.add_argument("--extract", action="store_true", help="run extraction once per imported task")
-    import_history.add_argument("--consolidate", action="store_true", help="consolidate candidates after extraction/import")
+    import_history.add_argument(
+        "--since", help="only import threads updated at/after ISO timestamp"
+    )
+    import_history.add_argument(
+        "--extract", action="store_true", help="run extraction once per imported task"
+    )
+    import_history.add_argument(
+        "--consolidate", action="store_true", help="consolidate candidates after extraction/import"
+    )
     import_history.add_argument(
         "--provider",
         choices=["mock", "openai-compatible", "local"],
@@ -209,7 +231,9 @@ def build_parser() -> argparse.ArgumentParser:
     extract.add_argument("task_id")
     extract.add_argument("--db", help="database path")
     extract.add_argument("--session-id")
-    extract.add_argument("--provider", choices=["mock", "openai-compatible", "local"], default="mock")
+    extract.add_argument(
+        "--provider", choices=["mock", "openai-compatible", "local"], default="mock"
+    )
     extract.add_argument("--force", action="store_true", help="rerun an idempotent input window")
 
     extract_all = sub.add_parser("extract-all", help="extract each canonical task once")
@@ -222,20 +246,28 @@ def build_parser() -> argparse.ArgumentParser:
     extract_all.add_argument(
         "--min-events", type=int, default=0, help="skip tasks with fewer canonical events"
     )
-    extract_all.add_argument("--provider", choices=["mock", "openai-compatible", "local"], default="mock")
+    extract_all.add_argument(
+        "--provider", choices=["mock", "openai-compatible", "local"], default="mock"
+    )
     extract_all.add_argument("--consolidate", action="store_true")
     extract_all.add_argument("--complete-outbox", action="store_true")
     extract_all.add_argument(
-        "--summary-only", action="store_true", help="omit per-task extraction details from the JSON output"
+        "--summary-only",
+        action="store_true",
+        help="omit per-task extraction details from the JSON output",
     )
 
-    extract_outbox = sub.add_parser("extract-outbox", help="claim event.ingested jobs and extract once")
+    extract_outbox = sub.add_parser(
+        "extract-outbox", help="claim event.ingested jobs and extract once"
+    )
     extract_outbox.add_argument("--db", help="database path")
     extract_outbox.add_argument("--limit", type=int, default=20)
     extract_outbox.add_argument("--lease-seconds", type=int, default=120)
 
     memories = sub.add_parser("memories", help="list candidate memories")
     memories.add_argument("--db", help="database path")
+    memories.add_argument("--project-id")
+    memories.add_argument("--logical-project-id")
     memories.add_argument("--task-id")
     memories.add_argument("--kind")
     memories.add_argument("--limit", type=int, default=100)
@@ -247,6 +279,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     graph = sub.add_parser("graph", help="print the graph projection used by the web UI")
     graph.add_argument("--db", help="database path")
+    graph.add_argument("--project-id")
+    graph.add_argument("--logical-project-id")
     graph.add_argument("--task-id")
     graph.add_argument("--limit", type=int, default=300)
     graph.add_argument(
@@ -284,7 +318,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     verify.add_argument("--db", help="database path")
     verify.add_argument("--logical-project-id")
-    verify.add_argument("--task-id", action="append", help="limit verification to one or more task ids")
+    verify.add_argument(
+        "--task-id", action="append", help="limit verification to one or more task ids"
+    )
     verify.add_argument(
         "--manifest",
         action="append",
@@ -343,7 +379,9 @@ def build_parser() -> argparse.ArgumentParser:
     project_alias.add_argument("--evidence-json", default="{}")
     project_alias.add_argument("--display-name")
 
-    consolidate = sub.add_parser("consolidate", help="promote candidate memories into versioned cards")
+    consolidate = sub.add_parser(
+        "consolidate", help="promote candidate memories into versioned cards"
+    )
     consolidate.add_argument("--db", help="database path")
     consolidate.add_argument("--project-id")
     consolidate.add_argument("--task-id")
@@ -353,6 +391,7 @@ def build_parser() -> argparse.ArgumentParser:
     cards = sub.add_parser("cards", help="list versioned memory cards")
     cards.add_argument("--db", help="database path")
     cards.add_argument("--project-id")
+    cards.add_argument("--logical-project-id")
     cards.add_argument("--task-id")
     cards.add_argument("--status")
     cards.add_argument("--kind")
@@ -387,9 +426,7 @@ def build_parser() -> argparse.ArgumentParser:
     card_promote.add_argument("--actor", default="cli")
     card_promote.add_argument("--db", help="database path")
 
-    agent = sub.add_parser(
-        "agent", help="manual-first coding-agent lifecycle bridge"
-    )
+    agent = sub.add_parser("agent", help="manual-first coding-agent lifecycle bridge")
     agent_sub = agent.add_subparsers(dest="agent_command", required=True)
 
     agent_start = agent_sub.add_parser("start", help="start a manual coding session")
@@ -408,6 +445,7 @@ def build_parser() -> argparse.ArgumentParser:
     agent_query = agent_sub.add_parser("query", help="query cards and event evidence")
     agent_query.add_argument("query")
     agent_query.add_argument("--project-id")
+    agent_query.add_argument("--logical-project-id")
     agent_query.add_argument("--task-id")
     agent_query.add_argument("--limit", type=int, default=20)
     agent_query.add_argument(
@@ -418,6 +456,41 @@ def build_parser() -> argparse.ArgumentParser:
     )
     agent_query.add_argument("--include-quarantine", action="store_true")
     agent_query.add_argument("--db", help="database path")
+
+    backlog = sub.add_parser(
+        "backlog", help="plan or process task-coalesced pending memory projections"
+    )
+    backlog_sub = backlog.add_subparsers(dest="backlog_command", required=True)
+    for backlog_name, backlog_help in (
+        ("plan", "show unique pending tasks without writing"),
+        ("process", "extract/consolidate one bounded task batch"),
+    ):
+        backlog_parser = backlog_sub.add_parser(backlog_name, help=backlog_help)
+        backlog_parser.add_argument("--db", help="database path")
+        backlog_parser.add_argument("--project-id")
+        backlog_parser.add_argument("--logical-project-id")
+        backlog_parser.add_argument("--limit-tasks", type=int, default=25)
+        backlog_parser.add_argument("--min-events", type=int, default=2)
+        if backlog_name == "plan":
+            backlog_parser.add_argument(
+                "--include-extracted",
+                action="store_true",
+                help="include tasks that already have a successful extraction",
+            )
+        else:
+            backlog_parser.add_argument(
+                "--provider",
+                choices=["mock", "openai-compatible", "local"],
+                default="mock",
+            )
+            backlog_parser.add_argument("--no-consolidate", action="store_true")
+            backlog_parser.add_argument("--no-complete-outbox", action="store_true")
+            backlog_parser.add_argument("--dry-run", action="store_true")
+            backlog_parser.add_argument(
+                "--include-non-coding",
+                action="store_true",
+                help="also process tasks without file/tool/validation evidence",
+            )
 
     agent_capture = agent_sub.add_parser(
         "capture", help="capture one bounded manual coding evidence package"
@@ -431,7 +504,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     agent_cycle = agent_sub.add_parser("cycle", help="incremental automatic agent-memory cycle")
     cycle_sub = agent_cycle.add_subparsers(dest="cycle_command", required=True)
-    cycle_prepare = cycle_sub.add_parser("prepare", help="print a bounded packet for the current LLM to structure")
+    cycle_prepare = cycle_sub.add_parser(
+        "prepare", help="print a bounded packet for the current LLM to structure"
+    )
     cycle_prepare.add_argument("--project-id", required=True)
     cycle_prepare.add_argument("--source-thread-id", required=True)
     cycle_prepare.add_argument("--task-id")
@@ -491,6 +566,16 @@ def main(argv: list[str] | None = None) -> int:
             _, repository, _ = _service(path)
             _print(repository.health(check_integrity=args.deep))
             return 0
+        if args.command == "hook-health":
+            report = HookHealthService(
+                Database(path), repo_root=Path(__file__).resolve().parents[2]
+            ).report(
+                hours=args.hours,
+                stale_minutes=args.stale_minutes,
+                hook_log=args.hook_log,
+            )
+            _print(report)
+            return 1 if args.strict and report["status"] != "ok" else 0
         if args.command == "doctor":
             _, repository, _ = _service(path)
             health = repository.health()
@@ -588,7 +673,10 @@ def main(argv: list[str] | None = None) -> int:
                 {
                     "query": args.query,
                     "results": repository.search(
-                        args.query, project_id=args.project_id, limit=args.limit
+                        args.query,
+                        project_id=args.project_id,
+                        logical_project_id=args.logical_project_id,
+                        limit=args.limit,
                     ),
                 }
             )
@@ -702,7 +790,9 @@ def main(argv: list[str] | None = None) -> int:
             for index, task in enumerate(task_rows, start=1):
                 task_id = task["task_id"]
                 extracted = extraction.extract_task(task_id).as_dict()
-                consolidated = cards.consolidate(task_id=task_id).as_dict() if args.consolidate else None
+                consolidated = (
+                    cards.consolidate(task_id=task_id).as_dict() if args.consolidate else None
+                )
                 completed_jobs = (
                     repository.complete_outbox_for_task(task_id) if args.complete_outbox else 0
                 )
@@ -744,6 +834,39 @@ def main(argv: list[str] | None = None) -> int:
             worker = ExtractionWorker(repository)
             _print(worker.run_once(limit=args.limit, lease_seconds=args.lease_seconds).as_dict())
             return 0
+        if args.command == "backlog":
+            _, repository, _ = _service(path)
+            service = BacklogService(repository)
+            if args.backlog_command == "plan":
+                tasks = service.plan(
+                    project_id=args.project_id,
+                    logical_project_id=args.logical_project_id,
+                    limit_tasks=args.limit_tasks,
+                    min_events=args.min_events,
+                    include_extracted=args.include_extracted,
+                )
+                _print(
+                    {
+                        "logical_project_id": args.logical_project_id,
+                        "project_id": args.project_id,
+                        "planned_tasks": len(tasks),
+                        "tasks": [task.as_dict() for task in tasks],
+                    }
+                )
+                return 0
+            result = service.process(
+                project_id=args.project_id,
+                logical_project_id=args.logical_project_id,
+                limit_tasks=args.limit_tasks,
+                min_events=args.min_events,
+                provider=args.provider,
+                consolidate=not args.no_consolidate,
+                complete_outbox=not args.no_complete_outbox,
+                dry_run=args.dry_run,
+                include_non_coding=args.include_non_coding,
+            )
+            _print(result.as_dict() if hasattr(result, "as_dict") else result)
+            return 0
         if args.command == "memories":
             _, repository, _ = _service(path)
             store = ExtractionStore(repository.db)
@@ -751,6 +874,8 @@ def main(argv: list[str] | None = None) -> int:
                 {
                     "task_id": args.task_id,
                     "memories": store.list_candidates(
+                        project_id=args.project_id,
+                        logical_project_id=args.logical_project_id,
                         task_id=args.task_id,
                         kind=args.kind,
                         limit=args.limit,
@@ -775,6 +900,7 @@ def main(argv: list[str] | None = None) -> int:
                 {
                     "cards": CardStore(database).list_cards(
                         project_id=args.project_id,
+                        logical_project_id=args.logical_project_id,
                         task_id=args.task_id,
                         status=args.status,
                         kind=args.kind,
@@ -790,13 +916,18 @@ def main(argv: list[str] | None = None) -> int:
             card_store = CardStore(database)
             card_service = ConsolidationService(repository, store=card_store)
             if args.card_command == "show":
-                _print(card_store.get_card(args.card_id) or {"error": "card_not_found", "card_id": args.card_id})
+                _print(
+                    card_store.get_card(args.card_id)
+                    or {"error": "card_not_found", "card_id": args.card_id}
+                )
                 return 0
             if args.card_command == "history":
                 _print({"card_id": args.card_id, "versions": card_store.card_history(args.card_id)})
                 return 0
             if args.card_command == "relations":
-                _print({"card_id": args.card_id, "relations": card_store.card_relations(args.card_id)})
+                _print(
+                    {"card_id": args.card_id, "relations": card_store.card_relations(args.card_id)}
+                )
                 return 0
             if args.card_command == "transition":
                 _print(
@@ -806,11 +937,15 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 return 0
             if args.card_command == "promote":
-                _print(card_service.promote_card(args.card_id, reason=args.reason, actor=args.actor))
+                _print(
+                    card_service.promote_card(args.card_id, reason=args.reason, actor=args.actor)
+                )
                 return 0
         if args.command == "graph":
             database, repository, _ = _service(path)
             graph_payload = ExtractionStore(database).graph(
+                project_id=args.project_id,
+                logical_project_id=args.logical_project_id,
                 task_id=args.task_id,
                 limit=args.limit,
                 include_quarantine=args.include_quarantine,
@@ -818,6 +953,8 @@ def main(argv: list[str] | None = None) -> int:
             _print(
                 CardStore(database).extend_graph(
                     graph_payload,
+                    project_id=args.project_id,
+                    logical_project_id=args.logical_project_id,
                     task_id=args.task_id,
                     limit=args.limit,
                     include_quarantine=args.include_quarantine,
@@ -889,7 +1026,13 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "quality-projects":
             _, repository, _ = _service(path)
-            _print({"projects": QualityService(repository).store.list_logical_projects(limit=args.limit)})
+            _print(
+                {
+                    "projects": QualityService(repository).store.list_logical_projects(
+                        limit=args.limit
+                    )
+                }
+            )
             return 0
         if args.command == "project-alias":
             _, repository, _ = _service(path)
@@ -941,6 +1084,7 @@ def main(argv: list[str] | None = None) -> int:
                         MemoryQueryRequest(
                             query=args.query,
                             project_id=args.project_id,
+                            logical_project_id=args.logical_project_id,
                             task_id=args.task_id,
                             limit=args.limit,
                             retrieval_mode=args.retrieval_mode,
